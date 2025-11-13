@@ -1,0 +1,826 @@
+/* === RESET === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  color: #2E2E2E;
+  background-color: #fff;
+}
+
+/* === HEADER === */
+.kalad-header {
+  background-color: #ffffff;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.kalad-logo {
+  height: 40px;
+}
+
+.kalad-nav {
+  display: flex;
+  gap: 25px;
+}
+
+.kalad-nav a {
+  font-size: 14px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.header-icons {
+  display: flex;
+  gap: 18px;
+  font-size: 16px;
+  color: #2E2E2E;
+}
+
+
+/* === HERO SECTION === */
+.kalad-hero {
+  background-image: url('/assets/images/Baner_index.png');
+  background-size: cover;
+  background-position: center;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  padding-left: 60px;
+}
+
+.hero-overlay {
+  color:#3B2C20;
+  max-width: 400px;
+}
+
+.hero-overlay h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  margin-bottom: 12px;
+}
+
+.hero-overlay p {
+  font-family: "Quicksand", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.btn-hero {
+  background-color: transparent;
+  border: 2px solid #3B2C20;
+  color: #3B2C20;
+  padding: 12px 28px;
+  font-family: "Quicksand", sans-serif;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-hero:hover {
+ background-color: #3B2C20;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.btn-hero {
+  cursor: pointer; /* 👈 Esto activa la manito */
+}
+
+.catalogo {
+  padding: 50px 20px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.catalogo-frase {
+  font-size: 1.4rem;
+  font-style: italic;
+  margin-bottom: 5px;
+  color: #3B2C20;
+  font-family: 'Playfair Display', serif;
+  text-align: center;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin: 40px auto 20px;
+  color: #5c4728;
+  font-weight: 600;
+  font-size: 1.1rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.section-divider hr {
+  flex: 1;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.section-divider i {
+  color: #cb5e30; /* fuego naranja cálido */
+  margin-right: 6px;
+}
+
+
+/* Opcionales por tipo */
+.badge.nuevo {
+  background-color: #7DCEA0;
+}
+.badge.oferta {
+  background-color: #F1948A;
+}
+.badge.edición {
+  background-color: #85C1E9;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  justify-items: center;
+  padding: 40px 0;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* === TARJETA DE PRODUCTO === */
+.product-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  text-align: left;
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+  padding-bottom: 15px;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+/* === CONTENEDOR DE IMAGEN CON SHIMMER === */
+.product-card .img-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #f3eee7; /* Beige suave del branding KALAD */
+  border-radius: 8px;
+}
+
+/* Efecto shimmer (brillo en movimiento mientras carga) */
+.product-card .img-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(243, 238, 231, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(243, 238, 231, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -150px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Imagen */
+.product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Cuando la imagen se haya cargado */
+.product-card img.loaded {
+  opacity: 1;
+}
+
+/* Apagar el shimmer cuando la imagen está cargada */
+.product-card img.loaded ~ .img-wrapper::before,
+.product-card img.loaded + .img-wrapper::before,
+.product-card .img-wrapper.loaded::before {
+  display: none !important;
+}
+
+/* Versión correcta: detectar que el contenedor tiene imagen cargada */
+.product-card .img-wrapper.loaded::before {
+  display: none !important;
+}
+
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Etiquetas (badges) */
+.badge.Nuevo {
+  background-color: #4CAF50;
+}
+.badge.Oferta {
+  background-color: #E53935;
+}
+.badge.Limitada {
+  background-color: #1E88E5;
+}
+
+/* Título del producto */
+.product-card h3 {
+   font-family: "Playfair Display", serif;
+  font-size: 1.1rem;         /* antes 0.9 o 1rem */
+  font-weight: 600;
+  color: #3B2C20;
+  margin:  14px 12px 10px;
+}
+
+/* === CONTENEDOR PRECIO + CARRITO === */
+.product-card .price-cart {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 12px 14px;
+}
+
+/* Precio */
+.product-card .price {
+ font-family: "Quicksand", sans-serif;
+  font-size: 1rem;           /* antes 0.85 o 0.9rem */
+  color: #5C4B3B;
+  margin-top: 4px;
+}
+
+/* Botón carrito */
+.product-card .btn-carrito {
+  border: 1px solid #3b2c20;
+  border-radius: 20px;
+  background: transparent;
+  color: #3b2c20;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+}
+
+.product-card .btn-carrito:hover {
+    background-color: #3b2c20;   /* cambia el fondo al café de marca */
+  color: #fff;                 /* el ícono o texto pasa a blanco */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+
+/* === SECCIÓN HISTORIA === */
+.historia-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 80px;
+  background-color: #f7f4ee; /* beige de marca */
+  
+  
+}
+
+.historia-imagen {
+  width: 50%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.historia-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.historia-texto {
+  width: 45%;
+  text-align: left;
+}
+
+.historia-texto h2 {
+   font-family: "Playfair Display", serif;
+  font-size: 2rem;
+  color: #3B2C20;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.historia-texto p {
+  font-family: "Quicksand", sans-serif;
+  color: #5C4B3B;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.historia-section button {
+  background-color: #3B2C20; /* tono café marca */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 30px;
+  font-family: "Quicksand", sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.historia-section button:hover {
+    background-color: #5C4B3B;
+  transform: translateY(-3px);
+}
+
+/* === SECCIÓN RAÍCES IGUAL A LA MAQUETA === */
+.raices-section {
+  background-color: #f1ede5;
+  padding: 80px 100px;
+  text-align: center;
+}
+
+.raices-section h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.8rem;
+  color: #3B2C20;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 40px;
+}
+
+.raices-grid {
+  max-width: 900px; /* antes 1140px */
+  margin: 0 auto;
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  gap: 60px; /* más espacio entre las dos tarjetas */
+  flex-wrap: wrap;
+}
+
+.raiz-item {
+  flex: 1 1 calc(50% - 60px); /* antes 33.33% */
+  max-width: 400px; /* un poco más ancho para balancear visualmente */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centramos contenido */
+  text-align: center; /* centramos textos */
+}
+
+.raiz-item img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  background-color: #f3eee7; /* Beige suave del branding */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombras suaves para dar profundidad */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.raiz-item img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+.raiz-item h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.1rem;
+  color: #3B2C20;
+  font-weight: 600;
+}
+
+.raiz-item .link {
+  font-family: "Quicksand", sans-serif;
+  color: #946037; /* tono dorado/marrón cálido */
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.raiz-item .link:hover {
+  color: #3B2C20;
+}
+
+.testimonios-section {
+  background-color: #f8f1e8;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.testimonios-section h2 {
+  font-family: "Playfair Display", serif;
+  color: #3B2C20;
+  font-size: 1.8rem;
+  font-style: italic;
+  margin-bottom: 50px;
+}
+
+.testimonios-container {
+  display: flex;
+  justify-content: space-between; /* Cambiado para que se distribuya como las imágenes */
+  align-items: stretch;
+  gap: 30px;
+  max-width: 1140px; /* Igual que .raices-grid */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+
+.testimonio {
+  background-color: #3B2C20; /* o #4A3728 para suavizar */
+  color: #fff;
+  border-radius: 8px;
+  padding: 30px 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.testimonio:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.testimonio strong {
+  display: block;
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+
+/* ===== FOOTER - ya puedes tenerlo pero lo incluyo por si lo quieres en este archivo también ===== */
+
+footer {
+  background-color: #5D4524;
+  color: #fff;
+  padding: 40px 20px 20px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-col h4 {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.footer-col a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.footer-col p {
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.social-icons {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+  font-size: 22px;
+}
+
+.social-icons i {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.social-icons i:hover {
+  color: #CB5E30;
+}
+
+.newsletter-form {
+  display: flex;
+  margin-top: 10px;
+}
+
+.newsletter-form input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  flex: 1;
+  font-size: 14px;
+}
+
+.newsletter-form button {
+  padding: 8px 16px;
+  background-color: #CB5E30;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 13px;
+  color: #ccc;
+}
+    
+/* === MODAL CARRITO === */
+/* === MODAL BASE === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-contenido {
+  background: #fff;
+  width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  position: relative;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* Mostrar modal con clases JS */
+.modal-visible { display: flex; }
+body.modal-open { overflow: hidden; }
+
+/* Scroll interno del modal */
+.modal-contenido::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-contenido::-webkit-scrollbar-thumb {
+  background: #CB5E30;
+  border-radius: 3px;
+}
+
+/* Botón cerrar (X) */
+.cerrar {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #444;
+  transition: color 0.3s ease;
+}
+
+.cerrar:hover {
+  color: #CB5E30;
+}
+
+/* === Título del modal === */
+.modal-contenido h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #2E2E2E;
+}
+
+.modal-contenido p.subtitulo {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* === PRODUCTOS EN EL CARRITO === */
+.carrito-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.carrito-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #f0f0f0;
+}
+
+.carrito-info {
+  flex: 1;
+}
+
+.carrito-info h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #3b2c20;
+}
+
+.carrito-info p {
+  font-size: 13px;
+  color: #666;
+}
+
+/* === BOTÓN ELIMINAR PRODUCTO === */
+.btn-eliminar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: none;
+  border: none;
+  color: #CB5E30;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  color: #A84D24;
+}
+
+/* === CUPÓN === */
+.cupon {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 16px;
+}
+
+.cupon label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #3b2c20;
+}
+
+.cupon input {
+  width: 70%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.cupon button {
+  background-color: #CB5E30;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin-left: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.cupon button:hover {
+  background-color: #A84D24;
+}
+
+/* === RESUMEN === */
+.resumen {
+  margin-top: 25px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.resumen h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.resumen p {
+  font-size: 14px;
+  margin: 4px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.resumen-total {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: #3b2c20;
+}
+
+/* === BOTÓN PAGAR === */
+.btn-pagar {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 0;
+  background-color: #CB5E30;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-pagar:hover {
+  background-color: #A84D24;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .modal-contenido {
+    width: 90%;
+    max-height: 90vh;
+    padding: 18px;
+  }
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .kalad-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kalad-hero {
+    padding-left: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-overlay {
+    max-width: 90%;
+  }
+}
+
+
