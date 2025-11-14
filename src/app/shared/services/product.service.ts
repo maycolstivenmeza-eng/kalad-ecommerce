@@ -20,7 +20,7 @@ import { Product } from '../models/product.model';
   providedIn: 'root'
 })
 export class ProductService {
-  private readonly COLLECTION_NAME = 'products';
+  private readonly COLLECTION_NAME = 'productos';
 
   constructor(private firestore: Firestore) {}
 

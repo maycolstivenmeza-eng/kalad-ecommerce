@@ -27,17 +27,17 @@ export class HomePageComponent implements OnInit {
   loadFeaturedProducts(): void {
     this.loading = true;
     this.productService.getFeaturedProducts().subscribe({
-      next: (products) => {
+      next: (productos) => {
         // Limitar a los primeros 4 productos destacados
-        this.featuredProducts = products.slice(0, 4);
+        this.featuredProducts = productos.slice(0, 4);
         this.loading = false;
       },
       error: (err) => {
         console.error('Error al cargar productos destacados:', err);
         // Si hay error, cargar todos los productos como fallback
         this.productService.getAllProducts().subscribe({
-          next: (products) => {
-            this.featuredProducts = products.slice(0, 4);
+          next: (productos) => {
+            this.featuredProducts = productos.slice(0, 4);
             this.loading = false;
           },
           error: () => {

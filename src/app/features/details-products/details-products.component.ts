@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductsService } from '../../shared/services/products.service';
 import { Product } from '../../shared/models/product.model';
+import { ProductService } from '../../shared/services/product.service';
 
 @Component({
   selector: 'app-details-products',
@@ -20,7 +20,7 @@ export class DetailsProductsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productsService: ProductsService
+    private productService: ProductService
   ) {}
 
   ngOnInit(): void {
@@ -33,7 +33,7 @@ export class DetailsProductsComponent implements OnInit {
   }
 
   loadProduct(id: string): void {
-    this.productsService.getProductById(id).subscribe(product => {
+    this.productService.getProductById(id).subscribe(product => {
       if (product) {
         this.product = product;
         this.selectedImage = product.imagen;
