@@ -1,0 +1,180 @@
+/* === PRODUCTOS === */
+/* === PRODUCTOS (ESTILO IGUAL AL INDEX Y KALAD ORIGEN) === */
+.productos-section {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Ordenar */
+.ordenar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 0;
+  text-align: right;
+}
+
+.ordenar p {
+  font-family: "Quicksand", sans-serif;
+  font-size: 14px;
+  color: #555;
+}
+
+.ordenar span {
+  color: #3B2C20;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.ordenar span:hover {
+  background-color: #f5f5f5;
+  border-color: #3B2C20;
+}
+
+/* Contenedor de productos */
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 32px;
+  justify-items: center;
+  padding: 40px 0;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Tarjeta */
+.product-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  text-align: left;
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+  padding-bottom: 18px;
+  width: 100%;
+  max-width: 260px;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+/* Imagen con shimmer */
+.product-card .img-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: #f3eee7;
+  border-radius: 8px;
+}
+
+.product-card .img-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(243, 238, 231, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(243, 238, 231, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -150px; }
+  100% { left: 100%; }
+}
+
+.product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.product-card img.loaded {
+  opacity: 1;
+}
+
+.product-card .img-wrapper.loaded::before {
+  display: none !important;
+}
+
+/* Badge */
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Colores igual al index */
+.badge.Nuevo {
+  background-color: #7DCEA0; /* verde menta */
+}
+.badge.Oferta {
+  background-color: #F1948A; /* rosa suave */
+}
+.badge.Limitada {
+  background-color: #85C1E9; /* azul claro */
+}
+
+/* Nombre del producto */
+.product-card h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #3B2C20;
+  margin: 14px 12px 10px;
+}
+
+/* Contenedor precio + carrito */
+.price-cart {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 12px 22px; /* da más aire igual al index */
+}
+
+/* Precio */
+.product-card .price {
+  font-family: "Quicksand", sans-serif;
+  font-size: 1rem;
+  color: #5C4B3B;
+  font-weight: 600;
+}
+
+/* Botón carrito */
+.product-card .btn-carrito {
+  border: 1px solid #3b2c20;
+  border-radius: 20px;
+  background: transparent;
+  color: #3b2c20;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.product-card .btn-carrito:hover {
+  background-color: #3b2c20;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

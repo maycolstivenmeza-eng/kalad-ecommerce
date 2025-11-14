@@ -1,0 +1,104 @@
+<div class="confirmation-container">
+  <div class="confirmation-card">
+    <!-- Icono de éxito animado -->
+    <div class="success-icon">
+      <div class="success-circle">
+        <i class="fas fa-check"></i>
+      </div>
+    </div>
+
+    <!-- Mensaje principal -->
+    <div class="confirmation-header">
+      <h1>¡Pago Exitoso!</h1>
+      <p class="subtitle">Tu pedido ha sido confirmado</p>
+    </div>
+
+    <!-- Información del pedido -->
+    <div class="order-info">
+      @if (orderReference) {
+        <div class="info-row">
+          <span class="info-label">
+            <i class="fas fa-receipt"></i> Número de orden
+          </span>
+          <span class="info-value">{{ orderReference }}</span>
+        </div>
+      }
+
+      @if (paymentStatus) {
+        <div class="info-row">
+          <span class="info-label">
+            <i class="fas fa-credit-card"></i> Estado del pago
+          </span>
+          <span class="info-value status-badge" [class]="'status-' + paymentStatus">
+            {{ getStatusText(paymentStatus) }}
+          </span>
+        </div>
+      }
+
+      <div class="info-row">
+        <span class="info-label">
+          <i class="fas fa-clock"></i> Fecha
+        </span>
+        <span class="info-value">{{ currentDate | date: 'dd/MM/yyyy - HH:mm' }}</span>
+      </div>
+    </div>
+
+    <!-- Mensaje de confirmación -->
+    <div class="confirmation-message">
+      <div class="message-icon">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div class="message-text">
+        <p><strong>Te hemos enviado un correo de confirmación</strong></p>
+        <p class="text-muted">Revisa tu bandeja de entrada para más detalles sobre tu pedido y seguimiento del envío.</p>
+      </div>
+    </div>
+
+    <!-- Próximos pasos -->
+    <div class="next-steps">
+      <h3><i class="fas fa-list-check"></i> ¿Qué sigue?</h3>
+      <ul>
+        <li>
+          <i class="fas fa-circle-check"></i>
+          <span>Prepararemos tu pedido en las próximas 24 horas</span>
+        </li>
+        <li>
+          <i class="fas fa-circle-check"></i>
+          <span>Recibirás un correo con el número de seguimiento</span>
+        </li>
+        <li>
+          <i class="fas fa-circle-check"></i>
+          <span>El tiempo estimado de entrega es de 3-5 días hábiles</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="confirmation-actions">
+      <button class="btn-secondary" routerLink="/products">
+        <i class="fas fa-shopping-bag"></i> Seguir Comprando
+      </button>
+      <button class="btn-primary" routerLink="/history">
+        <i class="fas fa-history"></i> Ver Mis Pedidos
+      </button>
+    </div>
+
+    <!-- Ayuda -->
+    <div class="help-section">
+      <p>
+        <i class="fas fa-question-circle"></i>
+        ¿Necesitas ayuda? <a routerLink="/contact">Contáctanos</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Decoración -->
+  <div class="confetti">
+    <div class="confetti-piece"></div>
+    <div class="confetti-piece"></div>
+    <div class="confetti-piece"></div>
+    <div class="confetti-piece"></div>
+    <div class="confetti-piece"></div>
+    <div class="confetti-piece"></div>
+  </div>
+</div>

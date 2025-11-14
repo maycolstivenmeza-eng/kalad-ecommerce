@@ -1,0 +1,166 @@
+/* ===== BANNER DE CONTACTO ===== */
+.contact-banner {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+}
+
+.contact-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.contact-banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  text-align: center;
+}
+
+.contact-banner-text h1 {
+  font-size: 36px;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+}
+
+.contact-banner-text p {
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 6px;
+}
+
+
+/* ===== FORMULARIO DE CONTACTO ===== */
+.contact-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 750px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-form label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2E2E2E;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 12px 14px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Quicksand', sans-serif;
+  resize: vertical;
+}
+
+.contact-form textarea {
+  min-height: 130px;
+}
+
+.contact-form button {
+  align-self: flex-start;
+  padding: 12px 28px;
+  background-color: #5C2E14;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+  background-color: #3f1e0d;
+}
+
+
+/* ===== INFORMACIÓN DE CONTACTO ===== */
+.contact-info {
+  border-top: 1px solid #ccc;
+  padding-top: 40px;
+}
+
+.contact-info h3 {
+  font-size: 16px;
+  margin-bottom: 18px;
+  font-weight: 600;
+  color: #2E2E2E;
+}
+
+.contact-info p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.contact-info p strong {
+  display: inline-block;
+  width: 80px;
+  font-weight: 600;
+  color: #555;
+}
+
+
+/* ===== REDES SOCIALES ===== */
+
+.social-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E2E2E;
+  margin-top: 30px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+/* === SOLO PARA CONTACTO === */
+.social-icons-contacto {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 200px;
+}
+
+.social-icons-contacto i {
+  font-size: 32px;
+  color: #2E2E2E;
+  transition: color 0.3s ease;
+}
+
+.social-icons-contacto i:hover {
+  color: #CB5E30;
+}
+
+
+
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .contact-form-section {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .contact-form button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .social-icons {
+    justify-content: start;
+  }
+}

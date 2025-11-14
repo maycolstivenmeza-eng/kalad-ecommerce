@@ -1,0 +1,238 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h1>Finalizar Compra</h1>
+    <p>Completa tus datos para continuar con el pago</p>
+  </div>
+
+  <div class="checkout-content">
+    <!-- Formulario -->
+    <div class="checkout-form-section">
+      <form [formGroup]="checkoutForm" (ngSubmit)="processPayment()">
+
+        <!-- Datos Personales -->
+        <section class="form-section">
+          <h2><i class="fas fa-user"></i> Datos Personales</h2>
+
+          <div class="form-group">
+            <label for="fullName">Nombre Completo *</label>
+            <input
+              type="text"
+              id="fullName"
+              formControlName="fullName"
+              placeholder="Ej: Juan Pérez García"
+              [class.error]="f['fullName'].invalid && f['fullName'].touched">
+            @if (f['fullName'].invalid && f['fullName'].touched) {
+              <span class="error-message">
+                @if (f['fullName'].errors?.['required']) {
+                  El nombre es requerido
+                }
+                @if (f['fullName'].errors?.['minlength']) {
+                  El nombre debe tener al menos 3 caracteres
+                }
+              </span>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Correo Electrónico *</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                placeholder="ejemplo&#64;correo.com"
+                [class.error]="f['email'].invalid && f['email'].touched">
+              @if (f['email'].invalid && f['email'].touched) {
+                <span class="error-message">
+                  @if (f['email'].errors?.['required']) {
+                    El correo es requerido
+                  }
+                  @if (f['email'].errors?.['email']) {
+                    Ingresa un correo válido
+                  }
+                </span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Teléfono *</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                placeholder="3001234567"
+                maxlength="10"
+                [class.error]="f['phone'].invalid && f['phone'].touched">
+              @if (f['phone'].invalid && f['phone'].touched) {
+                <span class="error-message">
+                  Ingresa un teléfono válido de 10 dígitos
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="documentType">Tipo de Documento *</label>
+              <select id="documentType" formControlName="documentType">
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="NIT">NIT</option>
+                <option value="PP">Pasaporte</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="documentNumber">Número de Documento *</label>
+              <input
+                type="text"
+                id="documentNumber"
+                formControlName="documentNumber"
+                placeholder="1234567890"
+                [class.error]="f['documentNumber'].invalid && f['documentNumber'].touched">
+              @if (f['documentNumber'].invalid && f['documentNumber'].touched) {
+                <span class="error-message">
+                  Ingresa solo números
+                </span>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- Dirección de Envío -->
+        <section class="form-section">
+          <h2><i class="fas fa-map-marker-alt"></i> Dirección de Envío</h2>
+
+          <div class="form-group">
+            <label for="address">Dirección *</label>
+            <input
+              type="text"
+              id="address"
+              formControlName="address"
+              placeholder="Ej: Calle 123 #45-67, Apto 801"
+              [class.error]="f['address'].invalid && f['address'].touched">
+            @if (f['address'].invalid && f['address'].touched) {
+              <span class="error-message">La dirección es requerida</span>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">Ciudad *</label>
+              <input
+                type="text"
+                id="city"
+                formControlName="city"
+                placeholder="Ej: Bogotá"
+                [class.error]="f['city'].invalid && f['city'].touched">
+              @if (f['city'].invalid && f['city'].touched) {
+                <span class="error-message">La ciudad es requerida</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="department">Departamento *</label>
+              <input
+                type="text"
+                id="department"
+                formControlName="department"
+                placeholder="Ej: Cundinamarca"
+                [class.error]="f['department'].invalid && f['department'].touched">
+              @if (f['department'].invalid && f['department'].touched) {
+                <span class="error-message">El departamento es requerido</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="postalCode">Código Postal (Opcional)</label>
+            <input
+              type="text"
+              id="postalCode"
+              formControlName="postalCode"
+              placeholder="110111"
+              maxlength="6">
+          </div>
+        </section>
+
+        <!-- Notas Adicionales -->
+        <section class="form-section">
+          <h2><i class="fas fa-sticky-note"></i> Notas Adicionales (Opcional)</h2>
+
+          <div class="form-group">
+            <textarea
+              id="notes"
+              formControlName="notes"
+              placeholder="¿Alguna instrucción especial para la entrega?"
+              rows="4"></textarea>
+          </div>
+        </section>
+
+        <!-- Botones de Acción -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="continueShopping()">
+            <i class="fas fa-arrow-left"></i> Seguir Comprando
+          </button>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="isProcessing">
+            @if (isProcessing) {
+              <i class="fas fa-spinner fa-spin"></i> Procesando...
+            } @else {
+              <i class="fas fa-credit-card"></i> Pagar {{ formatPrice(getTotal()) }}
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Resumen del Pedido -->
+    <div class="order-summary">
+      <h2>Resumen del Pedido</h2>
+
+      <div class="cart-items">
+        @for (item of cartItems; track item.id) {
+          <div class="cart-item">
+            <img [src]="item.imagen" [alt]="item.nombre">
+            <div class="item-details">
+              <h3>{{ item.nombre }}</h3>
+              <p>Color: {{ item.color }}</p>
+              <p>Cantidad: {{ item.cantidad }}</p>
+            </div>
+            <div class="item-price">
+              {{ formatPrice(item.precio * item.cantidad) }}
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="summary-details">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>{{ formatPrice(getTotal()) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Envío</span>
+          <span>Gratis</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>{{ formatPrice(getTotal()) }}</span>
+        </div>
+      </div>
+
+      <div class="security-badge">
+        <i class="fas fa-lock"></i>
+        <div>
+          <strong>Pago Seguro</strong>
+          <p>Transacción protegida con Wompi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

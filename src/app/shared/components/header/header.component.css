@@ -1,0 +1,32 @@
+
+/* HEADER */
+.kalad-header {
+  padding: 12px 60px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kalad-logo {
+  height: 36px;
+}
+
+.kalad-nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: var(--marron);
+  font-size: 14px;
+}
+
+.kalad-nav a.active {
+  font-weight: bold;
+}
+
+.header-icons i {
+  margin-left: 15px;
+  cursor: pointer;
+}

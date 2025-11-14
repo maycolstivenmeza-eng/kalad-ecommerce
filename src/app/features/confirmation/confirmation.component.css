@@ -1,0 +1,491 @@
+/* Variables */
+:root {
+  --ink: #3b2c20;
+  --muted: #777;
+  --line: #e6e1d9;
+  --brand: #cb5e30;
+  --brand-600: #b35428;
+  --beige: #f1ede5;
+  --bg: #fafafa;
+  --radius: 8px;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --error: #e74c3c;
+}
+
+/* Container */
+.confirmation-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--beige) 0%, var(--bg) 100%);
+  padding: 60px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Quicksand", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Card */
+.confirmation-card {
+  background: white;
+  border-radius: 16px;
+  padding: 50px 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success Icon */
+.success-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.success-circle {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, var(--success) 0%, #2ecc71 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.5s ease-out 0.2s both;
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+}
+
+.success-circle i {
+  color: white;
+  font-size: 48px;
+  animation: checkmark 0.5s ease-out 0.5s both;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmark {
+  from {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.confirmation-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.confirmation-header h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 36px;
+  color: var(--ink);
+  margin: 0 0 10px;
+  animation: fadeIn 0.6s ease-out 0.4s both;
+}
+
+.confirmation-header .subtitle {
+  color: var(--muted);
+  font-size: 18px;
+  margin: 0;
+  animation: fadeIn 0.6s ease-out 0.6s both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Order Info */
+.order-info {
+  background: var(--beige);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-row:first-child {
+  padding-top: 0;
+}
+
+.info-label {
+  font-size: 14px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-label i {
+  color: var(--brand);
+  font-size: 16px;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Status Badge */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-APPROVED {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-PENDING {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-DECLINED,
+.status-ERROR {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Confirmation Message */
+.confirmation-message {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  border-radius: var(--radius);
+  margin-bottom: 25px;
+}
+
+.message-icon {
+  flex-shrink: 0;
+}
+
+.message-icon i {
+  font-size: 24px;
+  color: #2196f3;
+}
+
+.message-text p {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+.text-muted {
+  color: var(--muted) !important;
+  font-size: 13px !important;
+}
+
+/* Next Steps */
+.next-steps {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.next-steps h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  color: var(--ink);
+  margin: 0 0 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.next-steps h3 i {
+  color: var(--brand);
+}
+
+.next-steps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.next-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.next-steps li i {
+  color: var(--success);
+  font-size: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Confirmation Actions */
+.confirmation-actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 16px 28px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Quicksand", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  min-height: 56px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: white;
+  border: 2px solid var(--brand);
+  box-shadow: 0 2px 4px rgba(203, 94, 48, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(203, 94, 48, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(203, 94, 48, 0.3);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--ink);
+  border: 2px solid var(--line);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-secondary:hover {
+  background: var(--beige);
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Help Section */
+.help-section {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.help-section p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.help-section i {
+  color: var(--brand);
+  font-size: 16px;
+}
+
+.help-section a {
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.help-section a:hover {
+  color: var(--brand-600);
+  text-decoration: underline;
+}
+
+/* Confetti Animation */
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--brand);
+  opacity: 0;
+  animation: confetti-fall 3s ease-in-out infinite;
+}
+
+.confetti-piece:nth-child(1) {
+  left: 10%;
+  background: var(--brand);
+  animation-delay: 0s;
+}
+
+.confetti-piece:nth-child(2) {
+  left: 30%;
+  background: var(--success);
+  animation-delay: 0.5s;
+}
+
+.confetti-piece:nth-child(3) {
+  left: 50%;
+  background: #2196f3;
+  animation-delay: 1s;
+}
+
+.confetti-piece:nth-child(4) {
+  left: 70%;
+  background: #f39c12;
+  animation-delay: 1.5s;
+}
+
+.confetti-piece:nth-child(5) {
+  left: 85%;
+  background: var(--brand);
+  animation-delay: 2s;
+}
+
+.confetti-piece:nth-child(6) {
+  left: 20%;
+  background: var(--success);
+  animation-delay: 2.5s;
+}
+
+@keyframes confetti-fall {
+  0% {
+    top: -10%;
+    opacity: 1;
+    transform: translateX(0) rotateZ(0deg);
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+    transform: translateX(100px) rotateZ(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .confirmation-container {
+    padding: 30px 15px;
+  }
+
+  .confirmation-card {
+    padding: 40px 25px;
+  }
+
+  .confirmation-header h1 {
+    font-size: 28px;
+  }
+
+  .confirmation-header .subtitle {
+    font-size: 16px;
+  }
+
+  .success-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .success-circle i {
+    font-size: 36px;
+  }
+
+  .confirmation-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .help-section p {
+    flex-direction: column;
+  }
+}

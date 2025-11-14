@@ -1,0 +1,139 @@
+/* ======== BANNER ======== */
+.banner-historia {
+  background: url("/assets/images/Banner_historia4.png") center/cover no-repeat;
+  height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 80px; /* como el banner de colecciones */
+  text-align: center;
+  position: relative;
+}
+.banner-historia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  color: #3B2C20;
+}
+
+.banner-content h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 42px;
+  letter-spacing: 2px;
+  color: #3B2C20; /* 💯 tono oficial */
+  text-shadow: 0 2px 4px rgba(241, 237, 229, 0.4); /* opcional: brillo beige */
+}
+
+.banner-content p {
+  font-family: "Quicksand", sans-serif;
+  font-size: 15px;
+  color: #3B2C20;    /* color marrón oficial, sólido */
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 4px rgba(255,255,255,0.4); /* pequeño glow para sobresalir */
+}
+
+
+/* ======== CONTENIDO ======== */
+.contenido-historia {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.contenido-historia h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  color: #4a2b12;
+  margin-bottom: 15px;
+}
+
+.contenido-historia p {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* ======== PROPÃ“SITO ======== */
+.proposito-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.proposito-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.proposito-titulo span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.proposito-titulo h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 16px;
+  color: #4a2b12;
+}
+
+.proposito-item p {
+  font-size: 14px;
+  color: #555;
+  margin-top: 6px;
+}
+
+/* ======== METODOLOGÃA ======== */
+.metodologia {
+  margin-top: 50px;
+}
+
+.metodologia h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  color: #4a2b12;
+  margin-bottom: 20px;
+}
+
+.metodologia ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+}
+
+.metodologia li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #333;
+  position: relative;
+  padding-left: 0;
+}
+
+/* âœ… Ã­cono mÃ¡s pequeÃ±o y gris */
+.metodologia i {
+  color: #6f6f6f;
+  font-size: 15px;
+}
+
+/* âœ… lÃ­nea vertical gris clara (como la maqueta original) */
+.metodologia li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 25px;
+  width: 1px;
+  height: 22px;
+  background-color: #d6d6d6;
+  transform: translateX(-50%);
+}

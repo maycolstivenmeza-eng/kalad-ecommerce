@@ -1,0 +1,48 @@
+<section class="productos-section">
+    <div class="ordenar">
+        <p>Ordenar por:
+            <span (click)="changeSortOrder()" style="cursor: pointer;">
+                {{ sortOrder }} <i class="fa-solid fa-angle-down"></i>
+            </span>
+        </p>
+    </div>
+
+    @if (loading) {
+        <div style="text-align: center; padding: 60px; color: #666;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 20px;"></i>
+            <p style="font-size: 18px;">Cargando productos...</p>
+        </div>
+    } @else if (error) {
+        <div style="text-align: center; padding: 60px; color: #d32f2f;">
+            <i class="fa-solid fa-exclamation-circle" style="font-size: 48px; margin-bottom: 20px;"></i>
+            <p style="font-size: 18px; margin-bottom: 10px;">{{ error }}</p>
+            <button (click)="loadProducts()" style="padding: 10px 20px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Reintentar
+            </button>
+        </div>
+    } @else {
+        <div class="productos-grid">
+            @for (product of filteredProducts; track product.id) {
+                <div class="product-card" (click)="viewProductDetails(product.id)">
+                    <div class="img-wrapper" [class.loaded]="true">
+                        @if (product.badge) {
+                            <div class="badge" [class]="'badge ' + product.badge">
+                                {{ product.badge }}
+                            </div>
+                        }
+                        <img [src]="product.imagen" [alt]="product.nombre" class="loaded">
+                    </div>
+                    <h3>{{ product.nombre }}</h3>
+                    <div class="price-cart">
+                        <span class="price">{{ formatPrice(product.precio) }}</span>
+                        <button class="btn-carrito" (click)="addToCart(product, $event)">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
+                    </div>
+                </div>
+            } @empty {
+                <p style="text-align: center; color: #666; padding: 40px;">No hay productos disponibles</p>
+            }
+        </div>
+    }
+</section>
