@@ -11,8 +11,7 @@ import {
   query,
   where,
   orderBy,
-  Timestamp,
-  DocumentReference
+  Timestamp
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Order, OrderStatus, PaymentStatus } from '../models/order.model';
@@ -28,7 +27,7 @@ export class OrderService {
   /**
    * Crea un nuevo pedido
    */
-  async createOrder(order: Omit<Order, 'id'>): Promise<DocumentReference> {
+  async createOrder(order: Omit<Order, 'id'>) {
     const ordersCollection = collection(this.firestore, this.COLLECTION_NAME);
 
     // Convertir fechas a Timestamp de Firestore

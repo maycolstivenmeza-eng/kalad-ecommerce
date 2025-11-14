@@ -1,87 +1,237 @@
 @if (product) {
-    <!-- Detalle del producto -->
-    <section class="detalle-producto">
-        <div class="galeria-miniaturas">
-            <!-- Miniaturas - Por ahora solo mostrar la imagen principal -->
+  <div class="details-page">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/">Inicio</a>
+      <span>/</span>
+      <a routerLink="/collections">Colecciones</a>
+      <span>/</span>
+      <a routerLink="/products">Productos</a>
+      <span>/</span>
+      <span>{{ product.nombre }}</span>
+    </nav>
+
+    <!-- Hero principal -->
+    <section class="product-hero">
+
+      <!-- Galería -->
+      <div class="gallery-wrapper">
+
+  <div class="thumbnails">
+    @for (thumb of thumbnailImages; track $index) {
+      <button
+        type="button"
+        class="thumbnail"
+        [class.active]="selectedImage === thumb"
+        (click)="selectImage(thumb)"
+      >
+        <img [src]="thumb" [alt]="product.nombre + ' vista ' + ($index + 1)">
+      </button>
+    }
+  </div>
+
+  <div class="hero-image">
+    <img [src]="selectedImage" [alt]="product.nombre">
+  </div>
+
+  </div> <!-- ← ESTE ES EL CIERRE QUE FALTABA -->
+
+      <!-- Panel informativo -->
+      <div class="info-panel">
+        <span class="pill">{{ product.coleccion }}</span>
+        <h1>{{ product.nombre }}</h1>
+        <p class="price">{{ formatPrice(product.precio) }}</p>
+        <p class="summary">{{ product.descripcion }}</p>
+
+        <!-- Status -->
+        <div class="status-grid">
+          <div>
+            <p class="label">Disponibilidad</p>
+            <p class="value" [class.low-stock]="product.stock < 5">
+              {{ product.stock > 0 ? (product.stock + ' unidades') : 'Agotado' }}
+            </p>
+          </div>
+          <div>
+            <p class="label">Entrega estimada</p>
+            <p class="value">3 - 5 días hábiles</p>
+          </div>
+          <div>
+            <p class="label">Demanda</p>
+            <p class="value">+500 personas mirando este artículo</p>
+          </div>
         </div>
 
-        <div class="imagen-principal">
-            <img [src]="selectedImage" [alt]="product.nombre">
-        </div>
-
-        <div class="info-producto">
-            <h1>{{ product.nombre }}</h1>
-            <p class="precio">{{ formatPrice(product.precio) }}</p>
-
+        <!-- Selector Color -->
+        <div class="selector">
+          <div class="selector-header">
             <label>Color</label>
-            <div class="color-options">
-                @for (color of product.colores; track color) {
-                    <button
-                        [class.selected]="selectedColor === color"
-                        (click)="selectColor(color)"
-                        class="color-option">
-                        {{ color }}
-                    </button>
-                }
-            </div>
+            <span class="selector-value">{{ selectedColor }}</span>
+          </div>
 
-            <label>Cantidad</label>
-            <div class="cantidad">
-                <button (click)="decrement()">−</button>
-                <span>{{ quantity }}</span>
-                <button (click)="increment()">+</button>
-            </div>
-
-            <div class="acciones">
-                <button class="btn-comprar" (click)="buyNow()">Comprar Ahora</button>
-                <button class="btn-agregar" (click)="addToCart()">Agregar al Carrito</button>
-            </div>
-
-            <div class="favorito"><i class="far fa-heart"></i> Añadir a favoritos</div>
-
-            @if (product.stock < 5) {
-                <p style="color: #e74c3c; font-size: 14px; margin-top: 10px;">
-                    <i class="fas fa-exclamation-circle"></i> Solo quedan {{ product.stock }} unidades
-                </p>
+          <div class="color-options">
+            @for (color of product.colores; track color) {
+              <button
+                type="button"
+                class="color-option"
+                [class.selected]="selectedColor === color"
+                (click)="selectColor(color)"
+              >
+                {{ color }}
+              </button>
             }
+          </div>
         </div>
+
+        <!-- Selector Cantidad -->
+        <div class="selector">
+          <div class="selector-header">
+            <label>Cantidad</label>
+            <span class="selector-value">{{ quantity }} unidad(es)</span>
+          </div>
+
+          <div class="quantity-selector">
+            <button type="button" (click)="decrement()">−</button>
+            <span>{{ quantity }}</span>
+            <button type="button" (click)="increment()">+</button>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="cta-group">
+          <button type="button" class="btn primary" (click)="buyNow()">Comprar ahora</button>
+          <button type="button" class="btn ghost" (click)="addToCart()">Agregar al carrito</button>
+        </div>
+
+        <div class="favorite">
+          <span>♡</span>
+          Añadir a favoritos
+        </div>
+
+        <!-- Garantías -->
+        <div class="assurance-list">
+          @for (item of assuranceInfo; track item.title) {
+            <div class="assurance-item">
+              <p class="assurance-title">{{ item.title }}</p>
+              <p class="assurance-description">{{ item.description }}</p>
+            </div>
+          }
+        </div>
+      </div>
     </section>
 
-    <!-- Descripción -->
-    <section class="detalle-extra">
-        <h3>Descripción</h3>
-        <p>{{ product.descripcion }}</p>
+    <!-- Highlights -->
+    <section class="highlight-section">
+      @for (item of highlightInfo; track item.title) {
+        <article class="highlight-card">
+          <div class="highlight-icon">{{ item.icon }}</div>
+          <div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+        </article>
+      }
+    </section>
 
-        @if (product.caracteristicas) {
-            <h3>Características</h3>
-            <p>{{ product.caracteristicas }}</p>
-        }
+    <!-- Detalles del producto -->
+    <section class="details-section">
+      <div class="details-column">
+        <h2>Descripción</h2>
+        <p>
+          Inspirada en los tonos cálidos del Caribe colombiano, la {{ product.nombre }}
+          es una pieza artesanal única que acompaña tus looks de playa, paseos casuales y aventuras cotidianas.
+        </p>
+        <p>
+          Cada puntada resalta detalles marinos bordados a mano, creando un contraste delicado con la tela natural beige.
+        </p>
 
-        @if (product.dimensiones) {
-            <h3>Dimensiones</h3>
+        <h3>Características</h3>
+        <ul>
+          <li>Material exterior: fibras naturales tratadas.</li>
+          <li>Interior con bolsillo oculto y cierre magnético.</li>
+          <li>Incluye bolsa protectora reutilizable.</li>
+        </ul>
+
+        <h3>Cuidados</h3>
+        <ul>
+          @for (tip of careTips; track tip) {
+            <li>{{ tip }}</li>
+          }
+        </ul>
+      </div>
+
+      <!-- Dimensiones y envíos -->
+      <div class="details-column">
+        <div class="spec-card">
+          <h3>Dimensiones</h3>
+
+          @if (product.dimensiones) {
             <table>
-                <tr>
-                    <td>Alto</td>
-                    <td>{{ product.dimensiones.alto }}</td>
-                </tr>
-                <tr>
-                    <td>Ancho</td>
-                    <td>{{ product.dimensiones.ancho }}</td>
-                </tr>
-                <tr>
-                    <td>Profundidad</td>
-                    <td>{{ product.dimensiones.profundidad }}</td>
-                </tr>
-                <tr>
-                    <td>Capacidad</td>
-                    <td>{{ product.dimensiones.capacidad }}</td>
-                </tr>
+              <tr><td>Alto</td><td>{{ product.dimensiones.alto }}</td></tr>
+              <tr><td>Ancho</td><td>{{ product.dimensiones.ancho }}</td></tr>
+              <tr><td>Profundidad</td><td>{{ product.dimensiones.profundidad }}</td></tr>
+              <tr><td>Capacidad</td><td>{{ product.dimensiones.capacidad }}</td></tr>
             </table>
-        }
+          } @else {
+            <p class="no-specs">Este producto no tiene dimensiones registradas aún.</p>
+          }
+        </div>
+
+        <div class="spec-card">
+          <h3>Peso aproximado</h3>
+          <p class="weight">450 g</p>
+          <p class="spec-description">Ligera para llevar todo el día.</p>
+        </div>
+
+        <div class="spec-card">
+          <h3>Envíos</h3>
+          <p class="spec-description">Recibe este producto sin costo adicional en Colombia.</p>
+          <ul class="shipping-list">
+            <li>Despachos de lunes a viernes.</li>
+            <li>Seguimiento detallado del paquete.</li>
+            <li>Empaque ecológico y seguro.</li>
+          </ul>
+        </div>
+      </div>
     </section>
+
+    <!-- Opiniones -->
+    <section class="reviews-section">
+      <header>
+        <div>
+          <h2>Opiniones de los clientes</h2>
+          <p>4.8 de 5 · Basado en {{ reviews.length }} reseñas verificadas</p>
+        </div>
+        <button type="button" class="btn ghost">Ver todas</button>
+      </header>
+
+      <div class="reviews-grid">
+        @for (review of reviews; track review.name) {
+          <article class="review-card">
+            <div class="review-header">
+              <div class="avatar">{{ review.name[0] }}</div>
+              <div>
+                <p class="review-name">{{ review.name }}</p>
+                <p class="review-meta">{{ review.location }} · {{ review.date }}</p>
+              </div>
+            </div>
+
+            <div class="stars">
+              @for (star of stars; track $index) {
+                <span [class.filled]="$index < review.rating">★</span>
+              }
+            </div>
+
+            <p class="review-comment">{{ review.comment }}</p>
+          </article>
+        }
+      </div>
+    </section>
+  </div>
+
 } @else {
-    <div style="text-align: center; padding: 60px; color: #666;">
-        <i class="fas fa-spinner fa-spin" style="font-size: 48px;"></i>
-        <p style="margin-top: 20px;">Cargando producto...</p>
-    </div>
+  <div class="loading-state">
+    <i class="fas fa-spinner fa-spin"></i>
+    <p>Cargando producto...</p>
+  </div>
 }

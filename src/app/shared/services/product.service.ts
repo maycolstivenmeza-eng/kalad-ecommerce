@@ -10,8 +10,7 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
-  DocumentReference
+  orderBy
 } from '@angular/fire/firestore';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Product } from '../models/product.model';
@@ -106,7 +105,7 @@ export class ProductService {
    * Crea un nuevo producto
    * Solo para administradores
    */
-  async createProduct(product: Omit<Product, 'id'>): Promise<DocumentReference> {
+  async createProduct(product: Omit<Product, 'id'>) {
     const productsCollection = collection(this.firestore, this.COLLECTION_NAME);
     return await addDoc(productsCollection, product);
   }

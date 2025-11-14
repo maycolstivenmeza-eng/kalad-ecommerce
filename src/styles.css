@@ -1,3 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-brown-kalad: #3b2c20;
+  --color-beige-kalad: #f1ede5;
+  --color-neutral-line: #e6e1d9;
+  --color-footer-brown: #4a3b2a;
+  --font-primary: 'Playfair Display', 'Times New Roman', serif;
+  --font-secondary: 'Quicksand', 'Helvetica Neue', sans-serif;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  color: var(--color-brown-kalad);
+  font-family: var(--font-secondary);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+.heading,
+.banner-title {
+  font-family: var(--font-primary);
+  color: var(--color-brown-kalad);
+}
+
+p,
+span,
+li,
+button,
+input,
+textarea,
+label {
+  font-family: var(--font-secondary);
+}
+
+.section-divider {
+  border-color: var(--color-neutral-line);
+}
+
+footer,
+.site-footer {
+  background-color: var(--color-footer-brown);
+  color: #fff;
+  font-family: var(--font-secondary);
+}
