@@ -1,48 +1,111 @@
-<section class="productos-section">
-    <div class="ordenar">
-        <p>Ordenar por:
-            <span (click)="changeSortOrder()" style="cursor: pointer;">
-                {{ sortOrder }} <i class="fa-solid fa-angle-down"></i>
-            </span>
-        </p>
+<section class="products-layout">
+  <aside class="filters-panel">
+    <div class="filters-card">
+      <p class="filters-label">Ordenar por</p>
+      <ul>
+        <li class="active">Relevancia</li>
+        <li>Novedades</li>
+        <li>Mejor valorados</li>
+        <li>Precio</li>
+      </ul>
     </div>
 
-    @if (loading) {
-        <div style="text-align: center; padding: 60px; color: #666;">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 20px;"></i>
-            <p style="font-size: 18px;">Cargando productos...</p>
+    <div class="filters-card">
+      <p class="filters-label">Categorías</p>
+      <ul>
+        <li>Bolsos</li>
+        <li>Hogar</li>
+        <li>Ilustraciones</li>
+        <li>Accesorios</li>
+        <li>Temporada</li>
+      </ul>
+    </div>
+
+    <div class="filters-card">
+      <p class="filters-label">Colecciones</p>
+      <ul>
+        <li>Kalad Básico</li>
+        <li>Edición Especial</li>
+        <li>Marítima</li>
+        <li>Flor de Agua</li>
+      </ul>
+    </div>
+
+    <div class="filters-card tags">
+      <p class="filters-label">Materiales</p>
+      <div class="tags-cloud">
+        <button>Algodón</button>
+        <button>Lino</button>
+        <button>Bordado</button>
+        <button>Orgánico</button>
+        <button>Edición limitada</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="products-column">
+    <header class="products-header">
+      <div>
+        <p class="eyebrow">Colección Kalad</p>
+        <h1>Productos</h1>
+        <p class="subtitle">{{ filteredProducts.length }} artículos disponibles para envío inmediato</p>
+      </div>
+      <div class="sort-control">
+        <label>Ordenar por</label>
+        <button (click)="changeSortOrder()">
+          {{ sortOrder }}
+          <i class="fa-solid fa-angle-down"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="products-body">
+      @if (loading) {
+        <div class="state-card">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <p>Cargando productos...</p>
         </div>
-    } @else if (error) {
-        <div style="text-align: center; padding: 60px; color: #d32f2f;">
-            <i class="fa-solid fa-exclamation-circle" style="font-size: 48px; margin-bottom: 20px;"></i>
-            <p style="font-size: 18px; margin-bottom: 10px;">{{ error }}</p>
-            <button (click)="loadProducts()" style="padding: 10px 20px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                Reintentar
-            </button>
+      } @else if (error) {
+        <div class="state-card error">
+          <i class="fa-solid fa-exclamation-circle"></i>
+          <p>{{ error }}</p>
+          <button (click)="loadProducts()">Reintentar</button>
         </div>
-    } @else {
+      } @else {
         <div class="productos-grid">
-            @for (product of filteredProducts; track product.id) {
-                <div class="product-card" (click)="viewProductDetails(product.id)">
-                    <div class="img-wrapper" [class.loaded]="true">
-                        @if (product.badge) {
-                            <div class="badge" [class]="'badge ' + product.badge">
-                                {{ product.badge }}
-                            </div>
-                        }
-                        <img [src]="product.imagen" [alt]="product.nombre" class="loaded">
-                    </div>
-                    <h3>{{ product.nombre }}</h3>
-                    <div class="price-cart">
-                        <span class="price">{{ formatPrice(product.precio) }}</span>
-                        <button class="btn-carrito" (click)="addToCart(product, $event)">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </button>
-                    </div>
-                </div>
-            } @empty {
-                <p style="text-align: center; color: #666; padding: 40px;">No hay productos disponibles</p>
-            }
+          @for (product of filteredProducts; track product.id) {
+            <article class="product-card" (click)="viewProductDetails(product.id)">
+              <div class="img-wrapper" [class.loaded]="true">
+                <img [src]="product.imagen" [alt]="product.nombre" class="loaded" />
+              </div>
+              <p class="product-category">Bolso</p>
+              <h3>{{ product.nombre }}</h3>
+              <div class="price-row">
+                <span class="price">{{ formatPrice(product.precio) }}</span>
+                <button class="btn-carrito" (click)="addToCart(product, $event)">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+              </div>
+            </article>
+          } @empty {
+            <p style="text-align: center; color: #666; padding: 40px;">No hay productos disponibles</p>
+          }
         </div>
-    }
+      }
+    </div>
+
+    <div class="pagination">
+      <button class="arrow" disabled>
+        <i class="fa-solid fa-angle-left"></i>
+      </button>
+      <button class="page active">1</button>
+      <button class="page">2</button>
+      <button class="page">3</button>
+      <span>...</span>
+      <button class="page">12</button>
+      <button class="arrow">
+        <i class="fa-solid fa-angle-right"></i>
+      </button>
+    </div>
+  </div>
 </section>

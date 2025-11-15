@@ -36,6 +36,13 @@ export class DetailsProductsComponent implements OnInit {
   quantity: number = 1;
   selectedImage: string = '';
   thumbnailImages: string[] = [];
+  readonly defaultDimensions: Product['dimensiones'] = {
+    alto: '18 cm',
+    ancho: '22 cm',
+    profundidad: '7 cm',
+    capacidad: '4 L'
+  };
+  displayDimensions: Product['dimensiones'] | undefined = this.defaultDimensions;
 
   readonly stars = Array(5).fill(0);
 
@@ -126,6 +133,7 @@ export class DetailsProductsComponent implements OnInit {
         this.selectedImage = this.thumbnailImages[0];
 
         this.selectedColor = product.colores[0] || '';
+        this.displayDimensions = product.dimensiones ?? this.defaultDimensions;
       } else {
         this.router.navigate(['/products']);
       }

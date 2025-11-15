@@ -1,234 +1,142 @@
-@if (product) {
-  <div class="details-page">
-
-    <!-- Breadcrumb -->
+﻿@if (product) {
+  <div class="product-detail">
     <nav class="breadcrumb">
       <a routerLink="/">Inicio</a>
-      <span>/</span>
-      <a routerLink="/collections">Colecciones</a>
       <span>/</span>
       <a routerLink="/products">Productos</a>
       <span>/</span>
       <span>{{ product.nombre }}</span>
     </nav>
 
-    <!-- Hero principal -->
-    <section class="product-hero">
+    <section class="product-grid">
+      <div class="gallery">
+        <div class="thumbnails">
+          @for (thumb of thumbnailImages; track $index) {
+            <button
+              type="button"
+              class="thumbnail"
+              [class.active]="selectedImage === thumb"
+              (click)="selectImage(thumb)"
+              [attr.aria-label]="'Ver imagen ' + ($index + 1)"
+            >
+              <img [src]="thumb" [alt]="product.nombre + ' vista ' + ($index + 1)">
+            </button>
+          }
+        </div>
+        <div class="main-image">
+          <img [src]="selectedImage" [alt]="product.nombre" loading="lazy">
+        </div>
+      </div>
 
-      <!-- Galería -->
-      <div class="gallery-wrapper">
-
-  <div class="thumbnails">
-    @for (thumb of thumbnailImages; track $index) {
-      <button
-        type="button"
-        class="thumbnail"
-        [class.active]="selectedImage === thumb"
-        (click)="selectImage(thumb)"
-      >
-        <img [src]="thumb" [alt]="product.nombre + ' vista ' + ($index + 1)">
-      </button>
-    }
-  </div>
-
-  <div class="hero-image">
-    <img [src]="selectedImage" [alt]="product.nombre">
-  </div>
-
-  </div> <!-- ← ESTE ES EL CIERRE QUE FALTABA -->
-
-      <!-- Panel informativo -->
       <div class="info-panel">
-        <span class="pill">{{ product.coleccion }}</span>
+        <p class="eyebrow">{{ product.coleccion }}</p>
         <h1>{{ product.nombre }}</h1>
         <p class="price">{{ formatPrice(product.precio) }}</p>
-        <p class="summary">{{ product.descripcion }}</p>
+        <p class="payment-note">Impuestos incluidos &middot; Env&iacute;o gratis en Colombia</p>
 
-        <!-- Status -->
-        <div class="status-grid">
-          <div>
-            <p class="label">Disponibilidad</p>
-            <p class="value" [class.low-stock]="product.stock < 5">
-              {{ product.stock > 0 ? (product.stock + ' unidades') : 'Agotado' }}
-            </p>
+        <div class="color-picker">
+          <div class="picker-header">
+            <p>Color</p>
+            <span>{{ selectedColor }}</span>
           </div>
-          <div>
-            <p class="label">Entrega estimada</p>
-            <p class="value">3 - 5 días hábiles</p>
-          </div>
-          <div>
-            <p class="label">Demanda</p>
-            <p class="value">+500 personas mirando este artículo</p>
-          </div>
-        </div>
-
-        <!-- Selector Color -->
-        <div class="selector">
-          <div class="selector-header">
-            <label>Color</label>
-            <span class="selector-value">{{ selectedColor }}</span>
-          </div>
-
-          <div class="color-options">
+          <div class="color-list">
             @for (color of product.colores; track color) {
               <button
                 type="button"
-                class="color-option"
+                class="color-chip"
                 [class.selected]="selectedColor === color"
                 (click)="selectColor(color)"
+                [style.--chip-color]="color"
+                [attr.aria-label]="'Color ' + color"
               >
-                {{ color }}
+                <span class="swatch"></span>
               </button>
             }
           </div>
         </div>
 
-        <!-- Selector Cantidad -->
-        <div class="selector">
-          <div class="selector-header">
-            <label>Cantidad</label>
-            <span class="selector-value">{{ quantity }} unidad(es)</span>
-          </div>
-
+        <div class="quantity-block">
+          <p>Cantidad</p>
           <div class="quantity-selector">
-            <button type="button" (click)="decrement()">−</button>
+            <button type="button" (click)="decrement()" aria-label="Disminuir cantidad">&#8722;</button>
             <span>{{ quantity }}</span>
-            <button type="button" (click)="increment()">+</button>
+            <button type="button" (click)="increment()" aria-label="Aumentar cantidad">+</button>
           </div>
         </div>
 
-        <!-- Botones -->
-        <div class="cta-group">
-          <button type="button" class="btn primary" (click)="buyNow()">Comprar ahora</button>
-          <button type="button" class="btn ghost" (click)="addToCart()">Agregar al carrito</button>
+        <div class="actions">
+          <button type="button" class="btn primary" (click)="buyNow()">Comprar Ahora</button>
+          <button type="button" class="btn secondary" (click)="addToCart()">Agregar al Carrito</button>
         </div>
 
-        <div class="favorite">
-          <span>♡</span>
-          Añadir a favoritos
-        </div>
-
-        <!-- Garantías -->
-        <div class="assurance-list">
-          @for (item of assuranceInfo; track item.title) {
-            <div class="assurance-item">
-              <p class="assurance-title">{{ item.title }}</p>
-              <p class="assurance-description">{{ item.description }}</p>
-            </div>
-          }
-        </div>
+        <button type="button" class="favorite-link">&#9825; A&ntilde;adir a favoritos</button>
       </div>
     </section>
 
-    <!-- Highlights -->
-    <section class="highlight-section">
-      @for (item of highlightInfo; track item.title) {
-        <article class="highlight-card">
-          <div class="highlight-icon">{{ item.icon }}</div>
+    <section class="description-section">
+      <article class="rich-copy">
+        <h2>Descripci&oacute;n</h2>
+        <p>
+          La {{ product.nombre }} es una pieza artesanal unica que captura la esencia del mar y la suavidad de los tonos naturales.
+          Confeccionada a mano con materiales locales de alta calidad, esta bolsa combina un dise&ntilde;o elegante y fresco,
+          ideal para acompa&ntilde;arte en tus dias de playa, paseos casuales o actividades cotidianas.
+        </p>
+        <p>
+          Cada hilo ha sido tejido a mano por artesanas expertas, resaltando la autenticidad y la calidad del trabajo artesanal.
+          El interior esta forrado con una tela ligera y fresca que protege tus objetos personales, mientras que los detalles
+          reforzados aseguran una experiencia comoda y segura en cada uso.
+        </p>
+
+        <h3>Caracteristicas</h3>
+        <p>
+          La Bolsa Beige de Mar esta elaborada con fibras naturales provenientes de materiales locales que garantizan resistencia y durabilidad
+          sin perder la suavidad al tacto. Cada pieza incluye detalles en cuerda y acabados reforzados que elevan la experiencia diaria.
+        </p>
+      </article>
+
+      <aside class="dimensions">
+        <h3>Dimensiones</h3>
+        <dl>
           <div>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.description }}</p>
+            <dt>Alto</dt>
+            <dd>{{ displayDimensions?.alto }}</dd>
           </div>
-        </article>
-      }
+          <div>
+            <dt>Ancho</dt>
+            <dd>{{ displayDimensions?.ancho }}</dd>
+          </div>
+          <div>
+            <dt>Profundidad</dt>
+            <dd>{{ displayDimensions?.profundidad }}</dd>
+          </div>
+          <div>
+            <dt>Capacidad</dt>
+            <dd>{{ displayDimensions?.capacidad }}</dd>
+          </div>
+        </dl>
+      </aside>
     </section>
 
-    <!-- Detalles del producto -->
-    <section class="details-section">
-      <div class="details-column">
-        <h2>Descripción</h2>
-        <p>
-          Inspirada en los tonos cálidos del Caribe colombiano, la {{ product.nombre }}
-          es una pieza artesanal única que acompaña tus looks de playa, paseos casuales y aventuras cotidianas.
-        </p>
-        <p>
-          Cada puntada resalta detalles marinos bordados a mano, creando un contraste delicado con la tela natural beige.
-        </p>
-
-        <h3>Características</h3>
-        <ul>
-          <li>Material exterior: fibras naturales tratadas.</li>
-          <li>Interior con bolsillo oculto y cierre magnético.</li>
-          <li>Incluye bolsa protectora reutilizable.</li>
-        </ul>
-
-        <h3>Cuidados</h3>
-        <ul>
-          @for (tip of careTips; track tip) {
-            <li>{{ tip }}</li>
-          }
-        </ul>
-      </div>
-
-      <!-- Dimensiones y envíos -->
-      <div class="details-column">
-        <div class="spec-card">
-          <h3>Dimensiones</h3>
-
-          @if (product.dimensiones) {
-            <table>
-              <tr><td>Alto</td><td>{{ product.dimensiones.alto }}</td></tr>
-              <tr><td>Ancho</td><td>{{ product.dimensiones.ancho }}</td></tr>
-              <tr><td>Profundidad</td><td>{{ product.dimensiones.profundidad }}</td></tr>
-              <tr><td>Capacidad</td><td>{{ product.dimensiones.capacidad }}</td></tr>
-            </table>
-          } @else {
-            <p class="no-specs">Este producto no tiene dimensiones registradas aún.</p>
-          }
-        </div>
-
-        <div class="spec-card">
-          <h3>Peso aproximado</h3>
-          <p class="weight">450 g</p>
-          <p class="spec-description">Ligera para llevar todo el día.</p>
-        </div>
-
-        <div class="spec-card">
-          <h3>Envíos</h3>
-          <p class="spec-description">Recibe este producto sin costo adicional en Colombia.</p>
-          <ul class="shipping-list">
-            <li>Despachos de lunes a viernes.</li>
-            <li>Seguimiento detallado del paquete.</li>
-            <li>Empaque ecológico y seguro.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Opiniones -->
-    <section class="reviews-section">
-      <header>
-        <div>
-          <h2>Opiniones de los clientes</h2>
-          <p>4.8 de 5 · Basado en {{ reviews.length }} reseñas verificadas</p>
-        </div>
-        <button type="button" class="btn ghost">Ver todas</button>
-      </header>
-
-      <div class="reviews-grid">
+    <section class="reviews-panel">
+      <h2>Opiniones de los Clientes</h2>
+      <div class="reviews">
         @for (review of reviews; track review.name) {
-          <article class="review-card">
+          <article class="review">
             <div class="review-header">
-              <div class="avatar">{{ review.name[0] }}</div>
-              <div>
-                <p class="review-name">{{ review.name }}</p>
-                <p class="review-meta">{{ review.location }} · {{ review.date }}</p>
-              </div>
+              <p class="review-name">{{ review.name }}</p>
+              <p class="review-date">{{ review.date }}</p>
             </div>
-
             <div class="stars">
               @for (star of stars; track $index) {
-                <span [class.filled]="$index < review.rating">★</span>
+                <span [class.filled]="$index < review.rating">&#9733;</span>
               }
             </div>
-
             <p class="review-comment">{{ review.comment }}</p>
           </article>
         }
       </div>
     </section>
   </div>
-
 } @else {
   <div class="loading-state">
     <i class="fas fa-spinner fa-spin"></i>

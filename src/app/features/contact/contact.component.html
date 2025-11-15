@@ -1,42 +1,46 @@
-<section class="contact-page">
+﻿<section class="contact-page">
   <nav class="breadcrumb">
     <a routerLink="/">Inicio</a>
     <span>/</span>
     <span>Contacto</span>
   </nav>
 
-  <header class="contact-hero">
-    <img
-      class="hero-image"
-      [src]="bannerImage"
-      alt="Ilustración textil de la marca Kalad"
-      loading="lazy"
-    />
-    <div class="hero-overlay">
-      <p class="hero-subtitle">Estamos aquí para escucharte y ayudarte</p>
-      <h1>Contáctanos</h1>
+  <section class="hero-banner" [style.backgroundImage]="'url(' + bannerImage + ')'">
+    <div class="hero-content">
+      <h1>CONT&Aacute;CTANOS</h1>
+      <p>ESTAMOS AQU&Iacute; PARA ESCUCHARTE Y AYUDARTE</p>
     </div>
-  </header>
+  </section>
 
-  <section class="contact-form-section">
-    <form class="contact-form" novalidate>
-      <label for="name">Nombre</label>
-      <input id="name" type="text" placeholder="Tu Nombre" required />
+  <div class="contact-content">
+    <section class="form-wrapper">
+      <form class="contact-form" novalidate>
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input id="name" type="text" placeholder="Tu Nombre" required />
+        </div>
 
-      <label for="email">Correo</label>
-      <input id="email" type="email" placeholder="Tu Correo Electrónico" required />
+        <div class="form-group">
+          <label for="email">Correo</label>
+          <input id="email" type="email" placeholder="Tu Correo Electr&oacute;nico" required />
+        </div>
 
-      <label for="subject">Asunto</label>
-      <input id="subject" type="text" placeholder="Asunto" required />
+        <div class="form-group">
+          <label for="subject">Asunto</label>
+          <input id="subject" type="text" placeholder="Asunto" required />
+        </div>
 
-      <label for="message">Mensaje</label>
-      <textarea id="message" placeholder="Tu Mensaje" required></textarea>
+        <div class="form-group">
+          <label for="message">Mensaje</label>
+          <textarea id="message" placeholder="Tu Mensaje" required></textarea>
+        </div>
 
-      <button type="submit" class="btn primary">Enviar</button>
-    </form>
+        <button type="submit" class="btn primary">Enviar</button>
+      </form>
+    </section>
 
-    <div class="contact-details">
-      <h2>Información de contacto</h2>
+    <section class="info-panel">
+      <h2>Informaci&oacute;n de contacto</h2>
       <dl>
         @for (item of contactInfo; track item.label) {
           <div>
@@ -45,8 +49,10 @@
           </div>
         }
       </dl>
+    </section>
 
-      <h3>Síguenos en nuestras redes sociales</h3>
+    <section class="social-section">
+      <h3>S&iacute;guenos en nuestras redes sociales</h3>
       <div class="social-links">
         @for (social of socialLinks; track social.label) {
           <a class="social-link" [href]="social.url" target="_blank" rel="noreferrer">
@@ -62,9 +68,17 @@
               }
               @case ('instagram') {
                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <rect x="4.2" y="4.2" width="15.6" height="15.6" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                  <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                  <circle cx="17" cy="7.3" r="1.1" fill="currentColor"/>
+                  <rect x="4.2" y="4.2" width="15.6" height="15.6" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.4" />
+                  <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" stroke-width="1.4" />
+                  <circle cx="17" cy="7.3" r="1.1" fill="currentColor" />
+                </svg>
+              }
+              @case ('x') {
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M17.6 4h-2.3l-3 3.9-3-3.9H7l4.4 5.5L6.8 20h2.3l2.9-5 3.2 5h2.3l-4.8-6.1L17.6 4Z"
+                    fill="currentColor"
+                  />
                 </svg>
               }
               @case ('tiktok') {
@@ -84,6 +98,7 @@
           </a>
         }
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </section>
+
