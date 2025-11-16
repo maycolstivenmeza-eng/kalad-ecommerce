@@ -23,6 +23,13 @@ export const routes: Routes = [
     loadComponent: () => import('./features/collections/collections.component').then(m => m.CollectionsComponent)
   },
   {
+    path: 'collections/origen',
+    loadComponent: () => import('./features/collections/origen/origen.component').then(m => m.OrigenComponent)
+  },
+
+  
+
+  {
     path: 'cart',
     loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent)
   },

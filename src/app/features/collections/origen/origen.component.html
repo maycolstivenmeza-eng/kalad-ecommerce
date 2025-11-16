@@ -1,0 +1,73 @@
+<div class="origen-page">
+  <div class="breadcrumb">
+    <span>Inicio /</span>
+    <span>Colecciones /</span>
+    <span>Kalad Origen</span>
+  </div>
+
+  <div class="content">
+    <aside class="filters">
+      <div class="filter-group">
+        <div class="filter-option">
+          <span>Ordenar por</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="filter-option">
+          <span>Talla</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="filter-option">
+          <span>Color</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="filter-links">
+        <p>Bolsas</p>
+        <p>Mochilas</p>
+        <p>Morrales</p>
+        <p>Zapatos</p>
+      </div>
+    </aside>
+
+    <section class="main-section">
+      <div class="banner">
+        <img src="/assets/banner-kalad-origen.png" alt="Kalad Origen" />
+        <h1 class="title-banner">KALAD ORIGEN</h1>
+      </div>
+
+      <div class="products-section">
+        <div class="products-header">
+          <span>Ordenar por:</span>
+          <button class="sort-btn">
+            A-Z
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+
+        <div class="products-grid">
+          <article class="product-card" *ngFor="let p of productos">
+            <div class="image-container">
+              <img [src]="p.imagen" [alt]="p.nombre" />
+              <i class="fa-regular fa-heart favorite"></i>
+            </div>
+
+            <div class="info">
+              <div class="details">
+                <p class="name">{{ p.nombre }}</p>
+                <p class="price">$ {{ p.precio }}</p>
+              </div>
+              <button class="btn-cart" aria-label="Agregar al carrito">
+                <i class="fa-solid fa-cart-shopping"></i>
+              </button>
+            </div>
+          </article>
+
+          <p *ngIf="productos.length === 0" class="no-products">
+            No hay productos disponibles.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

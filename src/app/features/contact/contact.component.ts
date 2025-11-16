@@ -9,18 +9,21 @@ import { CommonModule } from '@angular/common';
   styleUrl: './contact.component.css'
 })
 export class ContactComponent {
-  readonly bannerImage = '/assets/images/Banner_historia4.png';
+ nombre = '';
+  correo = '';
+  asunto = '';
+  mensaje = '';
 
-  readonly contactInfo = [
-    { label: 'Correo', value: 'kalad@gmail.com', accent: false },
-    { label: 'Telefono', value: '+57 3233333333', accent: false },
-    { label: 'Horarios', value: 'Lunes a sabado, 9:00 AM - 6:00 PM', accent: true }
-  ];
+  enviar() {
+    if (!this.nombre || !this.correo || !this.asunto || !this.mensaje) {
+      alert('Por favor completa todos los campos.');
+      return;
+    }
 
-  readonly socialLinks = [
-    { label: 'Facebook', icon: 'facebook', url: '#' },
-    { label: 'Instagram', icon: 'instagram', url: '#' },
-    { label: 'X', icon: 'x', url: '#' },
-    { label: 'TikTok', icon: 'tiktok', url: '#' }
-  ];
+    alert('✅ Mensaje enviado correctamente.');
+    this.nombre = '';
+    this.correo = '';
+    this.asunto = '';
+    this.mensaje = '';
+  }
 }
