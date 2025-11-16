@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+
 export const routes: Routes = [
   {
     path: '',
@@ -26,8 +27,19 @@ export const routes: Routes = [
     path: 'collections/origen',
     loadComponent: () => import('./features/collections/origen/origen.component').then(m => m.OrigenComponent)
   },
+ {
+    path: 'collections/essencia',
+    loadComponent: () => import('./features/collections/essencia/essencia.component').then(m => m.EssenciaComponent)
+  },
 
-  
+// ✅ NUEVA RUTA ADMIN
+  {
+    path: 'admin/productos',
+    loadComponent: () =>
+      import('./features/admin/productos/productos.component')
+        .then(m => m.ProductosComponent)
+  },
+
 
   {
     path: 'cart',
@@ -49,6 +61,8 @@ export const routes: Routes = [
     path: 'contact',
     loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
   },
+
+
   {
     path: '**',
     redirectTo: 'home'

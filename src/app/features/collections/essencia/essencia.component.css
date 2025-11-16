@@ -1,0 +1,177 @@
+/* ========= CONTENEDOR GENERAL ========== */
+.coleccion-container {
+  padding: 40px 80px;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* ========= BREADCRUMB ========== */
+.breadcrumb {
+  font-size: 13px;
+  color: #b29c8f;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+}
+
+/* ========= LAYOUT 2 COLUMNAS ========== */
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  width: 100%;
+}
+
+/* ========= FILTROS ========== */
+/* ========= FILTROS (PROTOTIPO REAL) ========== */
+.filtros-left {
+  width: 220px;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* FILTROS SIN LÍNEAS – SOLO TEXTO + FLECHA */
+.filtro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 10px;
+  font-size: 17px;
+  color: #3B2C20;
+  cursor: pointer;
+}
+
+/* Flecha */
+.flecha {
+  font-size: 13px;
+  transition: transform 0.2s ease;
+  color: #3B2C20;
+}
+
+.flecha.open {
+  transform: rotate(180deg);
+}
+
+/* ❗ ÚNICA LÍNEA DEL PROTOTIPO */
+.linea-unica {
+  width: 100%;
+  border-bottom: 0.6px solid rgba(0,0,0,0.15);
+  margin: 6px 0 15px;
+}
+
+/* Categorías */
+.categoria {
+  font-size: 17px;
+  margin: 6px 0;
+  color: #3B2C20;
+}
+
+/* ========= CONTENIDO (DERECHA) ========== */
+.contenido {
+  flex: 1;
+}
+
+/* ========= BANNER ========== */
+.banner-coleccion {
+  width: 100%;
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.banner-coleccion img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.banner-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 48px;
+  font-family: "Playfair Display", serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* ========= ORDENAR RIGHT ========== */
+.ordenar-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 25px;
+  font-size: 18px;
+  color: #3B2C20;
+}
+
+.az {
+  color: #B85A3A;
+}
+
+.arrow.small {
+  font-size: 13px;
+}
+
+/* ========= GRID PRODUCTOS ========== */
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 45px;
+}
+
+.card-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.img-wrapper {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fav {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* ===== info producto ===== */
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left h3 {
+  margin: 0;
+  font-size: 20px;
+  font-family: "Playfair Display", serif;
+}
+
+.left p {
+  margin: 0;
+  font-size: 20px;
+}
+
+/* ===== Botón carrito ===== */
+.btn-cart {
+  width: 48px;
+  height: 30px;
+  border: 1px solid #8a8a8a;
+  border-radius: 50px;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+}

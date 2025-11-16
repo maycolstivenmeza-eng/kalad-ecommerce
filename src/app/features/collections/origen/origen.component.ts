@@ -37,5 +37,11 @@ export class OrigenComponent {
       this.productos.sort((a, b) => a.precio - b.precio);
     }
   }
+  open = [false, false, false];
+
+  toggle(i: number) {
+  this.open[i] = !this.open[i];
+  }
+
 
 }

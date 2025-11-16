@@ -1,73 +1,84 @@
-<div class="origen-page">
+<div class="coleccion-container">
+
+  <!-- ===== BREADCRUMB ===== -->
   <div class="breadcrumb">
-    <span>Inicio /</span>
-    <span>Colecciones /</span>
-    <span>Kalad Origen</span>
+    INICIO / COLECCIONES / KALAD ORIGEN
   </div>
 
-  <div class="content">
-    <aside class="filters">
-      <div class="filter-group">
-        <div class="filter-option">
-          <span>Ordenar por</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </div>
-        <div class="filter-option">
-          <span>Talla</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </div>
-        <div class="filter-option">
-          <span>Color</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </div>
+  <div class="layout">
+
+    <!-- =================================== -->
+    <!--            FILTROS (IZQUIERDA)      -->
+    <!-- =================================== -->
+   <aside class="filtros-left">
+
+  <div class="filtro" (click)="toggle(0)">
+    <span>Ordenar por</span>
+    <span class="flecha" [class.open]="open[0]">⌄</span>
+  </div>
+
+  <div class="filtro" (click)="toggle(1)">
+    <span>Talla</span>
+    <span class="flecha" [class.open]="open[1]">⌄</span>
+  </div>
+
+  <div class="filtro" (click)="toggle(2)">
+    <span>Color</span>
+    <span class="flecha" [class.open]="open[2]">⌄</span>
+  </div>
+
+  <!-- ❗ SOLO UNA LÍNEA DESPUÉS DEL ÚLTIMO FILTRO -->
+  <div class="linea-unica"></div>
+
+  <div class="categoria">Bolsas</div>
+  <div class="categoria">Mochilas</div>
+  <div class="categoria">Morrales</div>
+  <div class="categoria">Zapatos</div>
+
+</aside>
+
+    <!-- =================================== -->
+    <!--            CONTENIDO (DERECHA)      -->
+    <!-- =================================== -->
+    <div class="contenido">
+
+      <!-- ===== BANNER ===== -->
+      <div class="banner-coleccion">
+        <img src="assets/images/Banner_colecciones_kaladorigen.png" alt="banner kalad origen" />
+        <h1 class="banner-title">KALAD ORIGEN</h1>
       </div>
 
-      <div class="filter-links">
-        <p>Bolsas</p>
-        <p>Mochilas</p>
-        <p>Morrales</p>
-        <p>Zapatos</p>
-      </div>
-    </aside>
-
-    <section class="main-section">
-      <div class="banner">
-        <img src="/assets/banner-kalad-origen.png" alt="Kalad Origen" />
-        <h1 class="title-banner">KALAD ORIGEN</h1>
+      <!-- ===== ORDENAR A LA DERECHA ===== -->
+      <div class="ordenar-right">
+        <span>Ordenar por:</span>
+        <span class="az">A-Z</span>
+        <span class="arrow small">⌄</span>
       </div>
 
-      <div class="products-section">
-        <div class="products-header">
-          <span>Ordenar por:</span>
-          <button class="sort-btn">
-            A-Z
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-        </div>
+      <!-- ===== GRID PRODUCTOS ===== -->
+      <div class="grid-productos">
 
-        <div class="products-grid">
-          <article class="product-card" *ngFor="let p of productos">
-            <div class="image-container">
-              <img [src]="p.imagen" [alt]="p.nombre" />
-              <i class="fa-regular fa-heart favorite"></i>
+        <div class="card-producto" *ngFor="let p of productos">
+          <div class="img-wrapper">
+            <img [src]="p.imagen" />
+            <span class="fav">♡</span>
+          </div>
+
+          <div class="info">
+            <div class="left">
+              <h3>{{ p.nombre }}</h3>
+              <p>{{ p.precio  }}</p>
             </div>
 
-            <div class="info">
-              <div class="details">
-                <p class="name">{{ p.nombre }}</p>
-                <p class="price">$ {{ p.precio }}</p>
-              </div>
-              <button class="btn-cart" aria-label="Agregar al carrito">
-                <i class="fa-solid fa-cart-shopping"></i>
-              </button>
-            </div>
-          </article>
-
-          <p *ngIf="productos.length === 0" class="no-products">
-            No hay productos disponibles.
-          </p>
+            <button class="btn-cart">
+              🛒
+            </button>
+          </div>
         </div>
+
       </div>
-    </section>
+
+    </div>
+
   </div>
 </div>

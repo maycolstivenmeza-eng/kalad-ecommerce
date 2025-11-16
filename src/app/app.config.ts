@@ -1,10 +1,14 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig,importProvidersFrom  } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 
-import { routes } from './app.routes';
+
+import { FormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
@@ -12,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage())
+    provideStorage(() => getStorage()),
+    importProvidersFrom(FormsModule)  // ← ESTA ES LA CLAVE
   ]
 };

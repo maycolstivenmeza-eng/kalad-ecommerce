@@ -9,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class EssenciaComponent {
 
+  open = [false, false, false];
+  toggle(i: number) {
+  this.open[i] = !this.open[i];
+}
+
 }

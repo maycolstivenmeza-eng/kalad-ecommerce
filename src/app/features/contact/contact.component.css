@@ -1,5 +1,5 @@
 ﻿.contact-page {
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--font-secondary);
   color: #333;
   background: #fff;
   padding: 40px 80px;
@@ -21,13 +21,14 @@
   border-radius: 8px;
 
   h1 {
-    font-family: 'Libre Baskerville', serif;
+    font-family: var(--font-primary);
     font-size: 42px;
     text-transform: uppercase;
     margin-bottom: 10px;
   }
 
   p {
+    font-family: var(--font-secondary);
     font-style: italic;
     font-size: 16px;
   }
@@ -39,6 +40,7 @@
   padding-top: 20px;
 
   h2 {
+    font-family: var(--font-primary);
     font-size: 22px;
     margin-bottom: 15px;
   }
@@ -62,23 +64,25 @@
   margin-top: 50px;
 
   h2 {
+    font-family: var(--font-primary);
     font-size: 22px;
     margin-bottom: 10px;
   }
 
   label {
+    font-family: var(--font-secondary);
     font-weight: 600;
     color: #3b2c20;
   }
 
   input,
   textarea {
+    font-family: var(--font-secondary);
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 10px 12px;
     font-size: 16px;
     outline: none;
-    font-family: inherit;
 
     &:focus {
       border-color: #5a341d;
@@ -91,6 +95,7 @@
   }
 
   button {
+    font-family: var(--font-secondary);
     align-self: flex-start;
     background: #5a341d;
     color: #f5f0e6;
@@ -114,6 +119,7 @@
   text-align: center;
 
   h2 {
+    font-family: var(--font-primary);
     font-size: 20px;
     margin-bottom: 20px;
   }

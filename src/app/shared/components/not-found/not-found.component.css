@@ -1,7 +1,7 @@
 body {
     background: #ECEFF1;
     color: rgba(0, 0, 0, 0.87);
-    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-secondary);
     margin: 0;
     padding: 0;
 }
@@ -19,6 +19,7 @@ body {
     font-weight: normal;
     font-size: 16px;
     margin: 16px 0 12px;
+    font-family: var(--font-secondary);
 }
 
 #message h2 {
@@ -26,6 +27,7 @@ body {
     font-weight: bold;
     font-size: 16px;
     margin: 0 0 8px;
+    font-family: var(--font-primary);
 }
 
 #message h1 {
@@ -33,12 +35,14 @@ body {
     font-weight: 300;
     color: rgba(0, 0, 0, 0.6);
     margin: 0 0 16px;
+    font-family: var(--font-primary);
 }
 
 #message p {
     line-height: 140%;
     margin: 16px 0 24px;
     font-size: 14px;
+    font-family: var(--font-secondary);
 }
 
 #message a {
@@ -50,6 +54,7 @@ body {
     color: white;
     padding: 16px;
     border-radius: 4px;
+    font-family: var(--font-secondary);
 }
 
 #message,
@@ -61,6 +66,7 @@ body {
     color: rgba(0, 0, 0, 0.4);
     text-align: center;
     font-size: 13px;
+    font-family: var(--font-secondary);
 }
 
 @media (max-width: 600px) {

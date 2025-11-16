@@ -1,0 +1,104 @@
+<div class="admin-container">
+
+  <h2>Gestión de productos</h2>
+
+  <form #adminForm="ngForm" novalidate (ngSubmit)="guardarProducto(adminForm)">
+
+    <label for="nombre">Nombre del producto</label>
+    <input
+      id="nombre"
+      type="text"
+      name="nombre"
+      [(ngModel)]="producto.nombre"
+      required
+      maxlength="80"
+    />
+
+    <label for="precio">Precio</label>
+    <input
+      id="precio"
+      type="number"
+      name="precio"
+      [(ngModel)]="producto.precio"
+      required
+      min="0"
+      step="0.01"
+    />
+
+    <label for="badge">Etiqueta (badge)</label>
+    <select
+      id="badge"
+      name="badge"
+      [(ngModel)]="producto.badge">
+      <option *ngFor="let badge of badges" [ngValue]="badge">
+        {{ badge || 'Sin etiqueta' }}
+      </option>
+    </select>
+
+    <label for="categoria">Categoría</label>
+    <select
+      id="categoria"
+      name="categoria"
+      [(ngModel)]="producto.categoria"
+      required>
+      <option value="" disabled>Selecciona una categoría</option>
+      <option *ngFor="let categoria of categorias" [value]="categoria">
+        {{ categoria }}
+      </option>
+    </select>
+
+    <label for="coleccion">Colección</label>
+    <select
+      id="coleccion"
+      name="coleccion"
+      [(ngModel)]="producto.coleccion"
+      required>
+      <option *ngFor="let coleccion of colecciones" [value]="coleccion.id">
+        {{ coleccion.label }}
+      </option>
+    </select>
+
+    <label for="colores">Colores (separados por coma)</label>
+    <input
+      id="colores"
+      type="text"
+      name="colores"
+      [(ngModel)]="producto.coloresTexto"
+      placeholder="Beige, Café, Arena"
+    />
+
+    <label for="stock">Stock disponible</label>
+    <input
+      id="stock"
+      type="number"
+      name="stock"
+      [(ngModel)]="producto.stock"
+      required
+      min="0"
+    />
+
+    <label for="descripcion">Descripción</label>
+    <textarea
+      id="descripcion"
+      name="descripcion"
+      [(ngModel)]="producto.descripcion"
+      required
+      rows="4">
+    </textarea>
+
+    <label for="imagen">Imagen del producto</label>
+    <input
+      id="imagen"
+      type="file"
+      (change)="seleccionarImagen($event)"
+      accept="image/*"
+      required
+    />
+
+    <button class="btn-guardar" type="submit" [disabled]="adminForm.invalid">
+      Guardar producto
+    </button>
+
+  </form>
+
+</div>

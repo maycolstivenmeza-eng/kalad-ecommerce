@@ -14,6 +14,7 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, firstValueFrom } from 'rxjs';
 import { Product } from '../models/product.model';
+import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,11 @@ import { Product } from '../models/product.model';
 export class ProductService {
   private readonly COLLECTION_NAME = 'productos';
 
-  constructor(private firestore: Firestore) {}
+ constructor(
+  private firestore: Firestore,
+  private storage: Storage
+) {}
+
 
   /**
    * Obtiene todos los productos
@@ -150,4 +155,23 @@ export class ProductService {
       throw new Error('Stock insuficiente');
     }
   }
+
+// -----------------------------------------------------------------------------------
+// SUBIR IMAGEN A FIREBASE STORAGE
+// -----------------------------------------------------------------------------------
+async subirImagen(file: File): Promise<string> {
+  const ruta = `productos/${Date.now()}_${file.name}`;
+  
+  const storageRef = ref(this.storage, ruta);
+
+  // Sube archivo
+  await uploadBytes(storageRef, file);
+
+  // Obtiene URL pública
+  return await getDownloadURL(storageRef);
 }
+
+
+}
+
+

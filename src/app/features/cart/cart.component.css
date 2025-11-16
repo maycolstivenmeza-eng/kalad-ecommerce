@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Quicksand', sans-serif;
+  font-family: var(--font-secondary);
   color: #2E2E2E;
   background-color: #fff;
 }
@@ -18,7 +18,7 @@ body {
 }
 
 .carrito-container h2 {
-  font-family: "Playfair Display", serif;
+  font-family: var(--font-primary);
   color: #2E2E2E;
   margin-bottom: 10px;
 }
@@ -130,7 +130,7 @@ body {
 .btn-comprar {
   background-color: #b46a28;
   color: #fff;
-  font-family: "Quicksand", sans-serif;
+  font-family: var(--font-secondary);
   font-size: 15px;
   border: none;
   border-radius: 25px;
@@ -156,7 +156,7 @@ body {
   font-weight: 600;
   color: #3b2c20;
   margin-bottom: 30px;
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-primary);
 }
 
 .interesar-titulo-linea {
@@ -167,7 +167,7 @@ body {
   margin: 40px auto 35px;
   width: 100%;
   max-width: 950px;
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-primary);
   font-size: 18px;
   color: #3b2c20;
   font-weight: 600;
@@ -222,7 +222,7 @@ body {
   font-size: 15px;
   color: #2E2E2E;
   margin: 12px 0 4px;
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-primary);
 }
 
 .interesar-item p {
@@ -230,4 +230,5 @@ body {
   color: #2E2E2E;
   font-weight: 600;
   margin: 0;
+  font-family: var(--font-secondary);
 }
