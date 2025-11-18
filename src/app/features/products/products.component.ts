@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../shared/services/product.service';
 import { Product } from '../../shared/models/product.model';
 
+type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
+
 @Component({
   selector: 'app-products',
   standalone: true,
@@ -18,12 +20,15 @@ export class ProductsComponent implements OnInit {
   productosFiltrados: Product[] = [];
 
   // ======== Ordenamiento ========
-  orden: 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' = 'az';
+  orden: OrderOption = 'az';
+  ordenOpciones: OrderOption[] = ['az', 'za', 'priceAsc', 'priceDesc', 'new'];
+  filtroOrden: OrderOption = this.orden;
 
   // ======== Filtros ========
   filtroCategoria: string = '';
   filtroTalla: string = '';
   filtroColor: string = '';
+  open: boolean[] = [false, false, false];
 
   // ======== Valores del sidebar ========
   tallas: string[] = ['S', 'M', 'L', 'XL'];
@@ -75,8 +80,9 @@ export class ProductsComponent implements OnInit {
   // =======================
   //      ORDENAR
   // =======================
-  onOrderChange(order: any) {
+  onOrderChange(order: OrderOption) {
     this.orden = order;
+    this.filtroOrden = order;
     this.aplicarFiltros();
   }
 
@@ -144,6 +150,35 @@ export class ProductsComponent implements OnInit {
   setFiltroColor(color: string) {
     this.filtroColor = color;
     this.aplicarFiltros();
+  }
+
+  seleccionarCategoria(categoria: string) {
+    this.setFiltroCategoria(categoria);
+  }
+
+  seleccionarColeccion(colorId: string) {
+    this.setFiltroColor(colorId);
+  }
+
+  toggle(index: number) {
+    this.open[index] = !this.open[index];
+  }
+
+  getOrderLabel(option: OrderOption): string {
+    switch (option) {
+      case 'az':
+        return 'A-Z';
+      case 'za':
+        return 'Z-A';
+      case 'priceAsc':
+        return 'Menor precio';
+      case 'priceDesc':
+        return 'Mayor precio';
+      case 'new':
+        return 'Nuevos';
+      default:
+        return option;
+    }
   }
 
   // =======================

@@ -6,6 +6,10 @@
     <button (click)="logout()" class="logout-btn">Cerrar sesión</button>
   </div>
 
+  <div class="alert" *ngIf="mensajeSistema" [ngClass]="mensajeSistema.tipo">
+    {{ mensajeSistema.texto }}
+  </div>
+
   <form #adminForm="ngForm" novalidate (ngSubmit)="guardarProducto(adminForm)">
 
     <!-- NOMBRE -->
@@ -73,8 +77,8 @@
     </div>
 
     <!-- BOTÓN GUARDAR -->
-    <button class="btn-guardar" type="submit" [disabled]="adminForm.invalid || faltaImagenPrincipal()">
-      {{ modoEdicion ? 'Actualizar producto' : 'Guardar producto' }}
+    <button class="btn-guardar" type="submit" [disabled]="adminForm.invalid || faltaImagenPrincipal() || guardando">
+      {{ guardando ? 'Guardando…' : (modoEdicion ? 'Actualizar producto' : 'Guardar producto') }}
     </button>
 
   </form>

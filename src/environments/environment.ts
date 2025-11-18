@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
+  useStorageUploadProxy: true,
 
   // Configuración de Firebase
   // ⚠️ IMPORTANTE: Obtén estos valores desde Firebase Console
@@ -8,7 +9,7 @@ export const environment = {
     apiKey: "AIzaSyDY4hRh6LriMeNn6QI3pdeHdZXPzGnU2ug",
     authDomain: "kalad3-8a000.firebaseapp.com",
     projectId: "kalad3-8a000",
-    storageBucket: "kalad3-8a000.appspot.com",
+    storageBucket: "kalad3-8a000.firebasestorage.app",
     messagingSenderId: "776478537902",
     appId: "1:776478537902:web:83f2fd94f1ad18ec48d53f",
     measurementId: "G-34LYXS0EGQ"

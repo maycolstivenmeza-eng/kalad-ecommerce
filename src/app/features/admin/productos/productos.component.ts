@@ -62,6 +62,10 @@ export class ProductosComponent implements OnInit, OnDestroy {
     { id: 'kalad-essencia', label: 'Kalad Essencia' }
   ];
   readonly badges: Product['badge'][] = ['Nuevo', 'Oferta', 'Limitada', null];
+  private imagenCache = new Map<string, string>();
+  private imagenResolviendo = new Set<string>();
+  guardando = false;
+  mensajeSistema: { tipo: 'error' | 'exito'; texto: string } | null = null;
 
   constructor(
     private productService: ProductService,
@@ -170,10 +174,19 @@ export class ProductosComponent implements OnInit, OnDestroy {
   // GUARDAR / ACTUALIZAR
   // ==========================================================
   async guardarProducto(form: NgForm) {
-    if (form.invalid) {
+    if (this.guardando) return;
+
+    if (form.invalid || this.faltaImagenPrincipal()) {
       form.control.markAllAsTouched();
+      this.mensajeSistema = {
+        tipo: 'error',
+        texto: 'Revisa que todos los campos obligatorios estén completos.'
+      };
       return;
     }
+
+    this.mensajeSistema = null;
+    this.guardando = true;
 
     try {
       // Subir imagen principal
@@ -214,10 +227,10 @@ export class ProductosComponent implements OnInit, OnDestroy {
       // Crear o actualizar
       if (this.modoEdicion && this.idProductoEdicion) {
         await this.productService.updateProduct(this.idProductoEdicion, payload);
-        alert('Producto actualizado');
+        this.mensajeSistema = { tipo: 'exito', texto: 'Producto actualizado correctamente.' };
       } else {
         await this.productService.createProduct(payload);
-        alert('Producto agregado');
+        this.mensajeSistema = { tipo: 'exito', texto: 'Producto creado correctamente.' };
       }
 
       // Reset
@@ -228,10 +241,12 @@ export class ProductosComponent implements OnInit, OnDestroy {
       this.modoEdicion = false;
 
       this.cargarProductos();
-
     } catch (e) {
       console.error(e);
-      alert('Error guardando el producto');
+      const texto = e instanceof Error ? e.message : 'Error guardando el producto';
+      this.mensajeSistema = { tipo: 'error', texto };
+    } finally {
+      this.guardando = false;
     }
   }
 
@@ -299,7 +314,37 @@ export class ProductosComponent implements OnInit, OnDestroy {
   }
 
   obtenerImagenProducto(producto: Product): string | null {
-    return producto.imagen || producto.imagenes?.[0] || null;
+    const candidata = producto.imagen || producto.imagenes?.[0] || null;
+    if (!candidata) return null;
+
+    if (this.esUrlPublica(candidata)) return candidata;
+
+    if (this.imagenCache.has(candidata)) {
+      return this.imagenCache.get(candidata)!;
+    }
+
+    if (!this.imagenResolviendo.has(candidata)) {
+      this.imagenResolviendo.add(candidata);
+      this.productService.obtenerUrlDescarga(candidata)
+        .then((url) => {
+          if (url) {
+            this.imagenCache.set(candidata, url);
+            producto.imagen = url;
+            this.productos = this.productos.map((p) =>
+              p.id === producto.id ? { ...p, imagen: url } : p
+            );
+            this.aplicarFiltros();
+          }
+        })
+        .catch((err) => console.warn('No se pudo cargar la imagen', err))
+        .finally(() => this.imagenResolviendo.delete(candidata));
+    }
+
+    return null;
+  }
+
+  private esUrlPublica(valor: string): boolean {
+    return /^https?:\/\//i.test(valor) || valor.startsWith('data:');
   }
 
   // ==========================================================

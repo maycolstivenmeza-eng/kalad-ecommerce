@@ -1,130 +1,95 @@
-<!-- CONTENEDOR GENERAL -->
-<section class="products-page">
+<div class="coleccion-container">
 
-  <!-- Breadcrumb (opcional) -->
-  <nav class="breadcrumb">
-    <a routerLink="/home">Inicio</a>
-    <span>/</span>
-    <span>Productos</span>
-  </nav>
+  <div class="breadcrumb">
+    INICIO / PRODUCTOS
+  </div>
 
   <div class="layout">
 
-    <!-- ======= SIDEBAR/FILTROS ======= -->
-    <aside class="sidebar">
+    <aside class="filtros-left">
 
-      <!-- Ordenar por (versión de sidebar colapsable) -->
-      <div class="filter-block">
-        <button class="filter-title" type="button">
-          Ordenar por
-          <span class="caret">▾</span>
-        </button>
-        <div class="filter-content">
-          <ul class="order-list">
-            <li (click)="onOrderChange('az')" [class.active]="orden==='az'">A-Z</li>
-            <li (click)="onOrderChange('za')" [class.active]="orden==='za'">Z-A</li>
-            <li (click)="onOrderChange('priceAsc')" [class.active]="orden==='priceAsc'">Precio: bajo → alto</li>
-            <li (click)="onOrderChange('priceDesc')" [class.active]="orden==='priceDesc'">Precio: alto → bajo</li>
-            <li (click)="onOrderChange('new')" [class.active]="orden==='new'">Nuevos</li>
-          </ul>
-        </div>
+      <div class="filtro" (click)="toggle(0)">
+        <span>Ordenar por</span>
+        <span class="flecha" [class.open]="open[0]">&#9662;</span>
       </div>
 
-      <!-- Talla -->
-      <div class="filter-block">
-        <button class="filter-title" type="button">
-          Talla
-          <span class="caret">▾</span>
+      <div class="filtro-opciones" *ngIf="open[0]">
+        <button
+          *ngFor="let o of ordenOpciones"
+          type="button"
+          (click)="onOrderChange(o)"
+          [class.activo]="o === filtroOrden">
+          {{ getOrderLabel(o) }}
         </button>
-        <div class="filter-content">
-          <div class="chip-group">
-            <button class="chip" 
-                    *ngFor="let t of tallas" 
-                    [class.active]="filtroTalla===t"
-                    (click)="setFiltroTalla(t)">{{ t }}</button>
-          </div>
-        </div>
       </div>
 
-      <!-- Color -->
-      <div class="filter-block">
-        <button class="filter-title" type="button">
-          Color
-          <span class="caret">▾</span>
-        </button>
-        <div class="filter-content">
-          <div class="color-pills">
-            <button class="color-pill" 
-                    *ngFor="let c of colores"
-                    [style.--color]="c.hex"
-                    [class.active]="filtroColor===c.id"
-                    (click)="setFiltroColor(c.id)"
-                    [attr.aria-label]="c.label">
-            </button>
-          </div>
-        </div>
+      <div class="filtro" (click)="toggle(1)">
+        <span>Talla</span>
+        <span class="flecha" [class.open]="open[1]">&#9662;</span>
       </div>
 
-      <!-- Categorías -->
-      <div class="filter-block">
-        <div class="filter-title static">Categorías</div>
-        <ul class="category-list">
-          <li>
-            <button class="link" [class.active]="filtroCategoria==='Bolsas'" (click)="setFiltroCategoria('Bolsas')">Bolsas</button>
-          </li>
-          <li>
-            <button class="link" [class.active]="filtroCategoria==='Mochilas'" (click)="setFiltroCategoria('Mochilas')">Mochilas</button>
-          </li>
-          <li>
-            <button class="link" [class.active]="filtroCategoria==='Morrales'" (click)="setFiltroCategoria('Morrales')">Morrales</button>
-          </li>
-          <li>
-            <button class="link" [class.active]="filtroCategoria==='Zapatos'" (click)="setFiltroCategoria('Zapatos')">Zapatos</button>
-          </li>
-        </ul>
+      <div class="filtro-opciones" *ngIf="open[1]">
+        <button
+          *ngFor="let talla of tallas"
+          type="button"
+          (click)="setFiltroTalla(talla)"
+          [class.activo]="talla === filtroTalla">
+          {{ talla }}
+        </button>
+      </div>
+
+      <div class="filtro" (click)="toggle(2)">
+        <span>Color</span>
+        <span class="flecha" [class.open]="open[2]">&#9662;</span>
+      </div>
+
+      <div class="filtro-opciones" *ngIf="open[2]">
+        <button
+          *ngFor="let color of colores"
+          type="button"
+          (click)="seleccionarColeccion(color.id)"
+          [class.activo]="color.id === filtroColor">
+          {{ color.label }}
+        </button>
+      </div>
+
+      <div class="linea-unica"></div>
+
+      <div
+        class="categoria"
+        *ngFor="let categoria of categorias"
+        (click)="seleccionarCategoria(categoria)"
+        [class.activo]="categoria === filtroCategoria">
+        {{ categoria }}
       </div>
 
     </aside>
 
-    <!-- ======= CONTENIDO PRINCIPAL ======= -->
-    <main class="content">
+    <div class="contenido">
 
-      <!-- Barra superior de orden global (derecha) -->
-      <div class="topbar">
-        <div class="order-inline">
-          <span>Ordenar por:</span>
-          <div class="order-inline-select">
-            <button class="inline-option" [class.active]="orden==='az'" (click)="onOrderChange('az')">A-Z</button>
-            <button class="inline-option" [class.active]="orden==='za'" (click)="onOrderChange('za')">Z-A</button>
-            <button class="inline-option" [class.active]="orden==='priceAsc'" (click)="onOrderChange('priceAsc')">Precio ↑</button>
-            <button class="inline-option" [class.active]="orden==='priceDesc'" (click)="onOrderChange('priceDesc')">Precio ↓</button>
-          </div>
-        </div>
+      <div class="ordenar-right">
+        <span>Ordenar por:</span>
+        <span class="az">{{ getOrderLabel(filtroOrden) }}</span>
+        <span class="arrow small">&#9662;</span>
       </div>
 
-      <!-- GRID DE PRODUCTOS -->
       <div class="product-grid">
-
-        <!-- Card de producto -->
         <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
           <a class="thumb" [routerLink]="['/products', p.id]">
             <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
               {{ p.badge }}
             </span>
-            <!-- Imagen principal -->
             <img
               class="img primary"
               [src]="resolveImage(p)"
               [alt]="p.nombre"
               (error)="onImageError($event)"
             />
-            <!-- Imagen secundaria (si existe) para hover -->
             <img
               class="img hover"
               *ngIf="p.imagenes && p.imagenes.length > 0"
               [src]="p.imagenes[0]"
-              [alt]="p.nombre"
-            />
+              [alt]="p.nombre" />
           </a>
 
           <a class="title" [routerLink]="['/products', p.id]">
@@ -133,28 +98,14 @@
 
           <div class="price-row">
             <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-
             <button class="cart-btn" type="button" (click)="addToCart(p)">
-              <span class="cart-icon" aria-hidden="true">🛒</span>
+              <span class="cart-icon" aria-hidden="true">?Y>'</span>
             </button>
           </div>
         </article>
-
-        <!-- Sin resultados -->
-        <div class="no-results" *ngIf="productosFiltrados?.length === 0">
-          No se encontraron productos con los filtros seleccionados.
-        </div>
-
       </div>
 
-      <!-- (opcional) Paginación o “Cargar más” -->
-      <!--
-      <div class="load-more" *ngIf="puedeCargarMas">
-        <button class="btn-more" (click)="cargarMas()">Cargar más</button>
-      </div>
-      -->
-
-    </main>
+    </div>
 
   </div>
-</section>
+</div>
