@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../../shared/services/product.service';
 import { Product } from '../../shared/models/product.model';
 import { CartService } from '../../shared/services/cart.service';
+import { FavoritesService } from '../../shared/services/favorites.service';
+import { AuthService } from '../../shared/services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
@@ -21,7 +24,9 @@ export class HomePageComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    public favorites: FavoritesService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -111,5 +116,24 @@ export class HomePageComponent implements OnInit {
   addToCart(product: Product, event?: Event) {
     event?.stopPropagation();
     this.cartService.addProduct(product, 1);
+  }
+
+  toggleFavorite(product: Product, event?: Event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.ensureLoggedInAndToggle(product);
+  }
+
+  private async ensureLoggedInAndToggle(product: Product) {
+    const logged = await firstValueFrom(this.authService.isLoggedIn$);
+    try {
+      if (!logged) {
+        await this.authService.loginWithGoogle();
+      }
+      const now = await firstValueFrom(this.authService.isLoggedIn$);
+      if (now) this.favorites.toggle(product);
+    } catch (e) {
+      console.warn('No se pudo iniciar sesión para favoritos', e);
+    }
   }
 }

@@ -1,47 +1,94 @@
 <header class="kalad-header">
-    <div class="header-container">
-        <img src="/assets/images/logo.svg" alt="Logo KALAD" class="kalad-logo" routerLink="/home" style="cursor: pointer;">
-        <nav class="kalad-nav">
-            <a routerLink="/home" routerLinkActive="active">Inicio</a>
-            <a routerLink="/collections" routerLinkActive="active">Colecciones</a>
-            <a routerLink="/products" routerLinkActive="active">Productos</a>
-            <a routerLink="/history" routerLinkActive="active">Historia</a>
-            <a routerLink="/contact" routerLinkActive="active">Contacto</a>
-        </nav>
-        <div class="header-icons">
-            <i class="fa-regular fa-user"></i>
-            <i class="fa-regular fa-heart"></i>
-
-            <div class="header-cart" (click)="toggleCart($event)">
-                <span class="cart-count" *ngIf="(cartCount$ | async) as count">{{ count }}</span>
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="cart-dropdown" *ngIf="cartOpen" (click)="$event.stopPropagation()">
-        <h4>Carrito</h4>
-        <ng-container *ngIf="(cartItems$ | async) as items; else emptyCart">
-            <div class="cart-item" *ngFor="let item of items">
-                <img [src]="item.imagen" [alt]="item.nombre">
-                <div class="cart-item-info">
-                    <p class="name">{{ item.nombre }}</p>
-                    <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
-                    <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
-                </div>
-                <button class="remove" (click)="removeItem(item)">×</button>
-            </div>
-            <div class="cart-summary">
-                <span>Total:</span>
-                <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
-            </div>
-            <div class="cart-actions">
-                <button (click)="goToCart()">Ver carrito</button>
-                <button class="checkout" (click)="goToCheckout()">Ir a checkout</button>
-            </div>
+  <div class="header-container">
+    <img src="/assets/images/logo.svg" alt="Logo KALAD" class="kalad-logo" routerLink="/home" style="cursor: pointer;">
+    <nav class="kalad-nav">
+      <a routerLink="/home" routerLinkActive="active">Inicio</a>
+      <a routerLink="/collections" routerLinkActive="active">Colecciones</a>
+      <a routerLink="/products" routerLinkActive="active">Productos</a>
+      <a routerLink="/history" routerLinkActive="active">Historia</a>
+      <a routerLink="/contact" routerLinkActive="active">Contacto</a>
+    </nav>
+    <div class="header-icons">
+      <div class="header-auth" (click)="toggleAuthMenu($event)">
+        <i class="fa-regular fa-user"></i>
+      </div>
+      <div class="header-fav" (click)="toggleFavorites($event)">
+        <ng-container *ngIf="favoritesCount$ | async as fcount">
+          <span class="fav-count" *ngIf="fcount">{{ fcount }}</span>
         </ng-container>
-        <ng-template #emptyCart>
-            <p class="empty">Tu carrito está vacío.</p>
-        </ng-template>
+        <i class="fa-regular fa-heart"></i>
+      </div>
+
+      <div class="header-cart" (click)="toggleCart($event)">
+        <ng-container *ngIf="cartCount$ | async as count">
+          <span class="cart-count" *ngIf="count">{{ count }}</span>
+        </ng-container>
+        <i class="fa-solid fa-cart-shopping"></i>
+      </div>
     </div>
+  </div>
+
+  <div class="cart-dropdown" *ngIf="cartOpen" (click)="$event.stopPropagation()">
+    <h4>Carrito</h4>
+    <ng-container *ngIf="(cartItems$ | async) as items; else emptyCart">
+      <div class="cart-item" *ngFor="let item of items">
+        <img [src]="item.imagen" [alt]="item.nombre">
+        <div class="cart-item-info">
+          <p class="name">{{ item.nombre }}</p>
+          <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
+          <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+        </div>
+        <button class="remove" (click)="removeItem(item)">✕</button>
+      </div>
+      <div class="cart-summary">
+        <span>Total:</span>
+        <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+      </div>
+      <div class="cart-actions">
+        <button (click)="goToCart()">Ver carrito</button>
+        <button class="checkout" (click)="goToCheckout()">Ir a checkout</button>
+      </div>
+    </ng-container>
+    <ng-template #emptyCart>
+      <p class="empty">Tu carrito está vacío.</p>
+    </ng-template>
+  </div>
+
+      <div class="fav-dropdown" *ngIf="favoritesOpen" (click)="$event.stopPropagation()">
+    <h4>Favoritos</h4>
+    <ng-container *ngIf="(favorites$ | async) as favs; else emptyFavs">
+      <div class="fav-item" *ngFor="let prod of favs">
+        <img [src]="prod.imagen" [alt]="prod.nombre">
+        <div class="fav-item-info" (click)="goToProduct(prod.id)">
+          <p class="name">{{ prod.nombre }}</p>
+          <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+        </div>
+        <button class="remove" (click)="removeFavorite(prod.id)">✕</button>
+      </div>
+      <div class="fav-actions">
+        <button (click)="favoritesOpen = false">Cerrar</button>
+      </div>
+    </ng-container>
+    <ng-template #emptyFavs>
+      <p class="empty">No tienes favoritos aún.</p>
+    </ng-template>
+  </div>
+
+  <div class="auth-dropdown" *ngIf="authMenuOpen" (click)="$event.stopPropagation()">
+    <ng-container *ngIf="isLoggedIn$ | async as logged">
+      <ng-container *ngIf="logged; else loginTpl">
+        <p class="auth-status">Sesión activa</p>
+        <button class="auth-btn" routerLink="/account" (click)="authMenuOpen=false">Ir a mi cuenta</button>
+        <button class="auth-btn" (click)="logout($event)">Cerrar sesión</button>
+      </ng-container>
+      <ng-template #loginTpl>
+        <p class="auth-status">Inicia sesión para comprar y guardar favoritos</p>
+        <button class="auth-btn primary" (click)="loginWithGoogle($event)">
+          <i class="fa-brands fa-google"></i>
+          Entrar con Google
+        </button>
+      </ng-template>
+    </ng-container>
+  </div>
 </header>
+

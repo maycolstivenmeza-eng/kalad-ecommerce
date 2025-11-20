@@ -70,6 +70,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
   },
   {
+    path: 'account',
+    loadComponent: () => import('./features/account/account.component').then(m => m.AccountComponent)
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }

@@ -40,6 +40,13 @@
                           [src]="product.imagenes[0]"
                           [alt]="product.nombre"
                         />
+                        <button
+                          class="fav-btn"
+                          type="button"
+                          [class.active]="favorites.isFavorite(product.id)"
+                          (click)="toggleFavorite(product, $event)">
+                          <i class="fa-solid" [ngClass]="favorites.isFavorite(product.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+                        </button>
                     </a>
 
                     <a class="title" [routerLink]="['/products', product.id]">

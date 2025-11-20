@@ -67,17 +67,24 @@
             <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
               {{ p.badge }}
             </span>
-            <img
-              class="img primary"
-              [src]="resolveImage(p)"
-              [alt]="p.nombre"
-              (error)="onImageError($event)"
-            />
-            <img
-              class="img hover"
-              *ngIf="p.imagenes && p.imagenes.length > 0"
-              [src]="p.imagenes[0]"
-              [alt]="p.nombre" />
+          <img
+            class="img primary"
+            [src]="resolveImage(p)"
+            [alt]="p.nombre"
+            (error)="onImageError($event)"
+          />
+          <button
+            class="fav-btn"
+            type="button"
+            [class.active]="favorites.isFavorite(p.id)"
+            (click)="toggleFavorite(p, $event)">
+            <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+          </button>
+          <img
+            class="img hover"
+            *ngIf="p.imagenes && p.imagenes.length > 0"
+            [src]="p.imagenes[0]"
+            [alt]="p.nombre" />
           </a>
 
           <a class="title" [routerLink]="['/products', p.id]">

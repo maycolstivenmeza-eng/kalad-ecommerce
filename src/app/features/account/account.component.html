@@ -1,0 +1,73 @@
+<section class="account">
+  <header class="account-header">
+    <h2>Mi cuenta</h2>
+    <div class="actions">
+      <button class="btn ghost" routerLink="/home">Volver</button>
+      <button class="btn" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Perfil</h3>
+      <ng-container *ngIf="user$ | async as user; else loginPrompt">
+        <p><strong>Nombre:</strong> {{ user.displayName || 'Sin nombre' }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+      </ng-container>
+      <ng-template #loginPrompt>
+        <p>Inicia sesión para guardar tu actividad.</p>
+        <button class="btn" (click)="loginGoogle()">Entrar con Google</button>
+      </ng-template>
+    </div>
+
+    <div class="card">
+      <h3>Favoritos</h3>
+      <ng-container *ngIf="favorites$ | async as favs">
+        <p *ngIf="!favs.length">Aún no tienes favoritos.</p>
+        <ul class="fav-list">
+          <li *ngFor="let f of favs">
+            <span>{{ f.nombre }}</span>
+            <span class="price">{{ f.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <button class="link" [routerLink]="['/products', f.id]">Ver</button>
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+
+    <div class="card">
+      <h3>Direcciones guardadas</h3>
+      <ng-container *ngIf="addresses$ | async as addrs">
+        <p *ngIf="!addrs.length">No tienes direcciones guardadas.</p>
+        <ul class="addr-list">
+          <li *ngFor="let a of addrs">
+            <div class="addr">
+              <strong>{{ a.label || 'Dirección' }}</strong>
+              <p>{{ a.line1 }}</p>
+              <p>{{ a.city }}{{ a.region ? ', ' + a.region : '' }} {{ a.postal }}</p>
+            </div>
+            <button class="link danger" (click)="removeAddress(a.id)">Eliminar</button>
+          </li>
+        </ul>
+      </ng-container>
+
+      <form class="addr-form" (ngSubmit)="addAddress()">
+        <label>Alias</label>
+        <input type="text" [(ngModel)]="newAddress.label" name="label" placeholder="Casa, Oficina" />
+        <label>Dirección</label>
+        <input type="text" [(ngModel)]="newAddress.line1" name="line1" required />
+        <label>Ciudad</label>
+        <input type="text" [(ngModel)]="newAddress.city" name="city" required />
+        <label>Departamento</label>
+        <input type="text" [(ngModel)]="newAddress.region" name="region" />
+        <label>Código postal</label>
+        <input type="text" [(ngModel)]="newAddress.postal" name="postal" />
+        <button class="btn" type="submit">Guardar dirección</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>Historial de compras</h3>
+      <p>Aún no hay integración de órdenes. Se mostrará cuando se procese una compra.</p>
+    </div>
+  </div>
+</section>

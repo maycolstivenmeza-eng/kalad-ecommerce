@@ -3,7 +3,8 @@ import {
   Auth,
   authState,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  signInWithPopup
 } from '@angular/fire/auth';
 
 import { Observable } from 'rxjs';
@@ -32,6 +33,14 @@ export class AuthService {
   /** Login */
   login(email: string, password: string) {
     return signInWithEmailAndPassword(this.auth, email, password);
+  }
+
+  /** Login con Google */
+  async loginWithGoogle(): Promise<any> {
+    const authMod = await import('firebase/auth');
+    const provider = new (authMod as any).GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    return await signInWithPopup(this.auth, provider as any);
   }
 
   /** Logout */

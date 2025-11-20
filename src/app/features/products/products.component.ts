@@ -5,6 +5,9 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../shared/services/product.service';
 import { Product } from '../../shared/models/product.model';
 import { CartService } from '../../shared/services/cart.service';
+import { FavoritesService } from '../../shared/services/favorites.service';
+import { AuthService } from '../../shared/services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
 
@@ -47,7 +50,9 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    public favorites: FavoritesService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -182,6 +187,27 @@ export class ProductsComponent implements OnInit {
   // =======================
   addToCart(product: Product) {
     this.cartService.addProduct(product, 1);
+  }
+
+  toggleFavorite(product: Product, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.ensureLoggedInAndToggle(product);
+  }
+
+  private async ensureLoggedInAndToggle(product: Product) {
+    const logged = await firstValueFrom(this.authService.isLoggedIn$);
+    try {
+      if (!logged) {
+        await this.authService.loginWithGoogle();
+      }
+      const nowLogged = await firstValueFrom(this.authService.isLoggedIn$);
+      if (nowLogged) {
+        this.favorites.toggle(product);
+      }
+    } catch (e) {
+      console.warn('No se pudo iniciar sesión para favoritos', e);
+    }
   }
 
   resolveImage(product: Product): string {

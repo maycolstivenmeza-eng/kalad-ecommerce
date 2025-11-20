@@ -6,6 +6,9 @@ import { Subscription } from 'rxjs';
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../shared/services/product.service';
 import { CartService } from '../../../shared/services/cart.service';
+import { FavoritesService } from '../../../shared/services/favorites.service';
+import { AuthService } from '../../../shared/services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
 
@@ -35,7 +38,9 @@ export class OrigenComponent implements OnInit, OnDestroy {
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    public favorites: FavoritesService,
+    private authService: AuthService
   ) {}
 
   async ngOnInit() {
@@ -143,6 +148,25 @@ export class OrigenComponent implements OnInit, OnDestroy {
   addToCart(producto: Product, event: Event) {
     event.stopPropagation();
     this.cartService.addProduct(producto, 1);
+  }
+
+  toggleFavorite(producto: Product, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.ensureLoggedInAndToggle(producto);
+  }
+
+  private async ensureLoggedInAndToggle(producto: Product) {
+    const logged = await firstValueFrom(this.authService.isLoggedIn$);
+    try {
+      if (!logged) {
+        await this.authService.loginWithGoogle();
+      }
+      const now = await firstValueFrom(this.authService.isLoggedIn$);
+      if (now) this.favorites.toggle(producto);
+    } catch (e) {
+      console.warn('No se pudo iniciar sesión para favoritos', e);
+    }
   }
 
 }

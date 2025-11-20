@@ -77,7 +77,13 @@
         <div class="card-producto" *ngFor="let p of productosFiltrados">
           <div class="img-wrapper">
             <img [src]="p.imagen" [alt]="p.nombre" />
-            <span class="fav">&#10084;</span>
+            <button
+              class="fav-btn"
+              type="button"
+              [class.active]="favorites.isFavorite(p.id)"
+              (click)="toggleFavorite(p, $event)">
+              <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+            </button>
           </div>
 
           <div class="info">
