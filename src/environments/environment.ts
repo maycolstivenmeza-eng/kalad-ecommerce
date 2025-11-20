@@ -1,10 +1,8 @@
-export const environment = {
+﻿export const environment = {
   production: false,
   useStorageUploadProxy: true,
 
-  // Configuración de Firebase
-  // ⚠️ IMPORTANTE: Obtén estos valores desde Firebase Console
-  // https://console.firebase.google.com/ > Tu Proyecto > Configuración del Proyecto > General
+  // Configuracion de Firebase
   firebase: {
     apiKey: "AIzaSyDY4hRh6LriMeNn6QI3pdeHdZXPzGnU2ug",
     authDomain: "kalad3-8a000.firebaseapp.com",
@@ -15,16 +13,15 @@ export const environment = {
     measurementId: "G-34LYXS0EGQ"
   },
 
-  // Configuración de Wompi
+  // Configuracion de Wompi
   wompi: {
-    // Reemplaza con tu clave pública de prueba de Wompi
-    // Obtén tu clave en: https://comercios.wompi.co/
     publicKey: 'pub_test_BdzugKP1hhQ7K2oXBQcc5KNKXLfjtFc5',
-    // ⚠️ IMPORTANTE: La clave de integridad (integrity secret) debe estar en el BACKEND
-    // Solo para pruebas locales, reemplaza con tu integrity secret de Wompi
-    // Formato: prod_integrity_xxxxxxxxxxxxxxxx o test_integrity_xxxxxxxxxxxxxxxx
     integritySecret: 'test_integrity_g7dwHkOG1WJf78VADux02AjruMvsu4vG',
     currency: 'COP',
-    redirectUrl: 'http://localhost:4200' // URL de confirmación después del pago
+    redirectUrl: 'http://localhost:4200',
+    apiBase: 'https://sandbox.wompi.co',
+    // Comision estimada (referencial, no se cobra al cliente)
+    feePercent: 0.0349,
+    feeFixed: 900
   }
 };

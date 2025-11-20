@@ -26,4 +26,5 @@ export interface Product {
   seoKeywords?: string[];
   badge?: 'Nuevo' | 'Oferta' | 'Limitada' | null;
   Etiqueta?: string | null;
+  activo?: boolean;
 }

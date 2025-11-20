@@ -236,6 +236,7 @@ thumbs: any;
         css: this.resolveColorCss(label),
       }));
 
+      this.quantity = product.stock > 0 ? 1 : 0;
       this.displayDimensions = product.dimensiones ?? this.defaultDimensions;
       this.featureDescription =
         product.copyPremium?.trim() ||

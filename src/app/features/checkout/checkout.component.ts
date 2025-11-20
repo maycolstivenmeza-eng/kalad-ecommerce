@@ -1,59 +1,63 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { WompiService } from '../../shared/services/wompi.service';
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { WompiService } from "../../shared/services/wompi.service";
+import { CartService, CartItem } from "../../shared/services/cart.service";
+import { AuthService } from "../../shared/services/auth.service";
+import { PedidosService } from "../../shared/services/pedidos.service";
+import { UserDataService } from "../../shared/services/user-data.service";
+import { ProductService } from "../../shared/services/product.service";
+import { firstValueFrom } from "rxjs";
+import { CouponService } from "../../shared/services/coupon.service";
+import { environment } from "../../../environments/environment";
+import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: 'app-checkout',
+  selector: "app-checkout",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './checkout.component.html',
-  styleUrl: './checkout.component.css'
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: "./checkout.component.html",
+  styleUrl: "./checkout.component.css"
 })
 export class CheckoutComponent implements OnInit {
   checkoutForm!: FormGroup;
   isProcessing = false;
-
-  // Datos de ejemplo del carrito (esto debería venir de un servicio de carrito)
-  cartItems = [
-    {
-      id: '1',
-      nombre: 'Mochila KALAD ORIGEN Clásica',
-      precio: 150000,
-      cantidad: 1,
-      color: 'Negro',
-      imagen: '/assets/images/Producto_1.jpg'
-    }
-  ];
+  cartItems: CartItem[] = [];
+  couponCode = "";
+  discount = 0;
+  shipping = 0;
 
   constructor(
     private fb: FormBuilder,
     private wompiService: WompiService,
+    private cartService: CartService,
+    private authService: AuthService,
+    private pedidosService: PedidosService,
+    private userDataService: UserDataService,
+    private couponService: CouponService,
+    private productService: ProductService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.cartItems = this.cartService.items;
+    this.computeShipping(this.getSubtotal());
   }
 
   initializeForm(): void {
     this.checkoutForm = this.fb.group({
-      // Datos personales
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      documentType: ['CC', Validators.required],
-      documentNumber: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
-
-      // Dirección de envío
-      address: ['', Validators.required],
-      city: ['', Validators.required],
-      department: ['', Validators.required],
-      postalCode: ['', Validators.pattern(/^[0-9]{6}$/)],
-
-      // Notas adicionales
-      notes: ['']
+      fullName: ["", [Validators.required, Validators.minLength(3)]],
+      email: ["", [Validators.required, Validators.email]],
+      phone: ["", [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      documentType: ["CC", Validators.required],
+      documentNumber: ["", [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+      address: ["", Validators.required],
+      city: ["", Validators.required],
+      department: ["", Validators.required],
+      postalCode: ["", Validators.pattern(/^[0-9]{6}$/)],
+      notes: [""]
     });
   }
 
@@ -61,8 +65,20 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutForm.controls;
   }
 
+  getSubtotal(): number {
+    return this.cartItems.reduce((sum, item) => sum + item.precio * item.qty, 0);
+  }
+
+  getCommission(): number {
+    const cfg = environment.wompi as any;
+    const pct = Math.max(0, Number(cfg.feePercent ?? 0));
+    const fixed = Math.max(0, Number(cfg.feeFixed ?? 0));
+    const base = this.getTotal();
+    return Math.round(base * pct + fixed);
+  }
+
   getTotal(): number {
-    return this.cartItems.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    return Math.max(0, this.getSubtotal() + this.shipping - this.discount);
   }
 
   getTotalInCents(): number {
@@ -70,38 +86,109 @@ export class CheckoutComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(price);
   }
 
-  /**
-   * Procesa el pago con Wompi
-   */
+  async applyCoupon(): Promise<void> {
+    const code = this.couponCode.trim().toUpperCase();
+    const subtotal = this.getSubtotal();
+    if (!code) {
+      this.discount = 0;
+      return;
+    }
+    try {
+      this.discount = await this.couponService.validate(code, subtotal);
+    } catch (e) {
+      this.discount = 0;
+      alert((e as any)?.message || "Cupon invalido");
+    }
+  }
+
+  computeShipping(subtotal: number): void {
+    this.shipping = subtotal >= 200000 || subtotal === 0 ? 0 : 12000;
+  }
+
   async processPayment(): Promise<void> {
     if (this.checkoutForm.invalid) {
       this.markFormGroupTouched(this.checkoutForm);
-      alert('Por favor completa todos los campos requeridos correctamente.');
+      alert("Por favor completa todos los campos requeridos correctamente.");
       return;
     }
+
+    if (!this.cartItems.length) {
+      alert("Tu carrito esta vacio.");
+      return;
+    }
+
+    const logged = await this.ensureLoggedIn();
+    if (!logged) return;
 
     this.isProcessing = true;
 
     try {
       const formValue = this.checkoutForm.value;
 
-      // Configuración del pago con datos del formulario
+      // Validar stock antes de cobrar
+      const sinStock = await this.validateStock();
+      if (sinStock.length) {
+        alert(
+          `No hay stock suficiente para: ${sinStock
+            .map((p) => p.nombre)
+            .join(", ")}. Ajusta el carrito e intenta de nuevo.`
+        );
+        return;
+      }
+
+      // Guardar perfil y direccion
+      await this.userDataService.saveAuthProfile();
+      await this.userDataService.addAddress({
+        label: formValue.address || "Envio",
+        line1: formValue.address,
+        city: formValue.city,
+        region: formValue.department,
+        postal: formValue.postalCode
+      });
+
+      const subtotal = this.getSubtotal();
+      this.computeShipping(subtotal);
+      await this.applyCoupon();
+      const commission = this.getCommission();
+
+      // Crear pedido
+      const pedidoId = await this.pedidosService.crearPedido(
+        this.cartItems.map((i) => ({
+          productId: i.id,
+          nombre: i.nombre,
+          qty: i.qty,
+          precio: i.precio,
+          color: i.color
+        })),
+        this.getTotal(),
+        "creado",
+        {
+          subtotal,
+          envio: this.shipping,
+          descuento: this.discount,
+          cupon: this.discount ? this.couponCode.trim().toUpperCase() : undefined,
+          comision: commission,
+          comisionPorcentaje: Number((environment.wompi as any).feePercent ?? 0),
+          comisionFija: Number((environment.wompi as any).feeFixed ?? 0)
+        }
+      );
+
       const checkoutConfig = {
         amountInCents: this.getTotalInCents(),
-        reference: `KALAD-${Date.now()}`,
+        reference: pedidoId || `KALAD-${Date.now()}`,
         customerData: {
           email: formValue.email,
           fullName: formValue.fullName,
           phoneNumber: formValue.phone,
-          phoneNumberPrefix: '+57',
+          phoneNumberPrefix: "+57",
           legalId: formValue.documentNumber,
           legalIdType: formValue.documentType
         },
@@ -109,39 +196,100 @@ export class CheckoutComponent implements OnInit {
           addressLine1: formValue.address,
           city: formValue.city,
           region: formValue.department,
-          country: 'CO',
+          country: "CO",
           phoneNumber: formValue.phone
         },
-        redirectUrl: window.location.origin + '/confirmation'
+        redirectUrl: window.location.origin + "/confirmation"
       };
 
-      console.log('Procesando pago con configuración:', checkoutConfig);
+      await this.wompiService.openCheckout(checkoutConfig, async (tx) => {
+        const txId = tx?.id;
+        let status = tx?.status?.toLowerCase?.() || "error";
 
-      // Abrir el widget de Wompi
-      await this.wompiService.openCheckout(checkoutConfig);
+        // Verificar contra API de Wompi para evitar pagos fantasma
+        if (txId) {
+          try {
+            const verified = await this.wompiService.verifyTransaction(txId);
+            const verifiedStatus = verified?.status?.toLowerCase?.();
+            if (verifiedStatus) {
+              status = verifiedStatus;
+            }
+          } catch (err) {
+            console.error("No se pudo verificar la transaccion en Wompi", err);
+          }
+        }
 
+        const estado =
+          status === "approved"
+            ? "pagado"
+            : status === "declined"
+              ? "cancelado"
+              : "creado";
+
+        await this.pedidosService.actualizarPedido(pedidoId, {
+          estado,
+          transaccionId: txId
+        });
+
+        // Si se aprob�, descontar stock real
+        if (status === "approved") {
+          await Promise.all(
+            this.cartItems.map((item) =>
+              this.productService.reduceStock(item.id, item.qty).catch((err) => {
+                console.error("No se pudo descontar stock", err);
+              })
+            )
+          );
+        }
+      });
+
+      this.cartService.clear();
+      this.router.navigate(["/confirmation"], { queryParams: { id: pedidoId } });
     } catch (error) {
-      console.error('Error al procesar el pago:', error);
-      alert('Ocurrió un error al procesar el pago. Por favor intenta de nuevo.');
+      console.error("Error al procesar el pago:", error);
+      alert("Ocurrio un error al procesar el pago. Por favor intenta de nuevo.");
     } finally {
       this.isProcessing = false;
     }
   }
 
-  /**
-   * Marca todos los campos del formulario como touched para mostrar errores
-   */
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
   }
 
-  /**
-   * Continuar comprando (volver a productos)
-   */
   continueShopping(): void {
-    this.router.navigate(['/products']);
+    this.router.navigate(["/products"]);
+  }
+
+  private async ensureLoggedIn(): Promise<boolean> {
+    const logged = await firstValueFrom(this.authService.isLoggedIn$);
+    if (logged) return true;
+    try {
+      await this.authService.loginWithGoogle();
+      return true;
+    } catch {
+      alert("Debes iniciar sesion con Google para completar la compra.");
+      return false;
+    }
+  }
+
+  private async validateStock(): Promise<{ id: string; nombre: string }[]> {
+    const sinStock: { id: string; nombre: string }[] = [];
+    for (const item of this.cartItems) {
+      try {
+        const product = await firstValueFrom(this.productService.getProductById(item.id));
+        const disponible = Number(product.stock ?? 0);
+        if (disponible < item.qty) {
+          sinStock.push({ id: item.id, nombre: item.nombre });
+        }
+      } catch (e) {
+        console.error("Error consultando stock", e);
+        sinStock.push({ id: item.id, nombre: item.nombre });
+      }
+    }
+    return sinStock;
   }
 }

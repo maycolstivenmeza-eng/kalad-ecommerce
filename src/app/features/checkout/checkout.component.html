@@ -1,4 +1,4 @@
-<div class="checkout-container">
+﻿<div class="checkout-container">
   <div class="checkout-header">
     <h1>Finalizar Compra</h1>
     <p>Completa tus datos para continuar con el pago</p>
@@ -19,7 +19,7 @@
               type="text"
               id="fullName"
               formControlName="fullName"
-              placeholder="Ej: Juan Pérez García"
+              placeholder="Ej: Juan Perez"
               [class.error]="f['fullName'].invalid && f['fullName'].touched">
             @if (f['fullName'].invalid && f['fullName'].touched) {
               <span class="error-message">
@@ -35,12 +35,12 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="email">Correo Electrónico *</label>
+              <label for="email">Correo Electronico *</label>
               <input
                 type="email"
                 id="email"
                 formControlName="email"
-                placeholder="ejemplo&#64;correo.com"
+                placeholder="ejemplo@correo.com"
                 [class.error]="f['email'].invalid && f['email'].touched">
               @if (f['email'].invalid && f['email'].touched) {
                 <span class="error-message">
@@ -48,14 +48,14 @@
                     El correo es requerido
                   }
                   @if (f['email'].errors?.['email']) {
-                    Ingresa un correo válido
+                    Ingresa un correo valido
                   }
                 </span>
               }
             </div>
 
             <div class="form-group">
-              <label for="phone">Teléfono *</label>
+              <label for="phone">Telefono *</label>
               <input
                 type="tel"
                 id="phone"
@@ -65,7 +65,7 @@
                 [class.error]="f['phone'].invalid && f['phone'].touched">
               @if (f['phone'].invalid && f['phone'].touched) {
                 <span class="error-message">
-                  Ingresa un teléfono válido de 10 dígitos
+                  Ingresa un telefono valido de 10 digitos
                 </span>
               }
             </div>
@@ -75,15 +75,15 @@
             <div class="form-group">
               <label for="documentType">Tipo de Documento *</label>
               <select id="documentType" formControlName="documentType">
-                <option value="CC">Cédula de Ciudadanía</option>
-                <option value="CE">Cédula de Extranjería</option>
+                <option value="CC">Cedula de Ciudadania</option>
+                <option value="CE">Cedula de Extranjeria</option>
                 <option value="NIT">NIT</option>
                 <option value="PP">Pasaporte</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="documentNumber">Número de Documento *</label>
+              <label for="documentNumber">Numero de Documento *</label>
               <input
                 type="text"
                 id="documentNumber"
@@ -92,19 +92,19 @@
                 [class.error]="f['documentNumber'].invalid && f['documentNumber'].touched">
               @if (f['documentNumber'].invalid && f['documentNumber'].touched) {
                 <span class="error-message">
-                  Ingresa solo números
+                  Ingresa solo numeros
                 </span>
               }
             </div>
           </div>
         </section>
 
-        <!-- Dirección de Envío -->
+        <!-- Direccion de Envio -->
         <section class="form-section">
-          <h2><i class="fas fa-map-marker-alt"></i> Dirección de Envío</h2>
+          <h2><i class="fas fa-map-marker-alt"></i> Direccion de Envio</h2>
 
           <div class="form-group">
-            <label for="address">Dirección *</label>
+            <label for="address">Direccion *</label>
             <input
               type="text"
               id="address"
@@ -112,7 +112,7 @@
               placeholder="Ej: Calle 123 #45-67, Apto 801"
               [class.error]="f['address'].invalid && f['address'].touched">
             @if (f['address'].invalid && f['address'].touched) {
-              <span class="error-message">La dirección es requerida</span>
+              <span class="error-message">La direccion es requerida</span>
             }
           </div>
 
@@ -123,7 +123,7 @@
                 type="text"
                 id="city"
                 formControlName="city"
-                placeholder="Ej: Bogotá"
+                placeholder="Ej: Bogota"
                 [class.error]="f['city'].invalid && f['city'].touched">
               @if (f['city'].invalid && f['city'].touched) {
                 <span class="error-message">La ciudad es requerida</span>
@@ -145,7 +145,7 @@
           </div>
 
           <div class="form-group">
-            <label for="postalCode">Código Postal (Opcional)</label>
+            <label for="postalCode">Codigo Postal (Opcional)</label>
             <input
               type="text"
               id="postalCode"
@@ -163,12 +163,12 @@
             <textarea
               id="notes"
               formControlName="notes"
-              placeholder="¿Alguna instrucción especial para la entrega?"
+              placeholder="Alguna instruccion especial para la entrega?"
               rows="4"></textarea>
           </div>
         </section>
 
-        <!-- Botones de Acción -->
+        <!-- Botones -->
         <div class="form-actions">
           <button
             type="button"
@@ -202,10 +202,10 @@
             <div class="item-details">
               <h3>{{ item.nombre }}</h3>
               <p>Color: {{ item.color }}</p>
-              <p>Cantidad: {{ item.cantidad }}</p>
+              <p>Cantidad: {{ item.qty }}</p>
             </div>
             <div class="item-price">
-              {{ formatPrice(item.precio * item.cantidad) }}
+              {{ formatPrice(item.precio * item.qty) }}
             </div>
           </div>
         }
@@ -214,14 +214,22 @@
       <div class="summary-details">
         <div class="summary-row">
           <span>Subtotal</span>
-          <span>{{ formatPrice(getTotal()) }}</span>
+          <span>{{ formatPrice(getSubtotal()) }}</span>
         </div>
         <div class="summary-row">
-          <span>Envío</span>
-          <span>Gratis</span>
+          <span>Descuento</span>
+          <span>- {{ formatPrice(discount) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Envio</span>
+          <span>{{ formatPrice(shipping) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Comision Wompi (referencial)</span>
+          <span>{{ formatPrice(getCommission()) }}</span>
         </div>
         <div class="summary-row total">
-          <span>Total</span>
+          <span>Total a pagar</span>
           <span>{{ formatPrice(getTotal()) }}</span>
         </div>
       </div>
@@ -230,7 +238,7 @@
         <i class="fas fa-lock"></i>
         <div>
           <strong>Pago Seguro</strong>
-          <p>Transacción protegida con Wompi</p>
+          <p>Transaccion protegida con Wompi</p>
         </div>
       </div>
     </div>

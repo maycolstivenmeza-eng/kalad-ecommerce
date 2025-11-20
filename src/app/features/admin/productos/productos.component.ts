@@ -1,22 +1,22 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
-import { ProductService } from '../../../shared/services/product.service';
-import { Product } from '../../../shared/models/product.model';
-import { Subscription } from 'rxjs';
+﻿import { Component, OnDestroy, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule, NgForm } from "@angular/forms";
+import { ProductService } from "../../../shared/services/product.service";
+import { Product } from "../../../shared/models/product.model";
+import { Subscription } from "rxjs";
+import { AuthService } from "../../../shared/services/auth.service";
+import { Router } from "@angular/router";
+import { PedidosService, Pedido } from "../../../shared/services/pedidos.service";
 
-// 👇 IMPORTACIONES
-import { AuthService } from '../../../shared/services/auth.service';
-import { Router } from '@angular/router';
-
-type AdminProductForm = {
+// Tipos
+ type AdminProductForm = {
   nombre: string;
   precio: number | string | null;
   descripcion: string;
   caracteristicas: string;
   categoria: string;
   coleccion: string;
-  badge: Product['badge'];
+  badge: Product["badge"];
   stock: number | null;
   coloresTexto: string;
   imagen: string;
@@ -27,14 +27,15 @@ type AdminProductForm = {
     profundidad: string;
     capacidad: string;
   };
+  activo: boolean;
 };
 
 @Component({
-  selector: 'app-productos',
+  selector: "app-productos",
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './productos.component.html',
-  styleUrls: ['./productos.component.css'],
+  templateUrl: "./productos.component.html",
+  styleUrls: ["./productos.component.css"],
 })
 export class ProductosComponent implements OnInit, OnDestroy {
   producto: AdminProductForm = this.obtenerEstadoInicial();
@@ -43,7 +44,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   imagenSeleccionada: File | null = null;
   previewUrl: string | null = null;
 
-  // Imágenes secundarias
+  // Imagenes secundarias
   imagenesSeleccionadas: File[] = [];
   previewImagenes: string[] = [];
 
@@ -52,42 +53,47 @@ export class ProductosComponent implements OnInit, OnDestroy {
   productosFiltrados: Product[] = [];
   private productosSub?: Subscription;
 
-  // Filtros
-  filtroNombre = '';
-  filtroCategoria = '';
-  filtroColeccion = '';
-  filtroBadge: Product['badge'] | '' = '';
+  // Pedidos
+  pedidos: Pedido[] = [];
+  readonly estadosPedido: Pedido['estado'][] = ['creado', 'pagado', 'enviado', 'entregado', 'cancelado'];
 
-  // Edición
+  // Filtros
+  filtroNombre = "";
+  filtroCategoria = "";
+  filtroColeccion = "";
+  filtroBadge: Product["badge"] | "" = "";
+
+  // Edicion
   modoEdicion = false;
   idProductoEdicion: string | null = null;
 
-  // Catálogos
-  readonly categorias = ['Mochilas', 'Bolsas', 'Morrales', 'Zapatos'];
+  // Catalogos
+  readonly categorias = ["Mochilas", "Bolsas"]; // se retiraron Morrales y Zapatos
   readonly colecciones = [
-    { id: 'kalad-origen', label: 'Kalad Origen' },
-    { id: 'kalad-essencia', label: 'Kalad Essencia' }
+    { id: "kalad-origen", label: "Kalad Origen" },
+    { id: "kalad-essencia", label: "Kalad Essencia" }
   ];
-  readonly badges: Product['badge'][] = ['Nuevo', 'Oferta', 'Limitada', null];
+  readonly badges: Product["badge"][] = ["Nuevo", "Oferta", "Limitada", null];
   private imagenCache = new Map<string, string>();
   private imagenResolviendo = new Set<string>();
   guardando = false;
-  mensajeSistema: { tipo: 'error' | 'exito'; texto: string } | null = null;
-  toastActivo: { tipo: 'error' | 'exito'; texto: string } | null = null;
+  mensajeSistema: { tipo: "error" | "exito"; texto: string } | null = null;
+  toastActivo: { tipo: "error" | "exito"; texto: string } | null = null;
   private toastTimeout?: ReturnType<typeof setTimeout>;
 
   get textoBotonAccion(): string {
-    return this.modoEdicion ? 'Actualizar producto' : 'Guardar producto nuevo';
+    return this.modoEdicion ? "Actualizar producto" : "Guardar producto nuevo";
   }
 
   get textoBotonProcesando(): string {
-    return this.modoEdicion ? 'Actualizando...' : 'Guardando...';
+    return this.modoEdicion ? "Actualizando..." : "Guardando...";
   }
 
   constructor(
     private productService: ProductService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private pedidosService: PedidosService
   ) {}
 
   // ==========================================================
@@ -95,6 +101,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   // ==========================================================
   ngOnInit() {
     this.cargarProductos();
+    this.cargarPedidos();
   }
 
   ngOnDestroy() {
@@ -115,25 +122,35 @@ export class ProductosComponent implements OnInit, OnDestroy {
     });
   }
 
+  async cargarPedidos() {
+    try {
+      const obs = await this.pedidosService.obtenerPedidosAdmin();
+      obs.subscribe((peds) => (this.pedidos = peds ?? []));
+    } catch (e) {
+      console.error('No se pudieron cargar pedidos', e);
+    }
+  }
+
   obtenerEstadoInicial(): AdminProductForm {
     return {
-      nombre: '',
-      precio: '',
-      descripcion: '',
-      caracteristicas: '',
-      categoria: '',
-      coleccion: 'kalad-origen',
+      nombre: "",
+      precio: "",
+      descripcion: "",
+      caracteristicas: "",
+      categoria: "",
+      coleccion: "kalad-origen",
       badge: null,
       stock: null,
-      coloresTexto: '',
-      imagen: '',
+      coloresTexto: "",
+      imagen: "",
       imagenes: [],
       dimensiones: {
-        alto: '',
-        ancho: '',
-        profundidad: '',
-        capacidad: '',
+        alto: "",
+        ancho: "",
+        profundidad: "",
+        capacidad: "",
       },
+      activo: true,
     };
   }
 
@@ -156,7 +173,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   limpiarImagen() {
     this.imagenSeleccionada = null;
     this.previewUrl = null;
-    if (this.modoEdicion) this.producto.imagen = '';
+    if (this.modoEdicion) this.producto.imagen = "";
   }
 
   faltaImagenPrincipal() {
@@ -181,7 +198,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
       reader.readAsDataURL(file);
     }
 
-    input.value = '';
+    input.value = "";
   }
 
   eliminarImagenSecundaria(index: number) {
@@ -206,8 +223,8 @@ export class ProductosComponent implements OnInit, OnDestroy {
     if (form.invalid || this.faltaImagenPrincipal()) {
       form.control.markAllAsTouched();
       this.mensajeSistema = {
-        tipo: 'error',
-        texto: 'Revisa que todos los campos obligatorios est�n completos.'
+        tipo: "error",
+        texto: "Revisa que todos los campos obligatorios esten completos."
       };
       this.mostrarToast('error', this.mensajeSistema.texto);
       return;
@@ -216,8 +233,8 @@ export class ProductosComponent implements OnInit, OnDestroy {
     const precioNormalizado = this.parsearPrecioEntrada(this.producto.precio);
     if (precioNormalizado === null || isNaN(precioNormalizado) || precioNormalizado < 0) {
       this.mensajeSistema = {
-        tipo: 'error',
-        texto: 'Ingresa un precio v�lido en COP (solo n�meros y separadores).'
+        tipo: "error",
+        texto: "Ingresa un precio valido en COP (solo numeros y separadores)."
       };
       this.mostrarToast('error', this.mensajeSistema.texto);
       return;
@@ -248,7 +265,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
       const colores = this.normalizarColores(this.producto.coloresTexto);
       const dimensiones = this.sanitizarDimensiones(this.producto.dimensiones);
 
-      const payload: Omit<Product, 'id'> = {
+      const payload: Omit<Product, "id"> = {
         nombre: this.producto.nombre.trim(),
         precio: precioNormalizado,
         descripcion: this.producto.descripcion.trim(),
@@ -257,20 +274,21 @@ export class ProductosComponent implements OnInit, OnDestroy {
         coleccion: this.producto.coleccion,
         imagen: this.producto.imagen,
         colores,
-        color: colores[0] ?? '',
+        color: colores[0] ?? "",
         stock: Number(this.producto.stock),
         badge: this.producto.badge,
         imagenes: imagenesFinales,
         dimensiones,
+        activo: this.producto.activo,
       };
 
       if (this.modoEdicion && this.idProductoEdicion) {
         await this.productService.updateProduct(this.idProductoEdicion, payload);
-        this.mensajeSistema = { tipo: 'exito', texto: 'Producto actualizado correctamente.' };
+        this.mensajeSistema = { tipo: "exito", texto: "Producto actualizado correctamente." };
         this.mostrarToast('exito', this.mensajeSistema.texto);
       } else {
         await this.productService.createProduct(payload);
-        this.mensajeSistema = { tipo: 'exito', texto: 'Producto creado correctamente.' };
+        this.mensajeSistema = { tipo: "exito", texto: "Producto creado correctamente." };
         this.mostrarToast('exito', this.mensajeSistema.texto);
       }
 
@@ -284,13 +302,14 @@ export class ProductosComponent implements OnInit, OnDestroy {
       this.cargarProductos();
     } catch (e) {
       console.error(e);
-      const texto = e instanceof Error ? e.message : 'Error guardando el producto';
-      this.mensajeSistema = { tipo: 'error', texto };
+      const texto = e instanceof Error ? e.message : "Error guardando el producto";
+      this.mensajeSistema = { tipo: "error", texto };
       this.mostrarToast('error', texto);
     } finally {
       this.guardando = false;
     }
-  }// ==========================================================
+  }
+  // ==========================================================
   // EDITAR
   // ==========================================================
   editarProducto(producto: Product) {
@@ -310,7 +329,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
       coleccion: producto.coleccion,
       badge: producto.badge,
       stock: producto.stock,
-        coloresTexto: colores.join(', '),
+      coloresTexto: colores.join(', '),
       imagen: producto.imagen,
       imagenes: [...(producto.imagenes ?? [])],
       dimensiones: {
@@ -319,6 +338,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
         profundidad: producto.dimensiones?.profundidad ?? '',
         capacidad: producto.dimensiones?.capacidad ?? '',
       },
+      activo: producto.activo ?? true,
     };
 
     this.imagenSeleccionada = null;
@@ -339,10 +359,53 @@ export class ProductosComponent implements OnInit, OnDestroy {
   async eliminarProducto(id?: string) {
     if (!id) return;
 
-    if (!confirm('¿Seguro que deseas eliminarlo?')) return;
+    if (!confirm('Seguro que deseas eliminarlo?')) return;
 
     await this.productService.deleteProduct(id);
     this.cargarProductos();
+  }
+
+  async toggleActivo(prod: Product) {
+    if (!prod.id) return;
+    const nuevo = !(prod.activo ?? true);
+    await this.productService.updateProduct(prod.id, { activo: nuevo });
+  }
+
+  async cambiarEstadoPedido(pedido: Pedido, nuevoEstado: Pedido['estado']) {
+    if (!pedido.id || pedido.estado === nuevoEstado) return;
+    const anterior = pedido.estado;
+    const guia = (pedido.guiaEnvio || '').trim();
+    const nota = (pedido.notaAdmin || '').trim();
+
+    if ((nuevoEstado === 'enviado' || nuevoEstado === 'entregado') && !guia) {
+      this.mostrarToast('error', 'Agrega una guia de envio antes de marcar como enviado/entregado');
+      return;
+    }
+
+    try {
+      await this.pedidosService.actualizarPedido(pedido.id, {
+        estado: nuevoEstado,
+        guiaEnvio: guia || undefined,
+        notaAdmin: nota || undefined
+      });
+      pedido.estado = nuevoEstado;
+      pedido.guiaEnvio = guia || undefined;
+      pedido.notaAdmin = nota || undefined;
+
+      // Si se cancela y antes no estaba cancelado, devolver stock
+      if (nuevoEstado === 'cancelado' && anterior !== 'cancelado') {
+        await Promise.all(
+          (pedido.items || []).map((item) =>
+            this.productService.increaseStock(item.productId, item.qty).catch((err) => {
+              console.error('No se pudo devolver stock', err);
+            })
+          )
+        );
+      }
+    } catch (e) {
+      console.error('No se pudo cambiar estado del pedido', e);
+      this.mostrarToast('error', 'No se pudo cambiar el estado del pedido');
+    }
   }
 
   // ==========================================================
@@ -398,7 +461,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   }
 
   private esUrlPublica(valor: string): boolean {
-    return /^https?:\/\//i.test(valor) || valor.startsWith('data:');
+    return /^https?:\//i.test(valor) || valor.startsWith('data:');
   }
 
   // ==========================================================
@@ -476,6 +539,3 @@ export class ProductosComponent implements OnInit, OnDestroy {
     return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(Number(precio));
   }
 }
-
-
-

@@ -39,6 +39,7 @@
     <div class="info">
 
       <div class="badge" *ngIf="p.badge" [ngClass]="p.badge">{{ p.badge }}</div>
+      <div class="badge out" *ngIf="((p.stock || 0)) <= 0">Sin stock</div>
       <h1 class="title">{{ p.nombre }}</h1>
 
       <p class="price">{{ formatPrice(p.precio) }}</p>
@@ -65,23 +66,24 @@
         <p class="subtitle">Cantidad</p>
 
         <div class="qty-box">
-          <button (click)="decrement()">−</button>
+          <button (click)="decrement()" [disabled]="((p.stock || 0)) <= 0">-</button>
 
           <input
             type="number"
             [(ngModel)]="quantity"
             min="1"
             [max]="p.stock || 99"
+            [disabled]="((p.stock || 0)) <= 0"
           />
 
-          <button (click)="increment()">+</button>
+          <button (click)="increment()" [disabled]="((p.stock || 0)) <= 0">+</button>
         </div>
       </div>
 
       <!-- BOTONES -->
-      <button class="btn-buy" (click)="buyNow()">Comprar Ahora</button>
+      <button class="btn-buy" (click)="buyNow()" [disabled]="((p.stock || 0)) <= 0">Comprar Ahora</button>
 
-      <button class="btn-cart" (click)="addToCart()">Agregar al Carrito</button>
+      <button class="btn-cart" (click)="addToCart()" [disabled]="((p.stock || 0)) <= 0">Agregar al Carrito</button>
 
       <button class="favorite-btn">♡ Añadir a favoritos</button>
 
@@ -146,3 +148,4 @@
       <p class="review-comment">{{ r.comment }}</p>
     </div>
   </section>
+

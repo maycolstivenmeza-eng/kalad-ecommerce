@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
-import { AddressService, SavedAddress } from '../../shared/services/address.service';
+import { SavedAddress } from '../../shared/services/address.service';
 import { FormsModule } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
+import { PedidosService, Pedido } from '../../shared/services/pedidos.service';
+import { UserDataService } from '../../shared/services/user-data.service';
 
 @Component({
   selector: 'app-account',
@@ -17,7 +19,8 @@ import { firstValueFrom } from 'rxjs';
 export class AccountComponent implements OnInit {
   user$ = this.authService.user$;
   favorites$ = this.favoritesService.favorites$;
-  addresses$ = this.addressService.addresses$;
+  addresses$?: Observable<SavedAddress[]>;
+  pedidos$?: Observable<Pedido[]>;
 
   newAddress: Omit<SavedAddress, 'id'> = {
     label: '',
@@ -30,7 +33,8 @@ export class AccountComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private favoritesService: FavoritesService,
-    private addressService: AddressService,
+    private userDataService: UserDataService,
+    private pedidosService: PedidosService,
     private router: Router
   ) {}
 
@@ -41,6 +45,9 @@ export class AccountComponent implements OnInit {
         this.router.navigate(['/home']);
       });
     }
+    this.addresses$ = await this.userDataService.listAddresses$();
+    this.pedidos$ = await this.pedidosService.misPedidos$();
+    await this.userDataService.saveAuthProfile();
   }
 
   async loginGoogle() {
@@ -54,11 +61,11 @@ export class AccountComponent implements OnInit {
 
   addAddress() {
     if (!this.newAddress.line1 || !this.newAddress.city) return;
-    this.addressService.add(this.newAddress);
+    this.userDataService.addAddress(this.newAddress);
     this.newAddress = { label: '', line1: '', city: '', region: '', postal: '' };
   }
 
   removeAddress(id: string) {
-    this.addressService.remove(id);
+    this.userDataService.deleteAddress(id);
   }
 }

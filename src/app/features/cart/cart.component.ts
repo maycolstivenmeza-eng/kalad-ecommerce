@@ -1,17 +1,19 @@
-﻿import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Observable, Subscription, map, take } from 'rxjs';
-import { CartService, CartItem } from '../../shared/services/cart.service';
-import { Product } from '../../shared/models/product.model';
-import { ProductService } from '../../shared/services/product.service';
+﻿import { CommonModule } from "@angular/common";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { Observable, Subscription, map, take } from "rxjs";
+import { CartService, CartItem } from "../../shared/services/cart.service";
+import { Product } from "../../shared/models/product.model";
+import { ProductService } from "../../shared/services/product.service";
+import { CouponService } from "../../shared/services/coupon.service";
 
 @Component({
-  selector: 'app-cart',
+  selector: "app-cart",
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  imports: [CommonModule, RouterLink, FormsModule],
+  templateUrl: "./cart.component.html",
+  styleUrl: "./cart.component.css"
 })
 export class CartComponent implements OnInit, OnDestroy {
   cartItems$: Observable<CartItem[]> = this.cartService.items$;
@@ -21,16 +23,24 @@ export class CartComponent implements OnInit, OnDestroy {
   totalAmount$ = this.cartService.items$.pipe(
     map((items) => items.reduce((acc, item) => acc + item.qty * item.precio, 0))
   );
+  couponCode = "";
+  discount = 0;
+  shipping = 0;
   recommendedProducts: Product[] = [];
   private sub?: Subscription;
 
   constructor(
     private cartService: CartService,
-    private productService: ProductService
+    private productService: ProductService,
+    private couponService: CouponService
   ) {}
 
   ngOnInit(): void {
-    this.sub = this.cartItems$.subscribe((items) => this.loadRecommendations(items));
+    this.sub = this.cartItems$.subscribe((items) => {
+      this.loadRecommendations(items);
+      const subtotal = items.reduce((acc, i) => acc + i.precio * i.qty, 0);
+      this.computeShipping(subtotal);
+    });
   }
 
   ngOnDestroy(): void {
@@ -51,6 +61,30 @@ export class CartComponent implements OnInit, OnDestroy {
 
   clear() {
     this.cartService.clear();
+  }
+
+  async applyCoupon(total: number) {
+    const code = this.couponCode.trim().toUpperCase();
+    if (!code) {
+      this.discount = 0;
+      return;
+    }
+    try {
+      this.discount = await this.couponService.validate(code, total);
+    } catch (e) {
+      this.discount = 0;
+      alert((e as any)?.message || "Cupon invalido");
+    }
+  }
+
+  resetDiscount() {
+    this.couponCode = "";
+    this.discount = 0;
+  }
+
+  computeShipping(subtotal: number) {
+    // Envio gratis desde 200.000
+    this.shipping = subtotal >= 200000 || subtotal === 0 ? 0 : 12000;
   }
 
   private loadRecommendations(items: CartItem[]) {

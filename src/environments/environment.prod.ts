@@ -1,9 +1,8 @@
-export const environment = {
+﻿export const environment = {
   production: true,
   useStorageUploadProxy: false,
 
-  // Configuración de Firebase para producción
-  // ⚠️ IMPORTANTE: Reemplaza estos valores con los de tu proyecto de producción
+  // Configuracion de Firebase para produccion
   firebase: {
     apiKey: "AIzaSyDY4hRh6LriMeNn6QI3pdeHdZXPzGnU2ug",
     authDomain: "kalad3-8a000.firebaseapp.com",
@@ -14,14 +13,14 @@ export const environment = {
     measurementId: "G-34LYXS0EGQ"
   },
 
-  // Configuración de Wompi para producción
+  // Configuracion de Wompi para produccion
   wompi: {
-    // Reemplaza con tu clave pública de producción de Wompi
-    publicKey: 'TU_CLAVE_PUBLICA_PRODUCCION_AQUI', // pub_prod_xxxxxxxxx
-    // ⚠️ NUNCA expongas el integrity secret en producción
-    // Esto debe manejarse en el backend
+    publicKey: 'TU_CLAVE_PUBLICA_PRODUCCION_AQUI',
     integritySecret: 'TU_CLAVE_INTEGRIDAD_PRODUCCION_AQUI',
     currency: 'COP',
-    redirectUrl: 'https://tudominio.com'
+    redirectUrl: 'https://tudominio.com',
+    apiBase: 'https://production.wompi.co',
+    feePercent: 0,
+    feeFixed: 0
   }
 };

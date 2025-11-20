@@ -86,7 +86,9 @@ export class ProductService {
   getFeaturedProducts(): Observable<Product[]> {
     return this.getAllProducts().pipe(
       map((products) =>
-        products.filter((p) => !!p.badge && this.badgeValues.includes(p.badge as any))
+        products
+          .filter((p) => (p.activo ?? true))
+          .filter((p) => !!p.badge && this.badgeValues.includes(p.badge as any))
       )
     );
   }
@@ -133,6 +135,16 @@ export class ProductService {
       if (current < quantity) throw new Error('Stock insuficiente');
 
       trx.update(this.docRef(id), { stock: increment(-quantity) });
+    });
+  }
+
+  async increaseStock(id: string, quantity: number): Promise<void> {
+    const amount = Math.max(0, quantity);
+    if (!amount) return;
+    await runTransaction(this.firestore, async (trx: any) => {
+      const snap = await trx.get(this.docRef(id));
+      if (!snap.exists()) throw new Error('Producto no existe');
+      trx.update(this.docRef(id), { stock: increment(amount) });
     });
   }
 
@@ -298,6 +310,7 @@ export class ProductService {
       dimensiones,
       badge,
       Etiqueta: badge,
+      activo: raw.activo ?? true,
     };
 
     const copy = buildProductCopy(baseProduct);
@@ -330,6 +343,7 @@ export class ProductService {
       Etiqueta: badge,
       color: color || null,
       precio,
+      activo: product.activo ?? true,
     };
 
     const copy = buildProductCopy({

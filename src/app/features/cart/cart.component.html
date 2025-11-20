@@ -29,11 +29,36 @@
       <aside class="resumen">
         <h3>Resumen</h3>
         <div class="linea"></div>
-        <div class="subtotal">
-          <span>Productos ({{ totalItems$ | async }})</span>
-          <strong>{{ (totalAmount$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
-        </div>
-        <button class="btn-comprar" routerLink="/checkout">Ir a checkout</button>
+        <ng-container *ngIf="totalAmount$ | async as subtotal">
+          <div class="subtotal">
+            <span>Productos ({{ totalItems$ | async }})</span>
+            <strong>{{ subtotal | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+          </div>
+
+          <div class="cupon">
+            <input
+              type="text"
+              placeholder="Cupon (ej: KALAD10)"
+              [(ngModel)]="couponCode"
+              (keydown.enter)="applyCoupon(subtotal)"
+            />
+            <button type="button" (click)="applyCoupon(subtotal)">Aplicar</button>
+            <button type="button" class="link" *ngIf="discount" (click)="resetDiscount()">Quitar</button>
+          </div>
+
+          <div class="totales">
+            <p>Descuento: <strong>- {{ discount | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+            <p>
+              Envio:
+              <strong>{{ shipping | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            </p>
+            <div class="total-final">
+              <span>Total</span>
+              <strong>{{ (subtotal + shipping - discount) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
+          </div>
+          <button class="btn-comprar" routerLink="/checkout">Ir a checkout</button>
+        </ng-container>
       </aside>
     </div>
   </ng-container>

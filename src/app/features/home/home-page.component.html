@@ -27,6 +27,7 @@
                         <span class="badge" *ngIf="product.badge" [ngClass]="product.badge">
                             {{ product.badge }}
                         </span>
+                        <span class="badge out" *ngIf="(product.stock ?? 0) <= 0">Sin stock</span>
                         <img
                           class="img primary"
                           [src]="resolveImage(product)"
@@ -60,6 +61,7 @@
                           class="cart-btn"
                           type="button"
                           (click)="addToCart(product, $event)"
+                          [disabled]="(product.stock || 0) <= 0"
                         >
                           <svg
                             class="cart-icon"
@@ -141,6 +143,7 @@
         </div>
     </div>
 </section>
+
 
 
 

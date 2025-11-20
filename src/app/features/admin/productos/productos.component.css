@@ -165,6 +165,20 @@ textarea {
   border-bottom: none;
 }
 
+/* PILL ESTADO */
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: #e0f5e9;
+  color: #2e7d32;
+}
+.pill.off {
+  background: #f5e0e0;
+  color: #c62828;
+}
+
 /* IMAGEN TABLA */
 .img-tabla {
   width: 70px;
@@ -178,6 +192,17 @@ textarea {
 .acciones {
   display: flex;
   gap: 8px;
+}
+
+.acciones .btn-toggle {
+  padding: 6px 12px;
+  background: #2e7d32;
+  color: #ffffff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
 }
 
 /* EDITAR */
@@ -400,4 +425,18 @@ textarea {
   .filtros-bar {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.mini-input {
+  width: 120px;
+  padding: 6px;
+  font-size: 13px;
+  border: 1px solid #c8c8c8;
+  border-radius: 6px;
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
 }

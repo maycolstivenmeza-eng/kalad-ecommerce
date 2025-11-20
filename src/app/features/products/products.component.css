@@ -186,6 +186,10 @@
   background-color: #1e88e5;
 }
 
+.badge.out {
+  background-color: #777;
+}
+
 .img {
   width: 100%;
   height: 265px;
@@ -258,6 +262,12 @@
   display: grid;
   place-items: center;
   cursor: pointer;
+}
+
+.cart-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #ddd;
 }
 
 .cart-btn:hover {

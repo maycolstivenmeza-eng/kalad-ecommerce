@@ -850,6 +850,9 @@ body.modal-open { overflow: hidden; }
   z-index: 2;
   pointer-events: none;
 }
+.product-grid .badge.out {
+  background: #777;
+}
 
 .product-grid .img {
   width: 100%;
@@ -920,6 +923,12 @@ body.modal-open { overflow: hidden; }
     display: grid;
     place-items: center;
     cursor: pointer;
+  }
+
+.product-grid .cart-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #ddd;
   }
 
 .product-grid .cart-btn:hover {

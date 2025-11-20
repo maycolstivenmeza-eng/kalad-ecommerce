@@ -80,6 +80,9 @@
   text-transform: uppercase;
   margin-bottom: 10px;
 }
+.info .badge.out {
+  background: #777;
+}
 .info .badge.Nuevo {
   background-color: #4CAF50;
 }

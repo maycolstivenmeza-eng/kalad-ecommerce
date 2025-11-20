@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
+import { PedidosService, Pedido } from '../../shared/services/pedidos.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-confirmation',
@@ -14,34 +16,26 @@ export class ConfirmationComponent implements OnInit {
   paymentStatus: string | null = null;
   transactionId: string | null = null;
   currentDate: Date = new Date();
+  pedido$?: Observable<Pedido | undefined>;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private pedidosService: PedidosService) {}
 
   ngOnInit(): void {
-    // Capturar parámetros de la URL que Wompi puede enviar
     this.route.queryParams.subscribe(params => {
       this.orderReference = params['id'] || this.generateOrderReference();
       this.paymentStatus = params['status'] || 'APPROVED';
       this.transactionId = params['transactionId'] || null;
 
-      console.log('Parámetros de confirmación:', {
-        orderReference: this.orderReference,
-        paymentStatus: this.paymentStatus,
-        transactionId: this.transactionId
-      });
+      if (this.orderReference) {
+        this.pedido$ = this.pedidosService.obtenerPedido(this.orderReference);
+      }
     });
   }
 
-  /**
-   * Genera una referencia de orden temporal si no viene en los parámetros
-   */
   private generateOrderReference(): string {
     return `KALAD-${Date.now()}`;
   }
 
-  /**
-   * Obtiene el texto legible del estado del pago
-   */
   getStatusText(status: string): string {
     const statusMap: { [key: string]: string } = {
       'APPROVED': 'Aprobado',

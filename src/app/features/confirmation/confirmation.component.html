@@ -1,24 +1,21 @@
-<div class="confirmation-container">
+﻿<div class="confirmation-container">
   <div class="confirmation-card">
-    <!-- Icono de éxito animado -->
     <div class="success-icon">
       <div class="success-circle">
         <i class="fas fa-check"></i>
       </div>
     </div>
 
-    <!-- Mensaje principal -->
     <div class="confirmation-header">
-      <h1>¡Pago Exitoso!</h1>
+      <h1>Pago Exitoso</h1>
       <p class="subtitle">Tu pedido ha sido confirmado</p>
     </div>
 
-    <!-- Información del pedido -->
     <div class="order-info">
       @if (orderReference) {
         <div class="info-row">
           <span class="info-label">
-            <i class="fas fa-receipt"></i> Número de orden
+            <i class="fas fa-receipt"></i> Numero de orden
           </span>
           <span class="info-value">{{ orderReference }}</span>
         </div>
@@ -41,39 +38,55 @@
         </span>
         <span class="info-value">{{ currentDate | date: 'dd/MM/yyyy - HH:mm' }}</span>
       </div>
+
+      <ng-container *ngIf="pedido$ | async as pedido">
+        <div class="info-row" *ngIf="pedido.estado">
+          <span class="info-label"><i class="fas fa-box"></i> Estado del pedido</span>
+          <span class="info-value">{{ pedido.estado }}</span>
+        </div>
+        <div class="info-row" *ngIf="pedido.transaccionId">
+          <span class="info-label"><i class="fas fa-shield-alt"></i> Transaccion</span>
+          <span class="info-value">{{ pedido.transaccionId }}</span>
+        </div>
+        <div class="info-row" *ngIf="pedido.guiaEnvio">
+          <span class="info-label"><i class="fas fa-truck"></i> Guia de envio</span>
+          <span class="info-value">{{ pedido.guiaEnvio }}</span>
+        </div>
+        <div class="info-row" *ngIf="pedido.notaAdmin">
+          <span class="info-label"><i class="fas fa-sticky-note"></i> Nota</span>
+          <span class="info-value">{{ pedido.notaAdmin }}</span>
+        </div>
+      </ng-container>
     </div>
 
-    <!-- Mensaje de confirmación -->
     <div class="confirmation-message">
       <div class="message-icon">
         <i class="fas fa-envelope"></i>
       </div>
       <div class="message-text">
-        <p><strong>Te hemos enviado un correo de confirmación</strong></p>
-        <p class="text-muted">Revisa tu bandeja de entrada para más detalles sobre tu pedido y seguimiento del envío.</p>
+        <p><strong>Te hemos enviado un correo de confirmacion</strong></p>
+        <p class="text-muted">Revisa tu bandeja de entrada para mas detalles sobre tu pedido y seguimiento del envio.</p>
       </div>
     </div>
 
-    <!-- Próximos pasos -->
     <div class="next-steps">
-      <h3><i class="fas fa-list-check"></i> ¿Qué sigue?</h3>
+      <h3><i class="fas fa-list-check"></i> Que sigue?</h3>
       <ul>
         <li>
           <i class="fas fa-circle-check"></i>
-          <span>Prepararemos tu pedido en las próximas 24 horas</span>
+          <span>Prepararemos tu pedido en las proximas 24 horas</span>
         </li>
         <li>
           <i class="fas fa-circle-check"></i>
-          <span>Recibirás un correo con el número de seguimiento</span>
+          <span>Recibiras un correo con el numero de seguimiento</span>
         </li>
         <li>
           <i class="fas fa-circle-check"></i>
-          <span>El tiempo estimado de entrega es de 3-5 días hábiles</span>
+          <span>El tiempo estimado de entrega es de 3-5 dias habiles</span>
         </li>
       </ul>
     </div>
 
-    <!-- Botones de acción -->
     <div class="confirmation-actions">
       <button class="btn-secondary" routerLink="/products">
         <i class="fas fa-shopping-bag"></i> Seguir Comprando
@@ -83,16 +96,14 @@
       </button>
     </div>
 
-    <!-- Ayuda -->
     <div class="help-section">
       <p>
         <i class="fas fa-question-circle"></i>
-        ¿Necesitas ayuda? <a routerLink="/contact">Contáctanos</a>
+        Necesitas ayuda? <a routerLink="/contact">Contactanos</a>
       </p>
     </div>
   </div>
 
-  <!-- Decoración -->
   <div class="confetti">
     <div class="confetti-piece"></div>
     <div class="confetti-piece"></div>

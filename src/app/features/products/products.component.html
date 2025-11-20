@@ -1,4 +1,4 @@
-<div class="coleccion-container">
+﻿<div class="coleccion-container">
 
   <div class="breadcrumb">
     INICIO / PRODUCTOS
@@ -67,6 +67,7 @@
             <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
               {{ p.badge }}
             </span>
+            <span class="badge out" *ngIf="((p.stock || 0)) <= 0">Sin stock</span>
           <img
             class="img primary"
             [src]="resolveImage(p)"
@@ -95,7 +96,12 @@
 
           <div class="price-row">
             <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
-            <button class="cart-btn" type="button" (click)="addToCart(p)">
+            <button
+              class="cart-btn"
+              type="button"
+              (click)="addToCart(p)"
+              [disabled]="((p.stock || 0)) <= 0"
+            >
               <svg
                 class="cart-icon"
                 viewBox="0 0 24 24"
@@ -122,3 +128,4 @@
 
   </div>
 </div>
+

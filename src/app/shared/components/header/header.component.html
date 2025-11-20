@@ -75,20 +75,18 @@
   </div>
 
   <div class="auth-dropdown" *ngIf="authMenuOpen" (click)="$event.stopPropagation()">
-    <ng-container *ngIf="isLoggedIn$ | async as logged">
-      <ng-container *ngIf="logged; else loginTpl">
-        <p class="auth-status">Sesión activa</p>
-        <button class="auth-btn" routerLink="/account" (click)="authMenuOpen=false">Ir a mi cuenta</button>
-        <button class="auth-btn" (click)="logout($event)">Cerrar sesión</button>
-      </ng-container>
-      <ng-template #loginTpl>
-        <p class="auth-status">Inicia sesión para comprar y guardar favoritos</p>
-        <button class="auth-btn primary" (click)="loginWithGoogle($event)">
-          <i class="fa-brands fa-google"></i>
-          Entrar con Google
-        </button>
-      </ng-template>
+    <ng-container *ngIf="isLoggedIn$ | async; else loginTpl">
+      <p class="auth-status">Sesión activa</p>
+      <button class="auth-btn primary" routerLink="/account" (click)="authMenuOpen=false">Ir a mi cuenta</button>
+      <button class="auth-btn" (click)="logout($event)">Cerrar sesión</button>
     </ng-container>
+    <ng-template #loginTpl>
+      <p class="auth-status">Inicia sesión para comprar y guardar favoritos</p>
+      <button class="auth-btn primary" (click)="loginWithGoogle($event)">
+        <i class="fa-brands fa-google"></i>
+        Entrar con Google
+      </button>
+    </ng-template>
   </div>
 </header>
 

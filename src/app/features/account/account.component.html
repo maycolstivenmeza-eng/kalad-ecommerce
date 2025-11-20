@@ -67,7 +67,20 @@
 
     <div class="card">
       <h3>Historial de compras</h3>
-      <p>Aún no hay integración de órdenes. Se mostrará cuando se procese una compra.</p>
+      <ng-container *ngIf="pedidos$ | async as pedidos">
+        <p *ngIf="!pedidos.length">Aún no tienes compras registradas.</p>
+        <ul class="orders">
+          <li *ngFor="let p of pedidos">
+            <div>
+              <strong>{{ p.id }}</strong>
+              <p>Estado: {{ p.estado }}</p>
+              <p>Total: {{ p.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+              <p *ngIf="p.guiaEnvio">Guía: {{ p.guiaEnvio }}</p>
+            </div>
+            <button class="link" [routerLink]="['/products']">Ver productos</button>
+          </li>
+        </ul>
+      </ng-container>
     </div>
   </div>
 </section>

@@ -1,47 +1,79 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { Product } from '../models/product.model';
+import { Auth, authState } from '@angular/fire/auth';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  setDoc
+} from '@angular/fire/firestore';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FavoritesService {
-  private readonly storageKey = 'kalad-favorites';
-  private favoritesSubject = new BehaviorSubject<Product[]>(this.loadFromStorage());
+@Injectable({ providedIn: 'root' })
+export class FavoritesService implements OnDestroy {
+  private favoritesSubject = new BehaviorSubject<Product[]>([]);
   favorites$ = this.favoritesSubject.asObservable();
+  private authSub?: Subscription;
+  private favSub?: Subscription;
 
-  private loadFromStorage(): Product[] {
-    try {
-      const raw = localStorage.getItem(this.storageKey);
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
+  constructor(private firestore: Firestore, private auth: Auth) {
+    this.authSub = authState(this.auth).subscribe((user) => {
+      this.favSub?.unsubscribe();
+      if (user) {
+        const col = collection(this.firestore, `usuarios/${user.uid}/favoritos`);
+        this.favSub = collectionData(col, { idField: 'id' }).subscribe((items) => {
+          this.favoritesSubject.next(items as Product[]);
+        });
+      } else {
+        this.favoritesSubject.next([]);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSub?.unsubscribe();
+    this.favSub?.unsubscribe();
+  }
+
+  private async requireUid(): Promise<string> {
+    const user =
+      (this.auth as any).currentUser ||
+      (await firstValueFrom(authState(this.auth)));
+    if (!user) {
+      throw new Error('Debes iniciar sesión para usar favoritos');
     }
+    return user.uid;
   }
 
-  private persist(list: Product[]) {
-    localStorage.setItem(this.storageKey, JSON.stringify(list));
-    this.favoritesSubject.next(list);
-  }
+  async toggle(product: Product) {
+    const uid = await this.requireUid();
+    const exists = this.isFavorite(product.id);
+    const ref = doc(this.firestore, `usuarios/${uid}/favoritos/${product.id}`);
 
-  toggle(product: Product) {
-    const current = this.favoritesSubject.getValue();
-    const exists = current.find((p) => p.id === product.id);
     if (exists) {
-      this.persist(current.filter((p) => p.id !== product.id));
+      await deleteDoc(ref);
     } else {
-      this.persist([...current, product]);
+      const payload = {
+        nombre: product.nombre,
+        precio: product.precio,
+        imagen: product.imagen ?? product.imagenes?.[0] ?? '',
+        id: product.id
+      };
+      await setDoc(ref, payload, { merge: true });
     }
   }
 
-  remove(id?: string) {
+  async remove(id?: string) {
     if (!id) return;
-    const current = this.favoritesSubject.getValue();
-    this.persist(current.filter((p) => p.id !== id));
+    const uid = await this.requireUid();
+    const ref = doc(this.firestore, `usuarios/${uid}/favoritos/${id}`);
+    await deleteDoc(ref);
   }
 
-  clear() {
-    this.persist([]);
+  clearLocal() {
+    this.favoritesSubject.next([]);
   }
 
   isFavorite(id?: string): boolean {

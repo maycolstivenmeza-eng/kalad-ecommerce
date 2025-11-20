@@ -173,3 +173,45 @@
   color: #fff;
   box-shadow: 0 8px 20px rgba(200, 92, 56, 0.2);
 }
+
+/* Totales y cupones */
+.cupon {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.cupon input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.cupon button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #c85c38;
+  background: #fff;
+  color: #c85c38;
+  cursor: pointer;
+}
+
+.cupon .link {
+  border: none;
+  background: none;
+  color: #b71833;
+}
+
+.totales p,
+.total-final {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+}
+
+.total-final {
+  font-size: 16px;
+  font-weight: 700;
+}

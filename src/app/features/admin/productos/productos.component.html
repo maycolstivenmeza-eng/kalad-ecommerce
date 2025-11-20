@@ -1,10 +1,10 @@
-<div class="admin-container">
+﻿<div class="admin-container">
 
   <!-- HEADER ADMIN -->
   <div class="admin-header">
-    <h2>Gestión de productos</h2>
-    <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
-      Cerrar sesión
+    <h2>Gestion de productos</h2>
+    <button (click)="logout()" class="logout-btn" title="Cerrar sesion">
+      Cerrar sesion
     </button>
   </div>
 
@@ -38,33 +38,39 @@
       <option *ngFor="let badge of badges" [ngValue]="badge">{{ badge || 'Sin etiqueta' }}</option>
     </select>
 
-    <!-- CATEGORÍA -->
-    <label for="categoria">Categoría</label>
+    <!-- Estatus -->
+    <label class="switch-row">
+      <input type="checkbox" [(ngModel)]="producto.activo" name="activo" />
+      <span>Producto activo</span>
+    </label>
+
+    <!-- CATEGORIA -->
+    <label for="categoria">Categoria</label>
     <select id="categoria" name="categoria" [(ngModel)]="producto.categoria" required class="input">
-      <option value="" disabled>Selecciona una categoría</option>
+      <option value="" disabled>Selecciona una categoria</option>
       <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
     </select>
 
-    <!-- COLECCIÓN -->
-    <label for="coleccion">Colección</label>
+    <!-- COLECCION -->
+    <label for="coleccion">Coleccion</label>
     <select id="coleccion" name="coleccion" [(ngModel)]="producto.coleccion" required class="input">
       <option *ngFor="let coleccion of colecciones" [value]="coleccion.id">{{ coleccion.label }}</option>
     </select>
 
     <!-- COLORES -->
     <label for="colores">Colores (separados por coma)</label>
-    <input id="colores" type="text" name="colores" [(ngModel)]="producto.coloresTexto" placeholder="Beige, Café, Arena" class="input"/>
+    <input id="colores" type="text" name="colores" [(ngModel)]="producto.coloresTexto" placeholder="Beige, Cafe, Arena" class="input"/>
 
     <!-- STOCK -->
     <label for="stock">Stock disponible</label>
     <input id="stock" type="number" name="stock" [(ngModel)]="producto.stock" required min="0" class="input"/>
 
-    <!-- DESCRIPCIÓN -->
-    <label for="descripcion">Descripción</label>
+    <!-- DESCRIPCION -->
+    <label for="descripcion">Descripcion</label>
     <textarea id="descripcion" name="descripcion" [(ngModel)]="producto.descripcion" required rows="4" class="input"></textarea>
 
-    <!-- CARACTERÍSTICAS -->
-    <label for="caracteristicas">Características destacadas</label>
+    <!-- CARACTERISTICAS -->
+    <label for="caracteristicas">Caracteristicas destacadas</label>
     <textarea
       id="caracteristicas"
       name="caracteristicas"
@@ -134,18 +140,18 @@
       <button type="button" class="btn-eliminar-img" (click)="limpiarImagen()">Eliminar imagen</button>
     </div>
 
-    <!-- IMÁGENES SECUNDARIAS -->
-    <label for="imagenesSec">Imágenes adicionales (máximo 4)</label>
+    <!-- IMAGENES SECUNDARIAS -->
+    <label for="imagenesSec">Imagenes adicionales (maximo 4)</label>
     <input id="imagenesSec" type="file" multiple accept="image/*" (change)="seleccionarMultiplesImagenes($event)" class="input"/>
 
     <div class="preview-multiplas" *ngIf="previewImagenes.length > 0">
       <div class="preview-multi-item" *ngFor="let img of previewImagenes; let i = index">
         <img [src]="img" class="preview-multi-img"/>
-        <button type="button" class="preview-multi-delete" (click)="eliminarImagenSecundaria(i)">✕</button>
+        <button type="button" class="preview-multi-delete" (click)="eliminarImagenSecundaria(i)">x</button>
       </div>
     </div>
 
-    <!-- BOTÓN GUARDAR -->
+    <!-- BOTON GUARDAR -->
     <button class="btn-guardar" type="submit" [disabled]="adminForm.invalid || faltaImagenPrincipal() || guardando">
       {{ guardando ? textoBotonProcesando : textoBotonAccion }}
     </button>
@@ -162,7 +168,7 @@
     />
 
     <select [(ngModel)]="filtroCategoria" (ngModelChange)="aplicarFiltros()">
-      <option value="">Todas las categorías</option>
+      <option value="">Todas las categorias</option>
       <option *ngFor="let categoria of categorias" [value]="categoria">
         {{ categoria }}
       </option>
@@ -198,10 +204,11 @@
           <th>Imagen</th>
           <th>Nombre</th>
           <th>Precio</th>
-          <th>Categoría</th>
-          <th>Colección</th>
+          <th>Categoria</th>
+          <th>Coleccion</th>
           <th>Badge</th>
           <th>Stock</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -219,9 +226,17 @@
           <td>{{ prod.badge || '-' }}</td>
           <td>{{ prod.stock }}</td>
           <td>
+            <span class="pill" [class.off]="!(prod.activo ?? true)">
+              {{ (prod.activo ?? true) ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>
             <div class="acciones">
               <button type="button" class="btn-editar" (click)="editarProducto(prod)">Editar</button>
               <button type="button" class="btn-eliminar" (click)="eliminarProducto(prod.id)">Eliminar</button>
+              <button type="button" class="btn-toggle" (click)="toggleActivo(prod)">
+                {{ (prod.activo ?? true) ? 'Desactivar' : 'Activar' }}
+              </button>
             </div>
           </td>
         </tr>
@@ -234,7 +249,46 @@
   </ng-template>
 
   <ng-template #sinProductos>
-    <p class="filtro-resultado">No hay productos registrados todavía.</p>
+    <p class="filtro-resultado">No hay productos registrados todavia.</p>
+  </ng-template>
+
+  <h3 class="titulo-lista">Pedidos</h3>
+  <div class="pedidos" *ngIf="pedidos.length; else sinPedidos">
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Cambiar estado</th>
+          <th>Guia envio</th>
+          <th>Nota admin</th>
+          <th>Items</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of pedidos">
+          <td>{{ p.id }}</td>
+          <td>{{ p.userId }}</td>
+          <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }}</td>
+          <td>{{ p.estado }}</td>
+          <td>
+            <select [ngModel]="p.estado" (ngModelChange)="cambiarEstadoPedido(p, $event)">
+              <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
+            </select>
+          </td>
+          <td><input class="mini-input" type="text" [(ngModel)]="p.guiaEnvio" placeholder="Guia" /></td>
+          <td><input class="mini-input" type="text" [(ngModel)]="p.notaAdmin" placeholder="Nota" /></td>
+          <td>{{ p.items.length || 0 }}</td>
+          <td>{{ p.createdAt?.toDate ? (p.createdAt.toDate() | date:'short') : '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #sinPedidos>
+    <p class="filtro-resultado">No hay pedidos registrados.</p>
   </ng-template>
 </div>
 

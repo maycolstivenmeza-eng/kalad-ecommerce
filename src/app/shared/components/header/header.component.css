@@ -224,7 +224,7 @@
 .auth-dropdown {
   position: absolute;
   top: 60px;
-  right: 160px;
+  right: 120px;
   width: 240px;
   background: #fff;
   border: 1px solid rgba(0,0,0,0.1);
@@ -232,6 +232,9 @@
   box-shadow: 0 12px 30px rgba(0,0,0,0.15);
   padding: 14px;
   z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .auth-status {
