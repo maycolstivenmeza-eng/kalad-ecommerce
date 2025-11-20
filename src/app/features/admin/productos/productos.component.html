@@ -20,7 +20,17 @@
 
     <!-- PRECIO -->
     <label for="precio">Precio</label>
-    <input id="precio" type="number" name="precio" [(ngModel)]="producto.precio" required min="0" step="0.01" class="input"/>
+    <input
+      id="precio"
+      type="text"
+      name="precio"
+      inputmode="decimal"
+      autocomplete="off"
+      [(ngModel)]="producto.precio"
+      required
+      placeholder="Ej: 78.000"
+      class="input"
+    />
 
     <!-- BADGE -->
     <label for="badge">Etiqueta (badge)</label>
@@ -203,7 +213,7 @@
             </ng-container>
           </td>
           <td>{{ prod.nombre }}</td>
-          <td>{{ prod.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+          <td>{{ prod.precio | currency:'COP':'symbol':'1.0-0' }}</td>
           <td>{{ prod.categoria }}</td>
           <td>{{ prod.coleccion }}</td>
           <td>{{ prod.badge || '-' }}</td>

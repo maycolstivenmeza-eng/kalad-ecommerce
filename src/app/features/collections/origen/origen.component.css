@@ -61,6 +61,12 @@
   font-size: 17px;
   margin: 6px 0;
   color: #3B2C20;
+  cursor: pointer;
+}
+
+.categoria.activo {
+  font-weight: 600;
+  color: #b85a3a;
 }
 
 /* ========= CONTENIDO (DERECHA) ========== */
@@ -99,18 +105,29 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 25px;
-  font-size: 18px;
+  font-size: 16px;
   color: #3B2C20;
 }
 
-.az {
-  color: #B85A3A;
+.ordenar-right label {
+  color: #3b2c20;
 }
 
-.arrow.small {
-  font-size: 13px;
+.ordenar-right select {
+  border: 1px solid #d8c8a8;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: #fff;
+  color: #b85a3a;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.ordenar-right select:focus {
+  outline: 2px solid #c85c38;
+  outline-offset: 1px;
 }
 
 /* ========= GRID PRODUCTOS (alineado con productos generales) ========== */
@@ -239,3 +256,27 @@
   height: 24px;
   display: block;
 }
+
+
+.filtro-opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 8px;
+}
+
+.filtro-opciones button {
+  text-align: left;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: #6c5a4b;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.filtro-opciones button.activo {
+  color: #3b2c20;
+  font-weight: 600;
+}
+

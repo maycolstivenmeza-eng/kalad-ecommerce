@@ -98,6 +98,30 @@
   margin-top: 40px;
 }
 
+.interesar-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-transform: none;
+  letter-spacing: 0.4px;
+}
+
+.interesar-title .line {
+  flex: 1;
+  height: 1px;
+  background: #d8c8a8;
+  max-width: 200px;
+}
+
+.interesar-title h3 {
+  margin: 0;
+  font-weight: 600;
+  color: #3a2c2c;
+  white-space: nowrap;
+}
+
 .interesar-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -128,6 +152,12 @@
   align-items: center;
 }
 
+.interesar .card-footer span {
+  font-weight: 600;
+  color: #3a2c2c;
+  font-size: 14px;
+}
+
 .interesar .card-footer button {
   border: 1px solid #c85c38;
   background: #fff;
@@ -135,4 +165,11 @@
   border-radius: 999px;
   padding: 6px 12px;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.interesar .card-footer button:hover {
+  background: #c85c38;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(200, 92, 56, 0.2);
 }

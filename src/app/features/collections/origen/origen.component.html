@@ -10,30 +10,47 @@
     <!-- =================================== -->
     <!--            FILTROS (IZQUIERDA)      -->
     <!-- =================================== -->
-   <aside class="filtros-left">
+  <aside class="filtros-left">
 
   <div class="filtro" (click)="toggle(0)">
     <span>Ordenar por</span>
     <span class="flecha" [class.open]="open[0]">&#9662;</span>
   </div>
 
+  <div class="filtro-opciones" *ngIf="open[0]">
+    <button
+      *ngFor="let o of ordenOpciones"
+      type="button"
+      (click)="onOrderChange(o)"
+      [class.activo]="orden === o">
+      {{ getOrderLabel(o) }}
+    </button>
+  </div>
+
   <div class="filtro" (click)="toggle(1)">
-    <span>Talla</span>
+    <span>Color</span>
     <span class="flecha" [class.open]="open[1]">&#9662;</span>
   </div>
 
-  <div class="filtro" (click)="toggle(2)">
-    <span>Color</span>
-    <span class="flecha" [class.open]="open[2]">&#9662;</span>
+  <div class="filtro-opciones" *ngIf="open[1]">
+    <button
+      *ngFor="let color of colores"
+      type="button"
+      (click)="setFiltroColor(color.id)"
+      [class.activo]="color.id === filtroColor">
+      {{ color.label }}
+    </button>
   </div>
 
-  <!-- ??- SOLO UNA L??NEA DESPU?%S DEL ?sLTIMO FILTRO -->
   <div class="linea-unica"></div>
 
-  <div class="categoria">Bolsas</div>
-  <div class="categoria">Mochilas</div>
-  <div class="categoria">Morrales</div>
-  <div class="categoria">Zapatos</div>
+  <div
+    class="categoria"
+    *ngFor="let categoria of categorias"
+    (click)="setFiltroCategoria(categoria)"
+    [class.activo]="categoria === filtroCategoria">
+    {{ categoria }}
+  </div>
 
 </aside>
 
@@ -50,14 +67,20 @@
 
       <!-- ===== ORDENAR A LA DERECHA ===== -->
       <div class="ordenar-right">
-        <span>Ordenar por:</span>
-        <span class="az">A-Z</span>
-        <span class="arrow small">&#9662;</span>
+        <label for="ordenSelectOrigen">Ordenar por:</label>
+        <select
+          id="ordenSelectOrigen"
+          [ngModel]="orden"
+          (ngModelChange)="onOrderChange($event)">
+          <option *ngFor="let o of ordenOpciones" [ngValue]="o">
+            {{ getOrderLabel(o) }}
+          </option>
+        </select>
       </div>
 
       <!-- ===== GRID PRODUCTOS ===== -->
       <div class="product-grid">
-        <article class="product-card" *ngFor="let p of productos" [attr.data-id]="p.id">
+        <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
           <a class="thumb" [routerLink]="['/products', p.id]">
             <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
               {{ p.badge }}

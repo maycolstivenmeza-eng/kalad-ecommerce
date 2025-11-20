@@ -2,72 +2,88 @@
 
   <!-- ===== BREADCRUMB ===== -->
   <div class="breadcrumb">
-    INICIO / COLECCIONES / KALAD ORIGEN
+    INICIO / COLECCIONES / KALAD ESSENCIA
   </div>
 
   <div class="layout">
 
-    <!-- =================================== -->
-    <!--            FILTROS (IZQUIERDA)      -->
-    <!-- =================================== -->
-   <aside class="filtros-left">
+    <!-- FILTROS IZQUIERDA -->
+    <aside class="filtros-left">
 
-  <div class="filtro" (click)="toggle(0)">
-    <span>Ordenar por</span>
-    <span class="flecha" [class.open]="open[0]">⌄</span>
-  </div>
+      <div class="filtro" (click)="toggle(0)">
+        <span>Ordenar por</span>
+        <span class="flecha" [class.open]="open[0]">&#9662;</span>
+      </div>
 
-  <div class="filtro" (click)="toggle(1)">
-    <span>Talla</span>
-    <span class="flecha" [class.open]="open[1]">⌄</span>
-  </div>
+      <div class="filtro-opciones" *ngIf="open[0]">
+        <button
+          *ngFor="let o of ordenOpciones"
+          type="button"
+          (click)="onOrderChange(o)"
+          [class.activo]="orden === o">
+          {{ getOrderLabel(o) }}
+        </button>
+      </div>
 
-  <div class="filtro" (click)="toggle(2)">
-    <span>Color</span>
-    <span class="flecha" [class.open]="open[2]">⌄</span>
-  </div>
+      <div class="filtro" (click)="toggle(1)">
+        <span>Color</span>
+        <span class="flecha" [class.open]="open[1]">&#9662;</span>
+      </div>
 
-  <!-- ❗ SOLO UNA LÍNEA DESPUÉS DEL ÚLTIMO FILTRO -->
-  <div class="linea-unica"></div>
+      <div class="filtro-opciones" *ngIf="open[1]">
+        <button
+          *ngFor="let color of colores"
+          type="button"
+          (click)="setFiltroColor(color.id)"
+          [class.activo]="color.id === filtroColor">
+          {{ color.label }}
+        </button>
+      </div>
 
-  <div class="categoria">Bolsas</div>
-  <div class="categoria">Mochilas</div>
-  <div class="categoria">Morrales</div>
-  <div class="categoria">Zapatos</div>
+      <div class="linea-unica"></div>
 
-</aside>
+      <div
+        class="categoria"
+        *ngFor="let categoria of categorias"
+        (click)="setFiltroCategoria(categoria)"
+        [class.activo]="categoria === filtroCategoria">
+        {{ categoria }}
+      </div>
 
-    <!-- =================================== -->
-    <!--            CONTENIDO (DERECHA)      -->
-    <!-- =================================== -->
+    </aside>
+
+    <!-- CONTENIDO DERECHA -->
     <div class="contenido">
 
-      <!-- ===== BANNER ===== -->
       <div class="banner-coleccion">
-        <img src="assets/images/Banner_colecciones_kaladorigen.png" alt="banner kalad origen" />
+        <img src="assets/images/Banner_colecciones_kaladorigen.png" alt="banner kalad essencia" />
         <h1 class="banner-title">KALAD ESSENCIA</h1>
       </div>
 
-      <!-- ===== ORDENAR A LA DERECHA ===== -->
       <div class="ordenar-right">
-        <span>Ordenar por:</span>
-        <span class="az">A-Z</span>
-        <span class="arrow small">⌄</span>
+        <label for="ordenSelectEssencia">Ordenar por:</label>
+        <select
+          id="ordenSelectEssencia"
+          [ngModel]="orden"
+          (ngModelChange)="onOrderChange($event)">
+          <option *ngFor="let o of ordenOpciones" [ngValue]="o">
+            {{ getOrderLabel(o) }}
+          </option>
+        </select>
       </div>
 
-      <!-- ===== GRID PRODUCTOS ===== -->
       <div class="grid-productos">
 
-        <div class="card-producto" *ngFor="let p of productos">
+        <div class="card-producto" *ngFor="let p of productosFiltrados">
           <div class="img-wrapper">
-            <img [src]="p.imagen" />
-            <span class="fav">♡</span>
+            <img [src]="p.imagen" [alt]="p.nombre" />
+            <span class="fav">&#10084;</span>
           </div>
 
           <div class="info">
             <div class="left">
               <h3>{{ p.nombre }}</h3>
-              <p>{{ p.precio  }}</p>
+              <p>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
             </div>
 
             <button class="btn-cart" (click)="addToCart(p, $event)">
@@ -82,5 +98,3 @@
 
   </div>
 </div>
-
-

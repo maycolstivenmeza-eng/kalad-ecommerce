@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 
 type AdminProductForm = {
   nombre: string;
-  precio: number | null;
+  precio: number | string | null;
   descripcion: string;
   caracteristicas: string;
   categoria: string;
@@ -118,7 +118,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   obtenerEstadoInicial(): AdminProductForm {
     return {
       nombre: '',
-      precio: null,
+      precio: '',
       descripcion: '',
       caracteristicas: '',
       categoria: '',
@@ -203,72 +203,77 @@ export class ProductosComponent implements OnInit, OnDestroy {
   async guardarProducto(form: NgForm) {
     if (this.guardando) return;
 
-      if (form.invalid || this.faltaImagenPrincipal()) {
-        form.control.markAllAsTouched();
-        this.mensajeSistema = {
-          tipo: 'error',
-          texto: 'Revisa que todos los campos obligatorios estÃ©n completos.'
-        };
-        this.mostrarToast('error', this.mensajeSistema.texto);
-        return;
-      }
+    if (form.invalid || this.faltaImagenPrincipal()) {
+      form.control.markAllAsTouched();
+      this.mensajeSistema = {
+        tipo: 'error',
+        texto: 'Revisa que todos los campos obligatorios estén completos.'
+      };
+      this.mostrarToast('error', this.mensajeSistema.texto);
+      return;
+    }
+
+    const precioNormalizado = this.parsearPrecioEntrada(this.producto.precio);
+    if (precioNormalizado === null || isNaN(precioNormalizado) || precioNormalizado < 0) {
+      this.mensajeSistema = {
+        tipo: 'error',
+        texto: 'Ingresa un precio válido en COP (solo números y separadores).'
+      };
+      this.mostrarToast('error', this.mensajeSistema.texto);
+      return;
+    }
 
     this.mensajeSistema = null;
     this.guardando = true;
 
     try {
-      // Subir imagen principal
-        if (this.imagenSeleccionada) {
-          this.producto.imagen = await this.productService.subirImagen(
-            this.imagenSeleccionada,
-            this.producto.coleccion
-          );
-        }
+      if (this.imagenSeleccionada) {
+        this.producto.imagen = await this.productService.subirImagen(
+          this.imagenSeleccionada,
+          this.producto.coleccion
+        );
+      }
 
-      // Subir imÃ¡genes secundarias
       const nuevasUrls: string[] = [];
-        for (let archivo of this.imagenesSeleccionadas) {
-          nuevasUrls.push(
-            await this.productService.subirImagen(archivo, this.producto.coleccion)
-          );
-        }
+      for (let archivo of this.imagenesSeleccionadas) {
+        nuevasUrls.push(
+          await this.productService.subirImagen(archivo, this.producto.coleccion)
+        );
+      }
 
       const imagenesFinales = this.modoEdicion
         ? [...(this.producto.imagenes ?? []), ...nuevasUrls]
         : nuevasUrls;
 
-      // Crear payload
-        const colores = this.normalizarColores(this.producto.coloresTexto);
-        const dimensiones = this.sanitizarDimensiones(this.producto.dimensiones);
+      const colores = this.normalizarColores(this.producto.coloresTexto);
+      const dimensiones = this.sanitizarDimensiones(this.producto.dimensiones);
 
-        const payload: Omit<Product, 'id'> = {
-          nombre: this.producto.nombre.trim(),
-          precio: Number(this.producto.precio),
-          descripcion: this.producto.descripcion.trim(),
-          caracteristicas: this.producto.caracteristicas.trim(),
-          categoria: this.producto.categoria,
-          coleccion: this.producto.coleccion,
-          imagen: this.producto.imagen,
-          colores,
-          color: colores[0] ?? '',
-          stock: Number(this.producto.stock),
-          badge: this.producto.badge,
-          imagenes: imagenesFinales,
-          dimensiones,
-        };
+      const payload: Omit<Product, 'id'> = {
+        nombre: this.producto.nombre.trim(),
+        precio: precioNormalizado,
+        descripcion: this.producto.descripcion.trim(),
+        caracteristicas: this.producto.caracteristicas.trim(),
+        categoria: this.producto.categoria,
+        coleccion: this.producto.coleccion,
+        imagen: this.producto.imagen,
+        colores,
+        color: colores[0] ?? '',
+        stock: Number(this.producto.stock),
+        badge: this.producto.badge,
+        imagenes: imagenesFinales,
+        dimensiones,
+      };
 
-      // Crear o actualizar
-        if (this.modoEdicion && this.idProductoEdicion) {
-          await this.productService.updateProduct(this.idProductoEdicion, payload);
-          this.mensajeSistema = { tipo: 'exito', texto: 'Producto actualizado correctamente.' };
-          this.mostrarToast('exito', this.mensajeSistema.texto);
-        } else {
-          await this.productService.createProduct(payload);
-          this.mensajeSistema = { tipo: 'exito', texto: 'Producto creado correctamente.' };
-          this.mostrarToast('exito', this.mensajeSistema.texto);
-        }
+      if (this.modoEdicion && this.idProductoEdicion) {
+        await this.productService.updateProduct(this.idProductoEdicion, payload);
+        this.mensajeSistema = { tipo: 'exito', texto: 'Producto actualizado correctamente.' };
+        this.mostrarToast('exito', this.mensajeSistema.texto);
+      } else {
+        await this.productService.createProduct(payload);
+        this.mensajeSistema = { tipo: 'exito', texto: 'Producto creado correctamente.' };
+        this.mostrarToast('exito', this.mensajeSistema.texto);
+      }
 
-      // Reset
       form.resetForm(this.obtenerEstadoInicial());
       this.previewUrl = null;
       this.previewImagenes = [];
@@ -277,17 +282,15 @@ export class ProductosComponent implements OnInit, OnDestroy {
       this.modoEdicion = false;
 
       this.cargarProductos();
-      } catch (e) {
-        console.error(e);
-        const texto = e instanceof Error ? e.message : 'Error guardando el producto';
-        this.mensajeSistema = { tipo: 'error', texto };
-        this.mostrarToast('error', texto);
-      } finally {
-        this.guardando = false;
-      }
-  }
-
-  // ==========================================================
+    } catch (e) {
+      console.error(e);
+      const texto = e instanceof Error ? e.message : 'Error guardando el producto';
+      this.mensajeSistema = { tipo: 'error', texto };
+      this.mostrarToast('error', texto);
+    } finally {
+      this.guardando = false;
+    }
+  }// ==========================================================
   // EDITAR
   // ==========================================================
   editarProducto(producto: Product) {
@@ -300,7 +303,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
 
     this.producto = {
       nombre: producto.nombre,
-      precio: producto.precio,
+      precio: this.formatearPrecioParaInput(producto.precio),
       descripcion: producto.descripcion,
       caracteristicas: producto.caracteristicas ?? '',
       categoria: producto.categoria,
@@ -441,4 +444,38 @@ export class ProductosComponent implements OnInit, OnDestroy {
       this.toastActivo = null;
     }, 4000);
   }
+
+  private parsearPrecioEntrada(valor: AdminProductForm['precio']): number | null {
+    if (valor === null || valor === undefined) return null;
+    if (typeof valor === 'number') return valor;
+
+    const limpio = valor.replace(/\s+/g, '');
+    if (!limpio) return null;
+
+    const ultimoSeparador = Math.max(limpio.lastIndexOf('.'), limpio.lastIndexOf(','));
+    if (ultimoSeparador !== -1) {
+      const decimales = limpio.slice(ultimoSeparador + 1);
+      const parteEntera = limpio.slice(0, ultimoSeparador);
+      const usaDecimales = decimales.length > 0 && decimales.length <= 2;
+
+      if (usaDecimales) {
+        const enterosSinSep = parteEntera.replace(/[.,]/g, '');
+        const normalizado = `${enterosSinSep}.${decimales}`;
+        const numero = Number(normalizado);
+        return isNaN(numero) ? null : numero;
+      }
+    }
+
+    const sinSeparadores = limpio.replace(/[.,]/g, '');
+    const numero = Number(sinSeparadores);
+    return isNaN(numero) ? null : numero;
+  }
+
+  private formatearPrecioParaInput(precio: number | null | undefined): string {
+    if (precio === null || precio === undefined || isNaN(Number(precio))) return '';
+    return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(Number(precio));
+  }
 }
+
+
+

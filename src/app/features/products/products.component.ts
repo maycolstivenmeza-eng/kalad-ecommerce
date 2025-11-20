@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../shared/services/product.service';
 import { Product } from '../../shared/models/product.model';
@@ -10,7 +11,7 @@ type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
@@ -27,12 +28,8 @@ export class ProductsComponent implements OnInit {
 
   // ======== Filtros ========
   filtroCategoria: string = '';
-  filtroTalla: string = '';
   filtroColor: string = '';
-  open: boolean[] = [false, false, false];
-
-  // ======== Valores del sidebar ========
-  tallas: string[] = ['S', 'M', 'L', 'XL'];
+  open: boolean[] = [false, false];
   
   colores = [
     { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
@@ -41,7 +38,7 @@ export class ProductsComponent implements OnInit {
     { id: 'arena', label: 'Arena', hex: '#e8e0c8' }
   ];
 
-  categorias = ['Mochilas', 'Bolsas', 'Morrales', 'Zapatos'];
+  categorias = ['Mochilas', 'Bolsas'];
 
   loading = true;
   error: string | null = null;
@@ -125,11 +122,6 @@ export class ProductsComponent implements OnInit {
       lista = lista.filter((p) => p.colores?.includes(this.filtroColor));
     }
 
-    // FILTRO TALLA (si existiera más adelante)
-    if (this.filtroTalla) {
-      // por ahora no se usa porque tus mochilas no manejan tallas
-    }
-
     // ORDENAMIENTO
     lista = this.ordenarLista(lista);
 
@@ -140,17 +132,12 @@ export class ProductsComponent implements OnInit {
   //    SETTERS DE FILTROS
   // =======================
   setFiltroCategoria(categoria: string) {
-    this.filtroCategoria = categoria;
-    this.aplicarFiltros();
-  }
-
-  setFiltroTalla(talla: string) {
-    this.filtroTalla = talla;
+    this.filtroCategoria = this.filtroCategoria === categoria ? '' : categoria;
     this.aplicarFiltros();
   }
 
   setFiltroColor(color: string) {
-    this.filtroColor = color;
+    this.filtroColor = this.filtroColor === color ? '' : color;
     this.aplicarFiltros();
   }
 
@@ -215,7 +202,9 @@ export class ProductsComponent implements OnInit {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(price);
   }
 }
+

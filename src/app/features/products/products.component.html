@@ -24,26 +24,11 @@
       </div>
 
       <div class="filtro" (click)="toggle(1)">
-        <span>Talla</span>
+        <span>Color</span>
         <span class="flecha" [class.open]="open[1]">&#9662;</span>
       </div>
 
       <div class="filtro-opciones" *ngIf="open[1]">
-        <button
-          *ngFor="let talla of tallas"
-          type="button"
-          (click)="setFiltroTalla(talla)"
-          [class.activo]="talla === filtroTalla">
-          {{ talla }}
-        </button>
-      </div>
-
-      <div class="filtro" (click)="toggle(2)">
-        <span>Color</span>
-        <span class="flecha" [class.open]="open[2]">&#9662;</span>
-      </div>
-
-      <div class="filtro-opciones" *ngIf="open[2]">
         <button
           *ngFor="let color of colores"
           type="button"
@@ -68,9 +53,12 @@
     <div class="contenido">
 
       <div class="ordenar-right">
-        <span>Ordenar por:</span>
-        <span class="az">{{ getOrderLabel(filtroOrden) }}</span>
-        <span class="arrow small">&#9662;</span>
+        <label for="ordenSelect">Ordenar por:</label>
+        <select id="ordenSelect" [ngModel]="filtroOrden" (ngModelChange)="onOrderChange($event)">
+          <option *ngFor="let o of ordenOpciones" [ngValue]="o">
+            {{ getOrderLabel(o) }}
+          </option>
+        </select>
       </div>
 
       <div class="product-grid">

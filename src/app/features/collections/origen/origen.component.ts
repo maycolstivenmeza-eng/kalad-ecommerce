@@ -1,21 +1,35 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../shared/services/product.service';
 import { CartService } from '../../../shared/services/cart.service';
 
+type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
+
 @Component({
   selector: 'app-origen',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './origen.component.html',
   styleUrl: './origen.component.css'
 })
 export class OrigenComponent implements OnInit, OnDestroy {
   productos: Product[] = [];
-  filtros = { ordenar: false, talla: false, color: false };
+  productosFiltrados: Product[] = [];
+  orden: OrderOption = 'az';
+  ordenOpciones: OrderOption[] = ['az', 'za', 'priceAsc', 'priceDesc', 'new'];
+  filtroColor = '';
+  colores = [
+    { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
+    { id: 'cafe', label: 'Café', hex: '#6a4e3a' },
+    { id: 'negro', label: 'Negro', hex: '#000' },
+    { id: 'arena', label: 'Arena', hex: '#e8e0c8' }
+  ];
+  categorias: string[] = ['Mochilas', 'Bolsas'];
+  filtroCategoria = '';
   private sub?: Subscription;
   private placeholderImage = 'assets/images/Producto_1.jpg';
 
@@ -29,6 +43,7 @@ export class OrigenComponent implements OnInit, OnDestroy {
       .getProductsByCollection('kalad-origen')
       .subscribe((items) => {
         this.productos = [...items];
+        this.aplicarFiltros();
       });
   }
 
@@ -49,31 +64,80 @@ export class OrigenComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  toggleFiltro(tipo: string) {
-    if (tipo === 'ordenar') {
-      this.filtros.ordenar = !this.filtros.ordenar;
-    } else if (tipo === 'talla') {
-      this.filtros.talla = !this.filtros.talla;
-    } else if (tipo === 'color') {
-      this.filtros.color = !this.filtros.color;
-    }
-  }
-
-  ordenar(metodo: string) {
-    if (metodo === 'A-Z') {
-      this.productos.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    } else if (metodo === 'Z-A') {
-      this.productos.sort((a, b) => b.nombre.localeCompare(a.nombre));
-    } else if (metodo === 'Mayor precio') {
-      this.productos.sort((a, b) => b.precio - a.precio);
-    } else if (metodo === 'Menor precio') {
-      this.productos.sort((a, b) => a.precio - b.precio);
-    }
-  }
-  open = [false, false, false];
+  open = [false, false];
 
   toggle(i: number) {
     this.open[i] = !this.open[i];
+  }
+
+  onOrderChange(order: OrderOption) {
+    this.orden = order;
+    this.aplicarFiltros();
+  }
+
+  setFiltroColor(color: string) {
+    this.filtroColor = this.filtroColor === color ? '' : color;
+    this.aplicarFiltros();
+  }
+
+  setFiltroCategoria(categoria: string) {
+    this.filtroCategoria = this.filtroCategoria === categoria ? '' : categoria;
+    this.aplicarFiltros();
+  }
+
+  getOrderLabel(option: OrderOption): string {
+    switch (option) {
+      case 'az':
+        return 'A - Z';
+      case 'za':
+        return 'Z - A';
+      case 'priceAsc':
+        return 'Menor precio';
+      case 'priceDesc':
+        return 'Mayor precio';
+      case 'new':
+        return 'Nuevos';
+      default:
+        return option;
+    }
+  }
+
+  aplicarFiltros() {
+    let lista = [...this.productos];
+
+    if (this.filtroColor) {
+      lista = lista.filter((p) => p.colores?.includes(this.filtroColor));
+    }
+
+    if (this.filtroCategoria) {
+      lista = lista.filter((p) => p.categoria === this.filtroCategoria);
+    }
+
+    lista = this.ordenarLista(lista);
+
+    this.productosFiltrados = lista;
+  }
+
+  private ordenarLista(lista: Product[]) {
+    const copia = [...lista];
+    switch (this.orden) {
+      case 'az':
+        return copia.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      case 'za':
+        return copia.sort((a, b) => b.nombre.localeCompare(a.nombre));
+      case 'priceAsc':
+        return copia.sort((a, b) => a.precio - b.precio);
+      case 'priceDesc':
+        return copia.sort((a, b) => b.precio - a.precio);
+      case 'new':
+        return copia.sort((a, b) => {
+          const dateA = a.fechaCreacion ? new Date(a.fechaCreacion).getTime() : 0;
+          const dateB = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : 0;
+          return dateB - dateA;
+        });
+      default:
+        return lista;
+    }
   }
 
   addToCart(producto: Product, event: Event) {
@@ -82,3 +146,5 @@ export class OrigenComponent implements OnInit, OnDestroy {
   }
 
 }
+
+

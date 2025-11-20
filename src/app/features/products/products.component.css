@@ -95,17 +95,28 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 25px;
-  font-size: 18px;
+  font-size: 16px;
 }
 
-.az {
+.ordenar-right label {
+  color: #3b2c20;
+}
+
+.ordenar-right select {
+  border: 1px solid #d8c8a8;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: #fff;
   color: #b85a3a;
+  cursor: pointer;
+  font-size: 15px;
 }
 
-.arrow.small {
-  font-size: 13px;
+.ordenar-right select:focus {
+  outline: 2px solid #c85c38;
+  outline-offset: 1px;
 }
 
 /* ========= GRID PRODUCTOS ========== */

@@ -45,7 +45,11 @@
     </div>
   </ng-template>
   <section class="interesar" *ngIf="recommendedProducts.length">
-    <h3>Te Puede Interesar</h3>
+    <div class="interesar-title">
+      <span class="line"></span>
+      <h3>Te puede interesar</h3>
+      <span class="line"></span>
+    </div>
     <div class="interesar-grid">
       <article class="card" *ngFor="let prod of recommendedProducts" [routerLink]="['/products', prod.id]">
         <img [src]="prod.imagen" [alt]="prod.nombre">

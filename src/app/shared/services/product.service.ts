@@ -258,6 +258,7 @@ export class ProductService {
   private normalizeProduct(raw: any): Product {
     if (!raw) return raw as Product;
 
+    const precio = this.normalizePrecio(raw.precio);
     const colores = this.sanitizeStringArray(
       Array.isArray(raw.colores)
         ? raw.colores
@@ -284,7 +285,7 @@ export class ProductService {
       ...raw,
       id: raw.id,
       nombre: raw.nombre ?? '',
-      precio: Number(raw.precio ?? 0),
+      precio,
       imagen: raw.imagen ?? '',
       imagenes,
       descripcion: raw.descripcion ?? '',
@@ -311,6 +312,7 @@ export class ProductService {
     const colores = this.sanitizeStringArray(product.colores ?? []);
     const imagenes = this.sanitizeStringArray(product.imagenes ?? []);
     const dimensiones = this.sanitizeDimensions(product.dimensiones);
+    const precio = this.normalizePrecio(product.precio);
 
     const rawBadge = product.badge ?? null;
     const badge =
@@ -327,6 +329,7 @@ export class ProductService {
       badge,
       Etiqueta: badge,
       color: color || null,
+      precio,
     };
 
     const copy = buildProductCopy({
@@ -368,6 +371,39 @@ export class ProductService {
 
     const hasData = Object.values(cleaned).some((v) => v.length > 0);
     return hasData ? cleaned : undefined;
+  }
+
+  private normalizePrecio(valor: any): number {
+    const parsed = this.parsePrecio(valor);
+    // Heurística: si quedó guardado como 78 en lugar de 78.000, lo ajustamos al rango esperado
+    return parsed > 0 && parsed < 1000 ? parsed * 1000 : parsed;
+  }
+
+  private parsePrecio(valor: any): number {
+    if (valor === null || valor === undefined) return 0;
+    if (typeof valor === 'number' && !isNaN(valor)) return valor;
+
+    const texto = String(valor).trim();
+    if (!texto) return 0;
+
+    const sinEspacios = texto.replace(/\s+/g, '');
+    const ultimoSep = Math.max(sinEspacios.lastIndexOf('.'), sinEspacios.lastIndexOf(','));
+
+    if (ultimoSep !== -1) {
+      const parteEntera = sinEspacios.slice(0, ultimoSep).replace(/[.,]/g, '');
+      const parteDecimal = sinEspacios.slice(ultimoSep + 1);
+      const usaDecimales = parteDecimal.length > 0 && parteDecimal.length <= 2;
+
+      if (usaDecimales) {
+        const combinado = `${parteEntera}.${parteDecimal}`;
+        const numero = Number(combinado);
+        return isNaN(numero) ? 0 : numero;
+      }
+    }
+
+    const soloEnteros = sinEspacios.replace(/[.,]/g, '');
+    const numero = Number(soloEnteros);
+    return isNaN(numero) ? 0 : numero;
   }
 
   private sanitizeStringArray(values: any[]): string[] {
