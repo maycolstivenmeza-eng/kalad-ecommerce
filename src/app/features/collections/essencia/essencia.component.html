@@ -1,13 +1,11 @@
-<div class="coleccion-container">
+﻿<div class="coleccion-container">
 
-  <!-- ===== BREADCRUMB ===== -->
   <div class="breadcrumb">
     INICIO / COLECCIONES / KALAD ESSENCIA
   </div>
 
   <div class="layout">
 
-    <!-- FILTROS IZQUIERDA -->
     <aside class="filtros-left">
 
       <div class="filtro" (click)="toggle(0)">
@@ -20,7 +18,7 @@
           *ngFor="let o of ordenOpciones"
           type="button"
           (click)="onOrderChange(o)"
-          [class.activo]="orden === o">
+          [class.activo]="o === orden">
           {{ getOrderLabel(o) }}
         </button>
       </div>
@@ -40,6 +38,16 @@
         </button>
       </div>
 
+      <div class="filtro" (click)="toggle(2)">
+        <span>Precio</span>
+        <span class="flecha" [class.open]="open[2]">&#9662;</span>
+      </div>
+      <div class="filtro-opciones precio" *ngIf="open[2]">
+        <label>Min <input type="number" [(ngModel)]="minPrice" (change)="setPriceRange()" placeholder="0" /></label>
+        <label>Max <input type="number" [(ngModel)]="maxPrice" (change)="setPriceRange()" placeholder="200000" /></label>
+        <button type="button" (click)="resetPrice()">Limpiar</button>
+      </div>
+
       <div class="linea-unica"></div>
 
       <div
@@ -52,52 +60,78 @@
 
     </aside>
 
-    <!-- CONTENIDO DERECHA -->
     <div class="contenido">
 
-      <div class="banner-coleccion">
-        <img src="assets/images/Banner_colecciones_kaladorigen.png" alt="banner kalad essencia" />
-        <h1 class="banner-title">KALAD ESSENCIA</h1>
-      </div>
-
       <div class="ordenar-right">
-        <label for="ordenSelectEssencia">Ordenar por:</label>
-        <select
-          id="ordenSelectEssencia"
-          [ngModel]="orden"
-          (ngModelChange)="onOrderChange($event)">
+        <label for="ordenSelect">Ordenar por:</label>
+        <select id="ordenSelect" [ngModel]="orden" (ngModelChange)="onOrderChange($event)">
           <option *ngFor="let o of ordenOpciones" [ngValue]="o">
             {{ getOrderLabel(o) }}
           </option>
         </select>
       </div>
 
-      <div class="grid-productos">
+      <div class="product-grid">
+        <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
+          <a class="thumb" [routerLink]="['/products', p.id]">
+            <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
+              {{ p.badge }}
+            </span>
+            <span class="badge out" *ngIf="((p.stock || 0)) <= 0">Sin stock</span>
+          <img
+            class="img primary"
+            [src]="resolveImage(p)"
+            [alt]="p.nombre"
+            (error)="onImageError($event)"
+          />
+          <button
+            class="fav-btn"
+            type="button"
+            [class.active]="favorites.isFavorite(p.id)"
+            (click)="toggleFavorite(p, $event)">
+            <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+          </button>
+          <img
+            class="img hover"
+            *ngIf="p.imagenes && p.imagenes.length > 0"
+            [src]="p.imagenes[0]"
+            [alt]="p.nombre" />
+          </a>
 
-        <div class="card-producto" *ngFor="let p of productosFiltrados">
-          <div class="img-wrapper">
-            <img [src]="p.imagen" [alt]="p.nombre" />
+          <a class="title" [routerLink]="['/products', p.id]">
+            {{ p.nombre }}
+          </a>
+
+          <p class="excerpt" *ngIf="p.descripcionCorta">{{ p.descripcionCorta }}</p>
+
+          <div class="price-row">
+            <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
             <button
-              class="fav-btn"
+              class="cart-btn"
               type="button"
-              [class.active]="favorites.isFavorite(p.id)"
-              (click)="toggleFavorite(p, $event)">
-              <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+              (click)="addToCart(p, $event)"
+              [disabled]="((p.stock || 0)) <= 0"
+            >
+              <svg
+                class="cart-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M3 5h2l1.2 6.2a1 1 0 0 0 .98.8H17a1 1 0 0 0 .97-.76L20 8H7"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="10" cy="19" r="1.2" fill="currentColor"></circle>
+                <circle cx="17" cy="19" r="1.2" fill="currentColor"></circle>
+              </svg>
             </button>
           </div>
-
-          <div class="info">
-            <div class="left">
-              <h3>{{ p.nombre }}</h3>
-              <p>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
-            </div>
-
-            <button class="btn-cart" (click)="addToCart(p, $event)">
-              &#128722;
-            </button>
-          </div>
-        </div>
-
+        </article>
       </div>
 
     </div>

@@ -7,6 +7,7 @@ import { CartService } from '../../shared/services/cart.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { firstValueFrom } from 'rxjs';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home-page',
@@ -26,10 +27,17 @@ export class HomePageComponent implements OnInit {
     private router: Router,
     private cartService: CartService,
     public favorites: FavoritesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private title: Title,
+    private meta: Meta
   ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Kalad | Mochilas artesanales');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Explora las mochilas artesanales de Kalad. Colecciones Origen y Essencia, hechas a mano en Colombia.'
+    });
     this.loadFeaturedProducts();
   }
 

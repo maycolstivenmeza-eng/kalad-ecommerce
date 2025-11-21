@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { Product } from '../../shared/models/product.model';
 import { ProductService } from '../../shared/services/product.service';
 import { CartService } from '../../shared/services/cart.service';
+import { Title, Meta } from '@angular/platform-browser';
+import { AnalyticsService } from '../../shared/services/analytics.service';
 
 interface HighlightInfo {
   icon: string;
@@ -54,7 +56,7 @@ throw new Error('Method not implemented.');
 inc() {
 throw new Error('Method not implemented.');
 }
-qty: any;
+  qty: any;
 dec() {
 throw new Error('Method not implemented.');
 }
@@ -68,6 +70,7 @@ pickThumb(_t22: any) {
 throw new Error('Method not implemented.');
 }
   product?: Product;
+  private viewTrackedId?: string;
   selectedImage: string = '';
   selectedImageStyles: { objectPosition: string; transform: string } = {
     objectPosition: 'center',
@@ -200,7 +203,10 @@ thumbs: any;
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private title: Title,
+    private meta: Meta,
+    private analytics: AnalyticsService
   ) {}
 
   ngOnInit(): void {
@@ -225,6 +231,20 @@ thumbs: any;
       }
 
       this.product = product;
+      if (product.id && this.viewTrackedId !== product.id) {
+        this.analytics.trackViewItem(product);
+        this.viewTrackedId = product.id;
+      }
+      // SEO meta
+      if (product.seoTitle) {
+        this.title.setTitle(product.seoTitle);
+      } else {
+        this.title.setTitle(`${product.nombre} | Kalad`);
+      }
+      this.meta.updateTag({
+        name: 'description',
+        content: product.descripcionCorta || product.copyPremium || product.descripcion || 'Mochila artesanal Kalad'
+      });
 
       this.thumbnailImages = this.buildThumbnailList(product);
       this.applySelectedVariant(this.thumbnailImages[0]);
@@ -542,7 +562,13 @@ thumbs: any;
   addToCart(): void {
     if (!this.product) return;
 
+    const productForAnalytics: Product = {
+      ...this.product,
+      color: this.selectedColor || this.product.color
+    };
+
     this.cartService.addProduct(this.product, this.quantity, this.selectedColor);
+    this.analytics.trackAddToCart(productForAnalytics, this.quantity, 'Detalle de producto');
   }
 
   buyNow(): void {

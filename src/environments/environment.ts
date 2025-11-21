@@ -13,6 +13,13 @@
     measurementId: "G-34LYXS0EGQ"
   },
 
+  // Analiticas
+  analytics: {
+    measurementId: "G-34LYXS0EGQ",
+    gtmId: "GTM-PVRCQD6M",
+    loadGa4Script: true
+  },
+
   // Configuracion de Wompi
   wompi: {
     publicKey: 'pub_test_BdzugKP1hhQ7K2oXBQcc5KNKXLfjtFc5',

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -8,8 +8,10 @@ import { CartService } from '../../shared/services/cart.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { firstValueFrom } from 'rxjs';
+import { Title, Meta } from '@angular/platform-browser';
+import { AnalyticsService } from '../../shared/services/analytics.service';
 
-type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
+type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
 @Component({
   selector: 'app-products',
@@ -26,17 +28,19 @@ export class ProductsComponent implements OnInit {
 
   // ======== Ordenamiento ========
   orden: OrderOption = 'az';
-  ordenOpciones: OrderOption[] = ['az', 'za', 'priceAsc', 'priceDesc', 'new'];
+  ordenOpciones: OrderOption[] = ['az', 'za', 'priceAsc', 'priceDesc', 'new', 'featured'];
   filtroOrden: OrderOption = this.orden;
 
   // ======== Filtros ========
   filtroCategoria: string = '';
   filtroColor: string = '';
-  open: boolean[] = [false, false];
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+  open: boolean[] = [false, false, false];
   
   colores = [
     { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
-    { id: 'cafe', label: 'Café', hex: '#6a4e3a' },
+    { id: 'cafe', label: 'Cafe', hex: '#6a4e3a' },
     { id: 'negro', label: 'Negro', hex: '#000' },
     { id: 'arena', label: 'Arena', hex: '#e8e0c8' }
   ];
@@ -46,16 +50,25 @@ export class ProductsComponent implements OnInit {
   loading = true;
   error: string | null = null;
   private placeholderImage = 'assets/images/Producto_1.jpg';
+  private listTracked = false;
 
   constructor(
     private productService: ProductService,
     private router: Router,
     private cartService: CartService,
     public favorites: FavoritesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private title: Title,
+    private meta: Meta,
+    private analytics: AnalyticsService
   ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Productos | Kalad');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Catálogo de mochilas Kalad. Filtra por color, precio y ordena por nuevos o destacados.'
+    });
     this.loadProducts();
   }
 
@@ -91,23 +104,30 @@ export class ProductsComponent implements OnInit {
   }
 
   private ordenarLista(lista: Product[]) {
+    const copia = [...lista];
     switch (this.orden) {
       case 'az':
-        return lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        return copia.sort((a, b) => a.nombre.localeCompare(b.nombre));
       case 'za':
-        return lista.sort((a, b) => b.nombre.localeCompare(a.nombre));
+        return copia.sort((a, b) => b.nombre.localeCompare(a.nombre));
       case 'priceAsc':
-        return lista.sort((a, b) => a.precio - b.precio);
+        return copia.sort((a, b) => a.precio - b.precio);
       case 'priceDesc':
-        return lista.sort((a, b) => b.precio - a.precio);
+        return copia.sort((a, b) => b.precio - a.precio);
       case 'new':
-        return lista.sort((a, b) => {
+        return copia.sort((a, b) => {
           const dateA = a.fechaCreacion ? new Date(a.fechaCreacion).getTime() : 0;
           const dateB = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : 0;
           return dateB - dateA;
         });
+      case 'featured':
+        return copia.sort((a, b) => {
+          const aFeat = a.badge ? 1 : 0;
+          const bFeat = b.badge ? 1 : 0;
+          return bFeat - aFeat;
+        });
       default:
-        return lista;
+        return copia;
     }
   }
 
@@ -117,7 +137,7 @@ export class ProductsComponent implements OnInit {
   aplicarFiltros() {
     let lista = [...this.products];
 
-    // FILTRO CATEGORÍA
+    // FILTRO CATEGORIA
     if (this.filtroCategoria) {
       lista = lista.filter((p) => p.categoria === this.filtroCategoria);
     }
@@ -127,10 +147,23 @@ export class ProductsComponent implements OnInit {
       lista = lista.filter((p) => p.colores?.includes(this.filtroColor));
     }
 
+    // FILTRO PRECIO
+    if (this.minPrice != null) {
+      lista = lista.filter((p) => p.precio >= this.minPrice!);
+    }
+    if (this.maxPrice != null) {
+      lista = lista.filter((p) => p.precio <= this.maxPrice!);
+    }
+
     // ORDENAMIENTO
     lista = this.ordenarLista(lista);
 
     this.productosFiltrados = lista;
+
+    if (!this.listTracked && this.productosFiltrados.length) {
+      this.analytics.trackViewItemList('Productos', this.productosFiltrados);
+      this.listTracked = true;
+    }
   }
 
   // =======================
@@ -143,6 +176,21 @@ export class ProductsComponent implements OnInit {
 
   setFiltroColor(color: string) {
     this.filtroColor = this.filtroColor === color ? '' : color;
+    this.aplicarFiltros();
+  }
+
+  setPriceRange() {
+    if (this.minPrice != null && this.maxPrice != null && this.minPrice > this.maxPrice) {
+      const tmp = this.minPrice;
+      this.minPrice = this.maxPrice;
+      this.maxPrice = tmp;
+    }
+    this.aplicarFiltros();
+  }
+
+  resetPrice() {
+    this.minPrice = null;
+    this.maxPrice = null;
     this.aplicarFiltros();
   }
 
@@ -170,6 +218,8 @@ export class ProductsComponent implements OnInit {
         return 'Mayor precio';
       case 'new':
         return 'Nuevos';
+      case 'featured':
+        return 'Destacados';
       default:
         return option;
     }
@@ -179,6 +229,10 @@ export class ProductsComponent implements OnInit {
   //  Ver detalles del producto
   // =======================
   viewProductDetails(productId: string): void {
+    const product = this.products.find((p) => p.id === productId);
+    if (product) {
+      this.analytics.trackSelectItem(product, 'Productos');
+    }
     this.router.navigate(['/products', productId]);
   }
 
@@ -187,6 +241,7 @@ export class ProductsComponent implements OnInit {
   // =======================
   addToCart(product: Product) {
     this.cartService.addProduct(product, 1);
+    this.analytics.trackAddToCart(product, 1, 'Productos');
   }
 
   toggleFavorite(product: Product, event: Event) {
@@ -206,7 +261,7 @@ export class ProductsComponent implements OnInit {
         this.favorites.toggle(product);
       }
     } catch (e) {
-      console.warn('No se pudo iniciar sesión para favoritos', e);
+      console.warn('No se pudo iniciar sesion para favoritos', e);
     }
   }
 

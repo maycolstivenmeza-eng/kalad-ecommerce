@@ -7,6 +7,7 @@ import { CartService, CartItem } from "../../shared/services/cart.service";
 import { Product } from "../../shared/models/product.model";
 import { ProductService } from "../../shared/services/product.service";
 import { CouponService } from "../../shared/services/coupon.service";
+import { AnalyticsService } from "../../shared/services/analytics.service";
 
 @Component({
   selector: "app-cart",
@@ -28,11 +29,13 @@ export class CartComponent implements OnInit, OnDestroy {
   shipping = 0;
   recommendedProducts: Product[] = [];
   private sub?: Subscription;
+  private cartViewed = false;
 
   constructor(
     private cartService: CartService,
     private productService: ProductService,
-    private couponService: CouponService
+    private couponService: CouponService,
+    private analytics: AnalyticsService
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +43,10 @@ export class CartComponent implements OnInit, OnDestroy {
       this.loadRecommendations(items);
       const subtotal = items.reduce((acc, i) => acc + i.precio * i.qty, 0);
       this.computeShipping(subtotal);
+      if (!this.cartViewed && items.length) {
+        this.analytics.trackViewCart(items, subtotal, this.shipping, this.discount);
+        this.cartViewed = true;
+      }
     });
   }
 
@@ -111,5 +118,6 @@ export class CartComponent implements OnInit, OnDestroy {
   addSuggested(product: Product, event: Event) {
     event.stopPropagation();
     this.cartService.addProduct(product, 1);
+    this.analytics.trackAddToCart(product, 1, "Sugerido en carrito");
   }
 }

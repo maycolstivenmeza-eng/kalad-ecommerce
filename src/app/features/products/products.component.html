@@ -40,6 +40,17 @@
 
       <div class="linea-unica"></div>
 
+      <div class="filtro" (click)="toggle(2)">
+        <span>Precio</span>
+        <span class="flecha" [class.open]="open[2]">&#9662;</span>
+      </div>
+
+      <div class="filtro-opciones precio" *ngIf="open[2]">
+        <label>Min <input type="number" [(ngModel)]="minPrice" (change)="setPriceRange()" placeholder="0" /></label>
+        <label>Max <input type="number" [(ngModel)]="maxPrice" (change)="setPriceRange()" placeholder="200000" /></label>
+        <button type="button" (click)="resetPrice()">Limpiar</button>
+      </div>
+
       <div
         class="categoria"
         *ngFor="let categoria of categorias"
@@ -99,11 +110,11 @@
             <button
               class="cart-btn"
               type="button"
-              (click)="addToCart(p)"
-              [disabled]="((p.stock || 0)) <= 0"
-            >
-              <svg
-                class="cart-icon"
+          (click)="addToCart(p)"
+          [disabled]="((p.stock || 0)) <= 0"
+        >
+          <svg
+            class="cart-icon"
                 viewBox="0 0 24 24"
                 aria-hidden="true"
                 focusable="false"

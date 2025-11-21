@@ -2,15 +2,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../shared/services/product.service';
 import { CartService } from '../../../shared/services/cart.service';
 import { FavoritesService } from '../../../shared/services/favorites.service';
 import { AuthService } from '../../../shared/services/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { Title, Meta } from '@angular/platform-browser';
 
-type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new';
+type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
 @Component({
   selector: 'app-origen',
@@ -23,16 +23,20 @@ export class OrigenComponent implements OnInit, OnDestroy {
   productos: Product[] = [];
   productosFiltrados: Product[] = [];
   orden: OrderOption = 'az';
-  ordenOpciones: OrderOption[] = ['az', 'za', 'priceAsc', 'priceDesc', 'new'];
+  ordenOpciones: OrderOption[] = ['az', 'za', 'priceAsc', 'priceDesc', 'new', 'featured'];
   filtroColor = '';
+  filtroCategoria = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+  open = [false, false, false];
+
   colores = [
     { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
-    { id: 'cafe', label: 'Café', hex: '#6a4e3a' },
+    { id: 'cafe', label: 'Cafe', hex: '#6a4e3a' },
     { id: 'negro', label: 'Negro', hex: '#000' },
     { id: 'arena', label: 'Arena', hex: '#e8e0c8' }
   ];
   categorias: string[] = ['Mochilas', 'Bolsas'];
-  filtroCategoria = '';
   private sub?: Subscription;
   private placeholderImage = 'assets/images/Producto_1.jpg';
 
@@ -40,10 +44,17 @@ export class OrigenComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private cartService: CartService,
     public favorites: FavoritesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private title: Title,
+    private meta: Meta
   ) {}
 
   async ngOnInit() {
+    this.title.setTitle('Kalad Origen | Colección');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Colección Kalad Origen: mochilas artesanales con diseño único. Filtra por color, precio y ordena por destacados.'
+    });
     this.sub = this.productService
       .getProductsByCollection('kalad-origen')
       .subscribe((items) => {
@@ -69,8 +80,6 @@ export class OrigenComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  open = [false, false];
-
   toggle(i: number) {
     this.open[i] = !this.open[i];
   }
@@ -90,6 +99,21 @@ export class OrigenComponent implements OnInit, OnDestroy {
     this.aplicarFiltros();
   }
 
+  setPriceRange() {
+    if (this.minPrice != null && this.maxPrice != null && this.minPrice > this.maxPrice) {
+      const tmp = this.minPrice;
+      this.minPrice = this.maxPrice;
+      this.maxPrice = tmp;
+    }
+    this.aplicarFiltros();
+  }
+
+  resetPrice() {
+    this.minPrice = null;
+    this.maxPrice = null;
+    this.aplicarFiltros();
+  }
+
   getOrderLabel(option: OrderOption): string {
     switch (option) {
       case 'az':
@@ -102,6 +126,8 @@ export class OrigenComponent implements OnInit, OnDestroy {
         return 'Mayor precio';
       case 'new':
         return 'Nuevos';
+      case 'featured':
+        return 'Destacados';
       default:
         return option;
     }
@@ -116,6 +142,13 @@ export class OrigenComponent implements OnInit, OnDestroy {
 
     if (this.filtroCategoria) {
       lista = lista.filter((p) => p.categoria === this.filtroCategoria);
+    }
+
+    if (this.minPrice != null) {
+      lista = lista.filter((p) => p.precio >= this.minPrice!);
+    }
+    if (this.maxPrice != null) {
+      lista = lista.filter((p) => p.precio <= this.maxPrice!);
     }
 
     lista = this.ordenarLista(lista);
@@ -139,6 +172,12 @@ export class OrigenComponent implements OnInit, OnDestroy {
           const dateA = a.fechaCreacion ? new Date(a.fechaCreacion).getTime() : 0;
           const dateB = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : 0;
           return dateB - dateA;
+        });
+      case 'featured':
+        return copia.sort((a, b) => {
+          const aFeat = a.badge ? 1 : 0;
+          const bFeat = b.badge ? 1 : 0;
+          return bFeat - aFeat;
         });
       default:
         return lista;
@@ -165,10 +204,7 @@ export class OrigenComponent implements OnInit, OnDestroy {
       const now = await firstValueFrom(this.authService.isLoggedIn$);
       if (now) this.favorites.toggle(producto);
     } catch (e) {
-      console.warn('No se pudo iniciar sesión para favoritos', e);
+      console.warn('No se pudo iniciar sesion para favoritos', e);
     }
   }
-
 }
-
-

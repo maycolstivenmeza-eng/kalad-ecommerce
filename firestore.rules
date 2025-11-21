@@ -2,28 +2,44 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Productos públicos
-    match /productos/{productoId} {
+    // Productos: lectura pública, sin escritura desde cliente
+    match /productos/{id} {
       allow read: if true;
       allow write: if false;
     }
 
-    // Perfil del usuario y direcciones
-    match /usuarios/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Cupones: lectura pública para validación
+    match /cupones/{code} {
+      allow read: if true;
+      allow write: if false;
+    }
 
-      match /direcciones/{docId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Pedidos: el dueño puede crear/leer/actualizar. Admins (custom claim) pueden ver/gestionar todos.
+    match /pedidos/{pedidoId} {
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.userId;
+
+      allow read, update, delete: if request.auth != null
+        && (
+          request.auth.uid == resource.data.userId
+          || request.auth.token.admin == true
+        );
+    }
+
+    // Orders (uso admin / compatibilidad con panel)
+    match /orders/{orderId} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Usuarios y subcolecciones (favoritos, direcciones, etc.): solo el dueño
+    match /usuarios/{uid} {
+      allow create, read, update, delete: if request.auth != null && request.auth.uid == uid;
+      match /{sub=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
       }
     }
 
-    // Pedidos (solo el dueño puede ver/crear/editar)
-    match /pedidos/{pedidoId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
-    }
-
-    // Bloquea todo lo demás
+    // Bloquear todo lo demás
     match /{document=**} {
       allow read, write: if false;
     }

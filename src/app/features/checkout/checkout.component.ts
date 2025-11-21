@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -12,6 +12,7 @@ import { firstValueFrom } from "rxjs";
 import { CouponService } from "../../shared/services/coupon.service";
 import { environment } from "../../../environments/environment";
 import { FormsModule } from "@angular/forms";
+import { AnalyticsService } from "../../shared/services/analytics.service";
 
 @Component({
   selector: "app-checkout",
@@ -20,13 +21,15 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./checkout.component.html",
   styleUrl: "./checkout.component.css"
 })
-export class CheckoutComponent implements OnInit {
+export class CheckoutComponent implements OnInit, OnDestroy {
   checkoutForm!: FormGroup;
   isProcessing = false;
   cartItems: CartItem[] = [];
   couponCode = "";
   discount = 0;
   shipping = 0;
+  private purchaseTracked = false;
+  private abandonTracked = false;
 
   constructor(
     private fb: FormBuilder,
@@ -37,13 +40,21 @@ export class CheckoutComponent implements OnInit {
     private userDataService: UserDataService,
     private couponService: CouponService,
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private analytics: AnalyticsService
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     this.cartItems = this.cartService.items;
     this.computeShipping(this.getSubtotal());
+  }
+
+  ngOnDestroy(): void {
+    if (!this.purchaseTracked && !this.abandonTracked && this.cartItems.length) {
+      this.analytics.trackCartAbandoned(this.cartItems, this.getTotal(), "checkout_exit");
+      this.abandonTracked = true;
+    }
   }
 
   initializeForm(): void {
@@ -158,6 +169,15 @@ export class CheckoutComponent implements OnInit {
       this.computeShipping(subtotal);
       await this.applyCoupon();
       const commission = this.getCommission();
+      const totals = {
+        subtotal,
+        shipping: this.shipping,
+        discount: this.discount,
+        total: this.getTotal(),
+        coupon: this.discount ? this.couponCode.trim().toUpperCase() : undefined
+      };
+
+      this.analytics.trackBeginCheckout(this.cartItems, totals, this.couponCode);
 
       // Crear pedido
       const pedidoId = await this.pedidosService.crearPedido(
@@ -231,7 +251,7 @@ export class CheckoutComponent implements OnInit {
           transaccionId: txId
         });
 
-        // Si se aprobó, descontar stock real
+        // Si se aprueba, descontar stock y reportar compra
         if (status === "approved") {
           await Promise.all(
             this.cartItems.map((item) =>
@@ -240,10 +260,27 @@ export class CheckoutComponent implements OnInit {
               })
             )
           );
+          this.analytics.trackPurchase(
+            pedidoId,
+            txId || null,
+            this.cartItems,
+            {
+              subtotal: totals.subtotal,
+              shipping: totals.shipping,
+              discount: totals.discount,
+              total: totals.total,
+              coupon: totals.coupon
+            }
+          );
+          this.purchaseTracked = true;
+        } else if (!this.abandonTracked) {
+          this.analytics.trackCartAbandoned(this.cartItems, totals.total, `checkout_${status}`);
+          this.abandonTracked = true;
         }
       });
 
       this.cartService.clear();
+      this.cartItems = [];
       this.router.navigate(["/confirmation"], { queryParams: { id: pedidoId } });
     } catch (error) {
       console.error("Error al procesar el pago:", error);
