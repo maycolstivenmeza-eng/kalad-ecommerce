@@ -6,6 +6,14 @@
     <p>Estamos aqui para escucharte y ayudarte.</p>
   </div>
 
+  <div
+    class="contact-status"
+    *ngIf="status"
+    [ngClass]="{ ok: status.tipo === 'ok', error: status.tipo === 'error' }"
+  >
+    {{ status.texto }}
+  </div>
+
   <section class="formulario">
     <label>Nombre</label>
     <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Tu Nombre" />

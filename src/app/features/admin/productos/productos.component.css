@@ -16,6 +16,12 @@
   margin-bottom: 10px;
 }
 
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .logout-btn {
   display: inline-flex;
   align-items: center;

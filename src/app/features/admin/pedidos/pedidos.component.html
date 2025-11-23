@@ -1,0 +1,75 @@
+<div class="admin-container">
+
+  <!-- HEADER ADMIN -->
+  <div class="admin-header">
+    <h2>Gestión de pedidos</h2>
+    <div class="admin-header-actions">
+      <button class="btn-reset" type="button" (click)="irAProductos()">
+        Volver a productos
+      </button>
+      <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <h3 class="titulo-lista">Pedidos</h3>
+
+  <div class="filtros-bar pedidos-filtros" *ngIf="pedidos.length">
+    <select [(ngModel)]="filtroEstado">
+      <option value="">Todos los estados</option>
+      <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
+    </select>
+  </div>
+
+  <div class="pedidos" *ngIf="pedidosFiltrados.length; else sinPedidos">
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Cambiar estado</th>
+          <th>Guía envío</th>
+          <th>Nota admin</th>
+          <th>Items</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of pedidosFiltrados">
+          <td>{{ p.id }}</td>
+          <td>{{ p.userId }}</td>
+          <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }}</td>
+          <td>{{ p.estado }}</td>
+          <td>
+            <select [ngModel]="p.estado" (ngModelChange)="cambiarEstadoPedido(p, $event)">
+              <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
+            </select>
+          </td>
+          <td><input class="mini-input" type="text" [(ngModel)]="p.guiaEnvio" placeholder="Guía" /></td>
+          <td><input class="mini-input" type="text" [(ngModel)]="p.notaAdmin" placeholder="Nota" /></td>
+          <td>{{ p.items.length || 0 }}</td>
+          <td>{{ p.createdAt?.toDate ? (p.createdAt.toDate() | date:'short') : '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #sinPedidos>
+    <p class="filtro-resultado">No hay pedidos registrados.</p>
+  </ng-template>
+
+  <div
+    class="toast-notification"
+    *ngIf="toastActivo"
+    [ngClass]="toastActivo.tipo"
+    role="status"
+    aria-live="assertive"
+  >
+    {{ toastActivo.texto }}
+  </div>
+
+</div>
+

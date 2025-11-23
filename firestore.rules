@@ -2,28 +2,54 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Productos: lectura pública, sin escritura desde cliente
+    // Productos: lectura pública; solo admin puede escribir
     match /productos/{id} {
       allow read: if true;
-      allow write: if false;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
 
-    // Cupones: lectura pública para validación
+    // Cupones: lectura pública para validación; solo admin puede escribir
     match /cupones/{code} {
       allow read: if true;
-      allow write: if false;
+      allow write: if request.auth != null && request.auth.token.admin == true;
     }
 
-    // Pedidos: el dueño puede crear/leer/actualizar. Admins (custom claim) pueden ver/gestionar todos.
+    // Pedidos: el dueño puede crear/leer. Admins (custom claim) pueden ver/gestionar todos.
     match /pedidos/{pedidoId} {
-      allow create: if request.auth != null
-        && request.auth.uid == request.resource.data.userId;
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      allow read, update, delete: if request.auth != null
-        && (
-          request.auth.uid == resource.data.userId
-          || request.auth.token.admin == true
-        );
+      function isOwner() {
+        return isSignedIn() && request.auth.uid == request.resource.data.userId;
+      }
+
+      function isAdmin() {
+        return isSignedIn() && request.auth.token.admin == true;
+      }
+
+      // Validaciones básicas de montos para evitar pedidos con totales negativos
+      function montosValidos() {
+        let d = request.resource.data;
+        return
+          d.total is number && d.total >= 0 &&
+          (!('subtotal' in d) || (d.subtotal is number && d.subtotal >= 0)) &&
+          (!('envio' in d) || (d.envio is number && d.envio >= 0)) &&
+          (!('descuento' in d) || (d.descuento is number && d.descuento >= 0)) &&
+          // Si vienen todos los campos, total debe ser consistente
+          (!('subtotal' in d && 'envio' in d && 'descuento' in d)
+            || d.total == d.subtotal + d.envio - d.descuento);
+      }
+
+      // Crear pedido: solo el dueño (userId === uid) y montos coherentes
+      allow create: if isOwner() && montosValidos();
+
+      // Leer pedido: dueño o admin
+      allow read: if isSignedIn() &&
+        (request.auth.uid == resource.data.userId || isAdmin());
+
+      // Actualizar / borrar: solo admin (panel interno)
+      allow update, delete: if isAdmin();
     }
 
     // Orders (uso admin / compatibilidad con panel)

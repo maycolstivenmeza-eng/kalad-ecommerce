@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Product } from '../models/product.model';
+import { UiMessageService } from './ui-message.service';
 
 export interface CartItem {
   id: string;
@@ -35,12 +36,14 @@ export class CartService {
     return this.items.reduce((acc, item) => acc + item.qty * item.precio, 0);
   }
 
+  constructor(private uiMessage: UiMessageService) {}
+
   addProduct(product: Product, qty = 1, color?: string): void {
     if (!product.id) return;
 
     const available = Number(product.stock ?? 0);
     if (available <= 0) {
-      alert('Este producto no tiene stock disponible.');
+      this.uiMessage.error('Este producto no tiene stock disponible.');
       return;
     }
 
@@ -51,7 +54,7 @@ export class CartService {
     const currentQty = existing?.qty ?? 0;
     const allowed = Math.max(0, available - currentQty);
     if (allowed <= 0) {
-      alert('Ya agregaste el maximo disponible de este producto.');
+      this.uiMessage.info('Ya agregaste el máximo disponible de este producto.');
       return;
     }
 

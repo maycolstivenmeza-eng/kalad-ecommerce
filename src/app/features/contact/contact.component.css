@@ -13,6 +13,24 @@
   margin-bottom: 20px;
 }
 
+.contact-status {
+  margin-top: 16px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.contact-status.ok {
+  background: #e6f4ea;
+  color: #1f7a3b;
+}
+
+.contact-status.error {
+  background: #fdecea;
+  color: #b71833;
+}
+
 .banner {
   background: url('/assets/images/Banner_historia4.png') center/cover no-repeat;
   color: #f5f0e6;

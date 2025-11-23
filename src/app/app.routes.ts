@@ -50,6 +50,13 @@ export const routes: Routes = [
         .then(m => m.ProductosComponent)
   },
   {
+    path: 'admin/pedidos',
+    canActivate: [adminAuthGuard],
+    loadComponent: () =>
+      import('./features/admin/pedidos/pedidos.component')
+        .then(m => m.PedidosComponent)
+  },
+  {
     path: 'cart',
     loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent)
   },

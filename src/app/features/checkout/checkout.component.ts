@@ -29,6 +29,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   couponCode = "";
   discount = 0;
   shipping = 0;
+  couponMessage: string | null = null;
+  statusMessage: string | null = null;
   suggestions: Product[] = [];
   private purchaseTracked = false;
   private abandonTracked = false;
@@ -113,18 +115,29 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     const subtotal = this.getSubtotal();
     if (!code) {
       this.discount = 0;
+      this.couponMessage = null;
       return;
     }
     try {
       this.discount = await this.couponService.validate(code, subtotal);
+      this.couponMessage = this.discount
+        ? `Cupón aplicado correctamente.`
+        : 'Este cupón no genera descuento para el total actual.';
     } catch (e) {
       this.discount = 0;
-      alert((e as any)?.message || "Cupon invalido");
+      const msg = (e as any)?.message || "Cupón inválido o no aplicable.";
+      this.couponMessage = msg;
     }
   }
 
   computeShipping(subtotal: number): void {
     this.shipping = subtotal >= 200000 || subtotal === 0 ? 0 : 12000;
+  }
+
+  resetCoupon(): void {
+    this.couponCode = "";
+    this.discount = 0;
+    this.couponMessage = null;
   }
 
   private loadSuggestions(): void {
@@ -147,14 +160,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   }
 
   async processPayment(): Promise<void> {
+    this.statusMessage = null;
+
     if (this.checkoutForm.invalid) {
       this.markFormGroupTouched(this.checkoutForm);
-      alert("Por favor completa todos los campos requeridos correctamente.");
+      this.statusMessage = "Por favor completa todos los campos requeridos correctamente.";
       return;
     }
 
     if (!this.cartItems.length) {
-      alert("Tu carrito esta vacio.");
+      this.statusMessage = "Tu carrito está vacío.";
       return;
     }
 
@@ -169,11 +184,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       // Validar stock antes de cobrar
       const sinStock = await this.validateStock();
       if (sinStock.length) {
-        alert(
-          `No hay stock suficiente para: ${sinStock
-            .map((p) => p.nombre)
-            .join(", ")}. Ajusta el carrito e intenta de nuevo.`
-        );
+        this.statusMessage = `No hay stock suficiente para: ${sinStock
+          .map((p) => p.nombre)
+          .join(", ")}. Ajusta el carrito e intenta de nuevo.`;
         return;
       }
 
@@ -306,7 +319,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.router.navigate(["/confirmation"], { queryParams: { id: pedidoId } });
     } catch (error) {
       console.error("Error al procesar el pago:", error);
-      alert("Ocurrio un error al procesar el pago. Por favor intenta de nuevo.");
+      this.statusMessage = "Ocurrió un error al procesar el pago. Por favor intenta de nuevo.";
     } finally {
       this.isProcessing = false;
     }
@@ -330,7 +343,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       await this.authService.loginWithGoogle();
       return true;
     } catch {
-      alert("Debes iniciar sesion con Google para completar la compra.");
+      this.statusMessage = "Debes iniciar sesión con Google para completar la compra.";
       return false;
     }
   }

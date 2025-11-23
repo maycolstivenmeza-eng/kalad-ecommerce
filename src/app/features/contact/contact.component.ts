@@ -18,6 +18,7 @@ export class ContactComponent implements OnInit {
   mensaje = '';
   motivo: ContactReason = 'contacto';
   sending = false;
+  status: { tipo: 'ok' | 'error'; texto: string } | null = null;
 
   constructor(
     private contactService: ContactService,
@@ -34,8 +35,10 @@ export class ContactComponent implements OnInit {
   }
 
   async enviar() {
+    this.status = null;
+
     if (!this.nombre || !this.correo || !this.asunto || !this.mensaje) {
-      alert('Por favor completa todos los campos.');
+      this.status = { tipo: 'error', texto: 'Por favor completa todos los campos.' };
       return;
     }
 
@@ -48,7 +51,7 @@ export class ContactComponent implements OnInit {
         mensaje: this.mensaje,
         motivo: this.motivo
       });
-      alert('Mensaje enviado correctamente. Te contactaremos pronto.');
+      this.status = { tipo: 'ok', texto: 'Mensaje enviado correctamente. Te contactaremos pronto.' };
       this.nombre = '';
       this.correo = '';
       this.asunto = '';
@@ -56,7 +59,7 @@ export class ContactComponent implements OnInit {
       this.motivo = 'contacto';
     } catch (e) {
       console.error('No se pudo enviar el mensaje', e);
-      alert('No se pudo enviar tu mensaje. Intenta de nuevo.');
+      this.status = { tipo: 'error', texto: 'No se pudo enviar tu mensaje. Intenta de nuevo.' };
     } finally {
       this.sending = false;
     }

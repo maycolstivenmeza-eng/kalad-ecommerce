@@ -1,11 +1,16 @@
-﻿<div class="admin-container">
+<div class="admin-container">
 
   <!-- HEADER ADMIN -->
   <div class="admin-header">
-    <h2>Gestion de productos</h2>
-    <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
-      Cerrar sesión
-    </button>
+    <h2>Gestión de productos</h2>
+    <div class="admin-header-actions">
+      <button type="button" class="btn-reset" (click)="irAPedidos()" title="Ver pedidos">
+        Ver pedidos
+      </button>
+      <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
+        Cerrar sesión
+      </button>
+    </div>
   </div>
 
   <div class="alert" *ngIf="mensajeSistema" [ngClass]="mensajeSistema.tipo">
@@ -142,61 +147,99 @@
 
     <!-- IMAGENES SECUNDARIAS -->
     <label for="imagenesSec">Imagenes adicionales (maximo 4)</label>
-    <input id="imagenesSec" type="file" multiple accept="image/*" (change)="seleccionarMultiplesImagenes($event)" class="input"/>
+    <input
+      id="imagenesSec"
+      type="file"
+      (change)="seleccionarMultiplesImagenes($event)"
+      accept="image/*"
+      multiple
+      class="input"
+    />
 
-    <div class="preview-multiplas" *ngIf="previewImagenes.length > 0">
+    <p class="input-hint">
+      Recomendacion: Usa imagenes cuadradas o verticales de buena resolucion, en formato JPG o WebP.
+    </p>
+
+    <!-- PREVIEW IMAGENES SECUNDARIAS -->
+    <div class="preview-multiplas" *ngIf="previewImagenes.length">
       <div class="preview-multi-item" *ngFor="let img of previewImagenes; let i = index">
-        <img [src]="img" class="preview-multi-img" loading="lazy"/>
-        <button type="button" class="preview-multi-delete" (click)="eliminarImagenSecundaria(i)">x</button>
+        <img [src]="img" alt="Imagen adicional {{ i + 1 }}" class="preview-multi-img" loading="lazy"/>
+        <button type="button" class="preview-multi-delete" (click)="eliminarImagenSecundaria(i)">×</button>
       </div>
     </div>
 
     <!-- BOTON GUARDAR -->
-    <button class="btn-guardar" type="submit" [disabled]="adminForm.invalid || faltaImagenPrincipal() || guardando">
+    <button type="submit" class="btn-guardar" [disabled]="adminForm.invalid || guardando">
       {{ guardando ? textoBotonProcesando : textoBotonAccion }}
     </button>
-
   </form>
 
   <!-- FILTROS -->
+  <h3 class="titulo-lista">Productos Registrados</h3>
+
   <div class="filtros-bar">
-    <input
-      type="text"
-      placeholder="Buscar por nombre"
-      [(ngModel)]="filtroNombre"
-      (ngModelChange)="aplicarFiltros()"
-    />
+    <div>
+      <label for="filtroNombre">Buscar por nombre</label>
+      <input
+        id="filtroNombre"
+        type="text"
+        [(ngModel)]="filtroNombre"
+        (ngModelChange)="aplicarFiltros()"
+        placeholder="Nombre del producto"
+      />
+    </div>
 
-    <select [(ngModel)]="filtroCategoria" (ngModelChange)="aplicarFiltros()">
-      <option value="">Todas las categorias</option>
-      <option *ngFor="let categoria of categorias" [value]="categoria">
-        {{ categoria }}
-      </option>
-    </select>
+    <div>
+      <label for="filtroCategoria">Categoria</label>
+      <select
+        id="filtroCategoria"
+        [(ngModel)]="filtroCategoria"
+        (ngModelChange)="aplicarFiltros()"
+      >
+        <option value="">Todas</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+      </select>
+    </div>
 
-    <select [(ngModel)]="filtroColeccion" (ngModelChange)="aplicarFiltros()">
-      <option value="">Todas las colecciones</option>
-      <option *ngFor="let coleccion of colecciones" [value]="coleccion.id">
-        {{ coleccion.label }}
-      </option>
-    </select>
+    <div>
+      <label for="filtroColeccion">Coleccion</label>
+      <select
+        id="filtroColeccion"
+        [(ngModel)]="filtroColeccion"
+        (ngModelChange)="aplicarFiltros()"
+      >
+        <option value="">Todas</option>
+        <option *ngFor="let coleccion of colecciones" [value]="coleccion.id">
+          {{ coleccion.label }}
+        </option>
+      </select>
+    </div>
 
-    <select [(ngModel)]="filtroBadge" (ngModelChange)="aplicarFiltros()">
-      <option value="">Todas las etiquetas</option>
-      <option *ngFor="let badge of badges" [ngValue]="badge">
-        {{ badge || 'Sin etiqueta' }}
-      </option>
-    </select>
+    <div>
+      <label for="filtroBadge">Etiqueta</label>
+      <select
+        id="filtroBadge"
+        [(ngModel)]="filtroBadge"
+        (ngModelChange)="aplicarFiltros()"
+      >
+        <option value="">Todas</option>
+        <option *ngFor="let badge of badges" [ngValue]="badge">
+          {{ badge || 'Sin etiqueta' }}
+        </option>
+      </select>
+    </div>
 
-    <button type="button" class="btn-reset" (click)="resetFiltros()">Limpiar</button>
+    <div>
+      <label>&nbsp;</label>
+      <button type="button" class="btn-reset" (click)="resetFiltros()">Limpiar</button>
+    </div>
   </div>
 
   <p class="filtro-resultado">
-    Mostrando {{ productosFiltrados.length }} de {{ productos.length }} productos
+    Mostrando {{ productosFiltrados.length }} de {{ productos.length }} productos.
   </p>
 
-  <h3 class="titulo-lista">Productos Registrados</h3>
-
+  <!-- TABLA PRODUCTOS -->
   <ng-container *ngIf="productosFiltrados.length; else sinProductos">
     <table class="tabla-productos">
       <thead>
@@ -252,51 +295,105 @@
     <p class="filtro-resultado">No hay productos registrados todavia.</p>
   </ng-template>
 
-  <h3 class="titulo-lista">Pedidos</h3>
+  <!-- CUPONES -->
+  <h3 class="titulo-lista">Cupones</h3>
 
-  <div class="filtros-bar pedidos-filtros" *ngIf="pedidos.length">
-    <select [(ngModel)]="filtroEstadoPedido">
-      <option value="">Todos los estados</option>
-      <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
-    </select>
-  </div>
+  <form class="cupon-form" #cuponForm="ngForm" (ngSubmit)="guardarCupon(cuponForm)">
+    <div class="cupon-grid">
+      <div>
+        <label for="codigoCupon">Código</label>
+        <input
+          id="codigoCupon"
+          name="codigoCupon"
+          type="text"
+          [(ngModel)]="cuponEnEdicion.codigo"
+          required
+          maxlength="20"
+          class="input"
+          placeholder="KALAD10"
+        />
+      </div>
 
-  <div class="pedidos" *ngIf="pedidosFiltrados.length; else sinPedidos">
-    <table class="tabla-productos">
+      <div>
+        <label for="porcentajeCupon">Descuento (%)</label>
+        <input
+          id="porcentajeCupon"
+          name="porcentajeCupon"
+          type="number"
+          min="1"
+          max="100"
+          [(ngModel)]="cuponEnEdicion.porcentaje"
+          required
+          class="input"
+          placeholder="10"
+        />
+      </div>
+
+      <div>
+        <label for="minSubtotal">Mínimo subtotal (opcional)</label>
+        <input
+          id="minSubtotal"
+          name="minSubtotal"
+          type="number"
+          min="0"
+          [(ngModel)]="cuponEnEdicion.minSubtotal"
+          class="input"
+          placeholder="0"
+        />
+      </div>
+
+      <div class="switch-row">
+        <input
+          type="checkbox"
+          id="cuponActivo"
+          name="cuponActivo"
+          [(ngModel)]="cuponEnEdicion.activo"
+        />
+        <label for="cuponActivo">Cupón activo</label>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn-guardar"
+      [disabled]="cuponForm.invalid || guardandoCupon"
+    >
+      {{ guardandoCupon ? 'Guardando cupón...' : (editandoCupon ? 'Actualizar cupón' : 'Crear cupón') }}
+    </button>
+  </form>
+
+  <ng-container *ngIf="cupones.length; else sinCupones">
+    <table class="tabla-productos cupones-tabla">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Usuario</th>
-          <th>Total</th>
+          <th>Código</th>
+          <th>Descuento</th>
+          <th>Mínimo subtotal</th>
           <th>Estado</th>
-          <th>Cambiar estado</th>
-          <th>Guia envio</th>
-          <th>Nota admin</th>
-          <th>Items</th>
-          <th>Fecha</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let p of pedidosFiltrados">
-          <td>{{ p.id }}</td>
-          <td>{{ p.userId }}</td>
-          <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }}</td>
-          <td>{{ p.estado }}</td>
+        <tr *ngFor="let c of cupones">
+          <td>{{ c.codigo }}</td>
+          <td>{{ c.porcentaje }}%</td>
+          <td>{{ c.minSubtotal || 0 | currency:'COP':'symbol':'1.0-0' }}</td>
           <td>
-            <select [ngModel]="p.estado" (ngModelChange)="cambiarEstadoPedido(p, $event)">
-              <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
-            </select>
+            <span class="pill" [class.off]="!c.activo">
+              {{ c.activo ? 'Activo' : 'Inactivo' }}
+            </span>
           </td>
-          <td><input class="mini-input" type="text" [(ngModel)]="p.guiaEnvio" placeholder="Guia" /></td>
-          <td><input class="mini-input" type="text" [(ngModel)]="p.notaAdmin" placeholder="Nota" /></td>
-          <td>{{ p.items.length || 0 }}</td>
-          <td>{{ p.createdAt?.toDate ? (p.createdAt.toDate() | date:'short') : '-' }}</td>
+          <td>
+            <button type="button" class="btn-editar" (click)="editarCupon(c)">Editar</button>
+            <button type="button" class="btn-eliminar" (click)="eliminarCupon(c)">Eliminar</button>
+          </td>
         </tr>
       </tbody>
     </table>
-  </div>
-  <ng-template #sinPedidos>
-    <p class="filtro-resultado">No hay pedidos registrados.</p>
+  </ng-container>
+
+  <ng-template #sinCupones>
+    <p class="filtro-resultado">No hay cupones registrados.</p>
   </ng-template>
 </div>
 

@@ -50,6 +50,8 @@
             <button type="button" class="link" *ngIf="discount" (click)="resetDiscount()">Quitar</button>
           </div>
 
+          <p class="cupon-msg" *ngIf="couponMessage">{{ couponMessage }}</p>
+
           <div class="totales">
             <p>Descuento: <strong>- {{ discount | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
             <p>

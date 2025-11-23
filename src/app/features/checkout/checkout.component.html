@@ -4,6 +4,10 @@
     <p>Completa tus datos para continuar con el pago</p>
   </div>
 
+  <div class="checkout-alert" *ngIf="statusMessage">
+    {{ statusMessage }}
+  </div>
+
   <div class="checkout-content">
     <!-- Formulario -->
     <div class="checkout-form-section">
@@ -210,6 +214,19 @@
           </div>
         }
       </div>
+
+      <div class="cupon">
+        <input
+          type="text"
+          placeholder="Cupon (ej: KALAD10)"
+          [(ngModel)]="couponCode"
+          (keydown.enter)="applyCoupon()"
+        />
+        <button type="button" (click)="applyCoupon()">Aplicar</button>
+        <button type="button" class="link" *ngIf="discount" (click)="resetCoupon()">Quitar</button>
+      </div>
+
+      <p class="cupon-msg" *ngIf="couponMessage">{{ couponMessage }}</p>
 
       <div class="summary-details">
         <div class="summary-row">

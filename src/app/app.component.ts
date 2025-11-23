@@ -5,23 +5,27 @@ import { FooterComponent } from './shared/components/footer/footer.components';
 import { Meta, Title } from '@angular/platform-browser';
 import { AnalyticsService } from './shared/services/analytics.service';
 import { Subscription, filter } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { UiMessageService, UiMessage } from './shared/services/ui-message.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Kalad';
   private navSub?: Subscription;
+  uiMessage$ = this.uiMessageService.message$;
 
   constructor(
     private titleService: Title,
     private meta: Meta,
     private router: Router,
-    private analytics: AnalyticsService
+    private analytics: AnalyticsService,
+    private uiMessageService: UiMessageService
   ) {
     this.titleService.setTitle('Kalad | Mochilas artesanales');
     this.meta.updateTag({

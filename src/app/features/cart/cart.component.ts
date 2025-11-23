@@ -27,6 +27,7 @@ export class CartComponent implements OnInit, OnDestroy {
   couponCode = "";
   discount = 0;
   shipping = 0;
+  couponMessage: string | null = null;
   recommendedProducts: Product[] = [];
   private sub?: Subscription;
   private cartViewed = false;
@@ -74,19 +75,25 @@ export class CartComponent implements OnInit, OnDestroy {
     const code = this.couponCode.trim().toUpperCase();
     if (!code) {
       this.discount = 0;
+      this.couponMessage = null;
       return;
     }
     try {
       this.discount = await this.couponService.validate(code, total);
+      this.couponMessage = this.discount
+        ? `Cupón aplicado: -${this.discount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : 'Este cupón no genera descuento para el total actual.';
     } catch (e) {
       this.discount = 0;
-      alert((e as any)?.message || "Cupon invalido");
+      const msg = (e as any)?.message || "Cupón inválido o no aplicable.";
+      this.couponMessage = msg;
     }
   }
 
   resetDiscount() {
     this.couponCode = "";
     this.discount = 0;
+    this.couponMessage = null;
   }
 
   computeShipping(subtotal: number) {

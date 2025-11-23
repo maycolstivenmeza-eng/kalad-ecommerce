@@ -6,7 +6,7 @@ import { Product } from "../../../shared/models/product.model";
 import { Subscription } from "rxjs";
 import { AuthService } from "../../../shared/services/auth.service";
 import { Router } from "@angular/router";
-import { PedidosService, Pedido } from "../../../shared/services/pedidos.service";
+import { CouponService, CouponDoc, Coupon } from "../../../shared/services/coupon.service";
 
 // Tipos
  type AdminProductForm = {
@@ -53,10 +53,11 @@ export class ProductosComponent implements OnInit, OnDestroy {
   productosFiltrados: Product[] = [];
   private productosSub?: Subscription;
 
-  // Pedidos
-  pedidos: Pedido[] = [];
-  readonly estadosPedido: Pedido['estado'][] = ['creado', 'pagado', 'enviado', 'entregado', 'cancelado'];
-  filtroEstadoPedido: Pedido['estado'] | "" = "";
+  // Cupones
+  cupones: CouponDoc[] = [];
+  cuponEnEdicion: Coupon = { codigo: "", activo: true, porcentaje: 10, minSubtotal: undefined };
+  editandoCupon = false;
+  guardandoCupon = false;
 
   // Filtros
   filtroNombre = "";
@@ -91,16 +92,11 @@ export class ProductosComponent implements OnInit, OnDestroy {
     return this.modoEdicion ? "Actualizando..." : "Guardando...";
   }
 
-  get pedidosFiltrados(): Pedido[] {
-    if (!this.filtroEstadoPedido) return this.pedidos;
-    return this.pedidos.filter(p => p.estado === this.filtroEstadoPedido);
-  }
-
   constructor(
     private productService: ProductService,
     private authService: AuthService,
     private router: Router,
-    private pedidosService: PedidosService
+    private couponService: CouponService
   ) {}
 
   // ==========================================================
@@ -108,7 +104,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   // ==========================================================
   ngOnInit() {
     this.cargarProductos();
-    this.cargarPedidos();
+    this.cargarCupones();
   }
 
   ngOnDestroy() {
@@ -129,13 +125,10 @@ export class ProductosComponent implements OnInit, OnDestroy {
     });
   }
 
-  async cargarPedidos() {
-    try {
-      const obs = await this.pedidosService.obtenerPedidosAdmin();
-      obs.subscribe((peds) => (this.pedidos = peds ?? []));
-    } catch (e) {
-      console.error('No se pudieron cargar pedidos', e);
-    }
+  cargarCupones() {
+    this.couponService.getAll().subscribe((lista) => {
+      this.cupones = lista ?? [];
+    });
   }
 
   obtenerEstadoInicial(): AdminProductForm {
@@ -378,40 +371,50 @@ export class ProductosComponent implements OnInit, OnDestroy {
     await this.productService.updateProduct(prod.id, { activo: nuevo });
   }
 
-  async cambiarEstadoPedido(pedido: Pedido, nuevoEstado: Pedido['estado']) {
-    if (!pedido.id || pedido.estado === nuevoEstado) return;
-    const anterior = pedido.estado;
-    const guia = (pedido.guiaEnvio || '').trim();
-    const nota = (pedido.notaAdmin || '').trim();
+  // ==========================================================
+  // CUPONES
+  // ==========================================================
+  nuevoCupon() {
+    this.editandoCupon = false;
+    this.cuponEnEdicion = { codigo: "", activo: true, porcentaje: 10, minSubtotal: undefined };
+  }
 
-    if ((nuevoEstado === 'enviado' || nuevoEstado === 'entregado') && !guia) {
-      this.mostrarToast('error', 'Agrega una guia de envio antes de marcar como enviado/entregado');
-      return;
-    }
+  editarCupon(c: CouponDoc) {
+    this.editandoCupon = true;
+    this.cuponEnEdicion = {
+      codigo: c.codigo,
+      activo: c.activo,
+      porcentaje: c.porcentaje,
+      minSubtotal: c.minSubtotal,
+    };
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
+  async guardarCupon(form: NgForm) {
+    if (form.invalid || this.guardandoCupon) return;
+    this.guardandoCupon = true;
     try {
-      await this.pedidosService.actualizarPedido(pedido.id, {
-        estado: nuevoEstado,
-        guiaEnvio: guia || undefined,
-        notaAdmin: nota || undefined
-      });
-      pedido.estado = nuevoEstado;
-      pedido.guiaEnvio = guia || undefined;
-      pedido.notaAdmin = nota || undefined;
-
-      // Si se cancela y antes no estaba cancelado, devolver stock
-      if (nuevoEstado === 'cancelado' && anterior !== 'cancelado') {
-        await Promise.all(
-          (pedido.items || []).map((item) =>
-            this.productService.increaseStock(item.productId, item.qty).catch((err) => {
-              console.error('No se pudo devolver stock', err);
-            })
-          )
-        );
-      }
+      await this.couponService.save(this.cuponEnEdicion);
+      this.mostrarToast('exito', 'Cupón guardado correctamente.');
+      this.nuevoCupon();
+      form.resetForm(this.cuponEnEdicion);
     } catch (e) {
-      console.error('No se pudo cambiar estado del pedido', e);
-      this.mostrarToast('error', 'No se pudo cambiar el estado del pedido');
+      console.error(e);
+      const msg = e instanceof Error ? e.message : 'No se pudo guardar el cupón';
+      this.mostrarToast('error', msg);
+    } finally {
+      this.guardandoCupon = false;
+    }
+  }
+
+  async eliminarCupon(c: CouponDoc) {
+    if (!confirm(`¿Eliminar el cupón ${c.codigo}?`)) return;
+    try {
+      await this.couponService.delete(c.codigo);
+      this.mostrarToast('exito', 'Cupón eliminado correctamente.');
+    } catch (e) {
+      console.error(e);
+      this.mostrarToast('error', 'No se pudo eliminar el cupón');
     }
   }
 
@@ -469,6 +472,13 @@ export class ProductosComponent implements OnInit, OnDestroy {
 
   private esUrlPublica(valor: string): boolean {
     return /^https?:\//i.test(valor) || valor.startsWith('data:');
+  }
+
+  // ==========================================================
+  // NAVEGACION ADMIN
+  // ==========================================================
+  irAPedidos(): void {
+    this.router.navigate(['/admin/pedidos']);
   }
 
   // ==========================================================

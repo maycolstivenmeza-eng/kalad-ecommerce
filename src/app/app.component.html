@@ -1,6 +1,17 @@
 <app-header />
 <router-outlet />
 <app-footer />
+
+<!-- Mensaje global (carrito, etc.) -->
+<div
+  class="global-toast"
+  *ngIf="(uiMessage$ | async) as msg"
+  [ngClass]="msg.type"
+  role="status"
+  aria-live="assertive"
+>
+  {{ msg.text }}
+</div>
 <!-- Botón flotante de soporte por WhatsApp -->
 <a
   class="floating-whatsapp"
