@@ -372,7 +372,7 @@
   position: fixed;
   bottom: 22px;
   right: 22px;
-  z-index: 45;
+  z-index: 50; /* por encima del botón de WhatsApp */
   background: none;
   border: none;
   cursor: pointer;
@@ -386,7 +386,7 @@
   background: #1f1b16;
   color: #fff;
   border-radius: 999px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18); /* sombra más suave */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

@@ -9,20 +9,20 @@
       <a routerLink="/contact" routerLinkActive="active">Contacto</a>
     </nav>
     <div class="header-icons">
-      <div class="header-search" (click)="toggleSearch($event)">
+      <div class="header-search" role="button" aria-label="Buscar productos" (click)="toggleSearch($event)">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="header-auth" (click)="toggleAuthMenu($event)">
+      <div class="header-auth" role="button" aria-label="Abrir menú de cuenta" (click)="toggleAuthMenu($event)">
         <i class="fa-regular fa-user"></i>
       </div>
-      <div class="header-fav" (click)="toggleFavorites($event)">
+      <div class="header-fav" role="button" aria-label="Ver favoritos" (click)="toggleFavorites($event)">
         <ng-container *ngIf="favoritesCount$ | async as fcount">
           <span class="fav-count" *ngIf="fcount">{{ fcount }}</span>
         </ng-container>
         <i class="fa-regular fa-heart"></i>
       </div>
 
-      <div class="header-cart" (click)="toggleCart($event)">
+      <div class="header-cart" role="button" aria-label="Ver carrito" (click)="toggleCart($event)">
         <ng-container *ngIf="cartCount$ | async as count">
           <span class="cart-count" *ngIf="count">{{ count }}</span>
         </ng-container>
@@ -48,7 +48,7 @@
       <div class="search-results" *ngIf="!searchLoading; else loadingSearch">
         <ng-container *ngIf="searchResults.length; else emptyResults">
           <div class="result" *ngFor="let prod of searchResults" (click)="goToSearchResult(prod.id)">
-            <img [src]="prod.imagen" [alt]="prod.nombre" />
+            <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy" />
             <div class="info">
               <p class="title">{{ prod.nombre }}</p>
               <p class="meta">{{ prod.coleccion }} · {{ prod.categoria }}</p>
@@ -70,7 +70,7 @@
     <h4>Carrito</h4>
     <ng-container *ngIf="(cartItems$ | async) as items; else emptyCart">
       <div class="cart-item" *ngFor="let item of items">
-        <img [src]="item.imagen" [alt]="item.nombre">
+        <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
         <div class="cart-item-info">
           <p class="name">{{ item.nombre }}</p>
           <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
@@ -96,7 +96,7 @@
     <h4>Favoritos</h4>
     <ng-container *ngIf="(favorites$ | async) as favs; else emptyFavs">
       <div class="fav-item" *ngFor="let prod of favs">
-        <img [src]="prod.imagen" [alt]="prod.nombre">
+        <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy">
         <div class="fav-item-info" (click)="goToProduct(prod.id)">
           <p class="name">{{ prod.nombre }}</p>
           <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
@@ -147,7 +147,7 @@
   <ng-container *ngIf="(cartItems$ | async) as items; else drawerEmpty">
     <div class="drawer-list">
       <div class="drawer-item" *ngFor="let item of items">
-        <img [src]="item.imagen" [alt]="item.nombre">
+        <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
         <div class="info">
           <p class="title">{{ item.nombre }}</p>
           <p class="meta">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>

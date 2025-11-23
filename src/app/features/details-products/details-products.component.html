@@ -1,4 +1,4 @@
-﻿<section class="product-page" *ngIf="product as p">
+<section class="product-page" *ngIf="product as p">
 
   <!-- BREADCRUMB -->
   <nav class="breadcrumb">
@@ -22,6 +22,7 @@
           [src]="thumb.src"
           [style.object-position]="thumb.focus || 'center'"
           [style.transform]="thumb.zoom ? 'scale(' + thumb.zoom + ')' : 'scale(1)'"
+          loading="lazy"
         />
       </div>
     </aside>
@@ -32,10 +33,11 @@
         [src]="selectedImage"
         [style.object-position]="selectedImageStyles.objectPosition"
         [style.transform]="selectedImageStyles.transform"
+        loading="lazy"
       />
     </div>
 
-    <!-- ===== INFORMACIÓN ===== -->
+    <!-- ===== INFORMACION ===== -->
     <div class="info">
 
       <div class="badge" *ngIf="p.badge" [ngClass]="p.badge">{{ p.badge }}</div>
@@ -81,26 +83,30 @@
       </div>
 
       <!-- BOTONES -->
-      <button class="btn-buy" (click)="buyNow()" [disabled]="((p.stock || 0)) <= 0">Comprar Ahora</button>
+      <button class="btn-buy" (click)="buyNow()" [disabled]="((p.stock || 0)) <= 0">
+        Comprar Ahora
+      </button>
 
-      <button class="btn-cart" (click)="addToCart()" [disabled]="((p.stock || 0)) <= 0">Agregar al Carrito</button>
+      <button class="btn-cart" (click)="addToCart()" [disabled]="((p.stock || 0)) <= 0">
+        Agregar al Carrito
+      </button>
 
-      <button class="favorite-btn">♡ Añadir a favoritos</button>
+      <button class="favorite-btn">+ Anadir a favoritos</button>
 
     </div>
   </div>
 
-  <!-- ===================== DESCRIPCIÓN ====================== -->
+  <!-- ===================== DESCRIPCION ====================== -->
   <section class="description">
-    <h2>Descripción</h2>
+    <h2>Descripcion</h2>
     <p>
       {{ p.descripcion }}
     </p>
   </section>
 
-  <!-- ===================== CARACTERÍSTICAS ====================== -->
+  <!-- ===================== CARACTERISTICAS ====================== -->
   <section class="features">
-    <h2>Características</h2>
+    <h2>Caracteristicas</h2>
 
     <p>
       {{ featureDescription }}
@@ -131,5 +137,105 @@
     </table>
   </section>
 
-  <!-- Opiniones desactivadas para lanzamiento -->
+  <!-- ===================== RESEÑAS DEL PRODUCTO ====================== -->
+  <section class="reviews">
+    <h2>Reseñas recientes</h2>
 
+    <!-- Resumen y listado solo si hay reseñas -->
+    <div *ngIf="reviewsDb.length">
+      <div class="reviews-summary">
+        <div class="stars">
+          <span
+            *ngFor="let _ of stars; let i = index"
+            [class.filled]="i < roundedAverageRating"
+          >
+            &#9733;
+          </span>
+        </div>
+        <p class="reviews-meta">
+          {{ averageRating | number:'1.1-1' }} de 5 ({{ reviewsDb.length }} opiniones)
+        </p>
+      </div>
+
+      <article class="review" *ngFor="let review of paginatedReviews">
+        <div class="review-name">
+          {{ review.name }}
+          <span *ngIf="review.location"> - {{ review.location }}</span>
+        </div>
+        <div class="stars">
+          <span
+            *ngFor="let _ of stars; let i = index"
+            [class.filled]="i < review.rating"
+          >
+            &#9733;
+          </span>
+        </div>
+        <p class="review-comment">"{{ review.comment }}"</p>
+      </article>
+
+      <!-- Paginacion simple -->
+      <div class="reviews-pagination" *ngIf="totalPages > 1">
+        <button
+          type="button"
+          class="page-btn"
+          (click)="prevPage()"
+          [disabled]="currentPage === 0"
+        >
+          Anterior
+        </button>
+        <span class="page-info">
+          Pagina {{ currentPage + 1 }} de {{ totalPages }}
+        </span>
+        <button
+          type="button"
+          class="page-btn"
+          (click)="nextPage()"
+          [disabled]="currentPage + 1 >= totalPages"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulario compacto: estrellas + comentario -->
+    <div class="reviews-form">
+      <h3>Califica este producto</h3>
+
+      <div class="rating-row">
+        <span class="rating-label">Tu valoracion</span>
+        <div class="rating-stars">
+          <span
+            *ngFor="let _ of stars; let i = index"
+            (click)="newReview.rating = i + 1"
+            [class.filled]="newReview.rating > i"
+          >
+            &#9733;
+          </span>
+        </div>
+      </div>
+
+      <div class="field-group full-width">
+        <label for="reviewComment">Comentario</label>
+        <textarea
+          id="reviewComment"
+          rows="3"
+          maxlength="200"
+          [(ngModel)]="newReview.comment"
+        ></textarea>
+        <div class="char-counter">
+          {{ newReview.comment?.length || 0 }}/200
+        </div>
+      </div>
+
+      <div class="review-messages">
+        <p class="review-error" *ngIf="reviewError">{{ reviewError }}</p>
+        <p class="review-success" *ngIf="reviewSuccess">{{ reviewSuccess }}</p>
+      </div>
+
+      <button class="btn-review" (click)="submitReview()" [disabled]="isSubmittingReview">
+        {{ isSubmittingReview ? 'Enviando...' : 'Enviar opinion' }}
+      </button>
+    </div>
+  </section>
+
+</section>

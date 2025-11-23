@@ -1,37 +1,38 @@
-/* Botón flotante de WhatsApp para soporte */
+/* Botón flotante de WhatsApp para soporte (secundario) */
 .floating-whatsapp {
   position: fixed;
-  bottom: 96px;
-  right: 22px;
+  bottom: 120px; /* bien separado del carrito flotante */
+  right: 24px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 14px;
-  background: #25d366;
+  gap: 6px;
+  padding: 9px 12px;
+  background: #21c75e; /* verde un poco menos saturado */
   color: #fff;
   border-radius: 999px;
   text-decoration: none;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-  font-weight: 700;
-  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  font-weight: 600;
+  font-size: 13px;
+  z-index: 40; /* por debajo del carrito flotante */
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .floating-whatsapp i {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .floating-whatsapp:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
   background: #1ebe5d;
 }
 
 @media (max-width: 768px) {
   .floating-whatsapp {
-    bottom: 80px;
-    right: 16px;
-    padding: 11px 13px;
-    font-size: 14px;
+    bottom: 100px;
+    right: 18px;
+    padding: 8px 11px;
+    font-size: 12px;
   }
 }

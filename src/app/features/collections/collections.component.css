@@ -17,7 +17,7 @@ body {
 
 .breadcrumb {
   font-size: 13px;
-  color: #888;
+  color: #5f5143; /* mejor contraste */
   margin-bottom: 30px;
   text-align: left;
   margin-left: 20px;
@@ -40,6 +40,25 @@ body {
   transition: transform 0.5s ease, filter 0.4s ease;
 }
 
+/* Banner KALAD ORIGEN con degradado */
+.coleccion-banner-origen {
+  height: 360px; /* mismo alto que la imagen original */
+  background-image:
+    linear-gradient(90deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 255, 255, 0.74) 40%,
+      rgba(255, 255, 255, 0.28) 70%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    url('/assets/images/Banner_colecciones_kaladorigen.webp');
+  background-size: cover;
+  background-position: center right;
+}
+
+.coleccion-banner-origen img {
+  display: none; /* usamos solo el background con degradado */
+}
+
 /* EFECTO HOVER */
 .coleccion-banner:hover img {
   transform: scale(1.02);
@@ -55,7 +74,7 @@ body {
   color: #3B2C20; /* Color de texto coherente con KALAD */
   font-family: 'Playfair Display', serif;
   font-size: 36px;
-  font-weight: 600;
+  font-weight: 400px;
   letter-spacing: 1px;
   margin: 0;
   text-align: center;

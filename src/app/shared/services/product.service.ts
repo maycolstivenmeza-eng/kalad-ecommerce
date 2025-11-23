@@ -54,6 +54,10 @@ export class ProductService {
     return doc(this.firestore, `${this.COLLECTION_NAME}/${id}`);
   }
 
+  private reviewsColRef(productId: string) {
+    return collection(this.firestore, `${this.COLLECTION_NAME}/${productId}/reviews`);
+  }
+
   // ===========================================
   // GETTERS DE PRODUCTOS
   // ===========================================
@@ -100,6 +104,45 @@ export class ProductService {
       orderBy('stock', 'desc')
     );
     return this.mapCollection(collectionData(qy, { idField: 'id' }));
+  }
+
+  // ===========================================
+  // REVIEWS DE PRODUCTOS
+  // ===========================================
+  getProductReviews(productId: string): Observable<any[]> {
+    const qy = query(
+      this.reviewsColRef(productId),
+      orderBy('createdAt', 'desc')
+    );
+    return collectionData(qy, { idField: 'id' }) as Observable<any[]>;
+  }
+
+  async addProductReview(productId: string, review: any): Promise<void> {
+    const user = await this.resolveCurrentUser().catch(() => null as any);
+
+    const rating =
+      typeof review?.rating === 'number' && review.rating > 0 && review.rating <= 5
+        ? review.rating
+        : 5;
+    const comment = String(review?.comment ?? '').trim();
+
+    const displayName =
+      (user && (user.displayName || (user.email ? user.email.split('@')[0] : ''))) ||
+      (typeof review?.name === 'string' && review.name.trim().length
+        ? review.name.trim()
+        : 'Cliente Kalad');
+
+    const payload = {
+      rating,
+      comment,
+      name: displayName,
+      location: typeof review?.location === 'string' ? review.location : null,
+      userId: user?.uid ?? null,
+      email: user?.email ?? null,
+      createdAt: new Date().toISOString(),
+    };
+
+    await addDoc(this.reviewsColRef(productId), payload);
   }
 
   // ===========================================

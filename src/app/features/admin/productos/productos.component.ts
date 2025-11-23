@@ -56,6 +56,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   // Pedidos
   pedidos: Pedido[] = [];
   readonly estadosPedido: Pedido['estado'][] = ['creado', 'pagado', 'enviado', 'entregado', 'cancelado'];
+  filtroEstadoPedido: Pedido['estado'] | "" = "";
 
   // Filtros
   filtroNombre = "";
@@ -82,11 +83,17 @@ export class ProductosComponent implements OnInit, OnDestroy {
   private toastTimeout?: ReturnType<typeof setTimeout>;
 
   get textoBotonAccion(): string {
-    return this.modoEdicion ? "Actualizar producto" : "Guardar producto nuevo";
+    const enEdicion = this.modoEdicion || !!this.idProductoEdicion;
+    return enEdicion ? "Actualizar producto" : "Guardar producto nuevo";
   }
 
   get textoBotonProcesando(): string {
     return this.modoEdicion ? "Actualizando..." : "Guardando...";
+  }
+
+  get pedidosFiltrados(): Pedido[] {
+    if (!this.filtroEstadoPedido) return this.pedidos;
+    return this.pedidos.filter(p => p.estado === this.filtroEstadoPedido);
   }
 
   constructor(

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-history',
@@ -7,6 +8,15 @@ import { Component } from '@angular/core';
   templateUrl: './history.component.html',
   styleUrl: './history.component.css'
 })
-export class HistoryComponent {
+export class HistoryComponent implements OnInit {
 
+  constructor(private title: Title, private meta: Meta) {}
+
+  ngOnInit(): void {
+    this.title.setTitle('Historia | Kalad');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Conoce la historia de Kalad: inspiración, artesanas y proceso detrás de cada mochila.'
+    });
+  }
 }

@@ -8,21 +8,21 @@
     <div class="carrito-content">
       <section class="productos">
         <div class="item" *ngFor="let item of items">
-          <img [src]="item.imagen" [alt]="item.nombre">
+          <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
           <div class="detalle">
             <h3>{{ item.nombre }}</h3>
             <p *ngIf="item.color">Color: {{ item.color }}</p>
             <p *ngIf="item.sku" class="sku">SKU: {{ item.sku }}</p>
             <div class="acciones">
-              <div class="qty">
-                <button (click)="decrease(item)">-</button>
+             <div class="qty">
+                <button (click)="decrease(item)" aria-label="Disminuir cantidad">-</button>
                 <span>{{ item.qty }}</span>
-                <button (click)="increase(item)">+</button>
+                <button (click)="increase(item)" aria-label="Aumentar cantidad">+</button>
               </div>
               <strong>{{ (item.precio * item.qty) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
             </div>
           </div>
-          <button class="remove" (click)="remove(item)">Eliminar</button>
+          <button class="remove" (click)="remove(item)" aria-label="Eliminar del carrito">Eliminar</button>
         </div>
       </section>
 
@@ -81,7 +81,7 @@
     </div>
     <div class="interesar-grid">
       <article class="card" *ngFor="let prod of recommendedProducts" [routerLink]="['/products', prod.id]">
-        <img [src]="prod.imagen" [alt]="prod.nombre">
+        <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy">
         <h4>{{ prod.nombre }}</h4>
         <p>{{ prod.descripcionCorta }}</p>
         <div class="card-footer">

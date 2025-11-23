@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContactService, ContactReason } from '../../shared/services/contact.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contact',
@@ -10,7 +11,7 @@ import { ContactService, ContactReason } from '../../shared/services/contact.ser
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   nombre = '';
   correo = '';
   asunto = '';
@@ -18,7 +19,19 @@ export class ContactComponent {
   motivo: ContactReason = 'contacto';
   sending = false;
 
-  constructor(private contactService: ContactService) {}
+  constructor(
+    private contactService: ContactService,
+    private title: Title,
+    private meta: Meta
+  ) {}
+
+  ngOnInit(): void {
+    this.title.setTitle('Contacto | Kalad');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Ponte en contacto con Kalad para dudas, pedidos especiales o información sobre nuestras colecciones.'
+    });
+  }
 
   async enviar() {
     if (!this.nombre || !this.correo || !this.asunto || !this.mensaje) {

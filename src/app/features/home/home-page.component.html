@@ -34,6 +34,7 @@
               class="img primary"
               [src]="resolveImage(product)"
               [alt]="product.nombre"
+              loading="lazy"
               (load)="onImageLoad(product.id)"
               (error)="onImageError(product.id, $event)"
             />
@@ -47,7 +48,8 @@
               class="fav-btn"
               type="button"
               [class.active]="favorites.isFavorite(product.id)"
-              (click)="toggleFavorite(product, $event)">
+              (click)="toggleFavorite(product, $event)"
+              [attr.aria-label]="favorites.isFavorite(product.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'">
               <i class="fa-solid" [ngClass]="favorites.isFavorite(product.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
             </button>
           </a>
@@ -97,7 +99,7 @@
 </section>
 
 <section class="historia-section">
-  <img src="/assets/images/historia.png" alt="Historia" class="historia-imagen">
+  <img src="/assets/images/historia.png" alt="Historia" class="historia-imagen" loading="lazy">
   <div class="historia-texto">
     <h2>HISTORIA</h2>
     <p>
@@ -112,18 +114,15 @@
   <h2>Explora nuestras ra&#237;ces</h2>
   <div class="raices-grid">
     <div class="raiz-item">
-      <img src="assets/images/origen-raiz-azulclaro-01 2.webp" alt="KALAD ORIGEN" class="img-kalad-aire" />
+      <img src="assets/images/origen-raiz-azulclaro-01 2.webp" alt="KALAD ORIGEN" class="img-kalad-aire" loading="lazy" />
       <h3>KALAD ORIGEN</h3>
       <a routerLink="/collections" class="link">EXPLORAR COLECCI&#211;N <span>></span></a>
     </div>
 
     <div class="raiz-item">
-      <img src="/assets/images/KALAD-ORIGEN.jpeg" alt="KALAD ESSENCIA" class="img-kalad-origen" />
+      <img src="/assets/images/KALAD-ORIGEN.jpeg" alt="KALAD ESSENCIA" class="img-kalad-origen" loading="lazy" />
       <h3>KALAD ESSENCIA</h3>
       <a routerLink="/collections" class="link">EXPLORAR COLECCI&#211;N <span>></span></a>
     </div>
   </div>
 </section>
-
-
-

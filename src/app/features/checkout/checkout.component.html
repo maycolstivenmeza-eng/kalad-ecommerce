@@ -198,7 +198,7 @@
       <div class="cart-items">
         @for (item of cartItems; track item.id) {
           <div class="cart-item">
-            <img [src]="item.imagen" [alt]="item.nombre">
+            <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
             <div class="item-details">
               <h3>{{ item.nombre }}</h3>
               <p>Color: {{ item.color }}</p>
@@ -244,7 +244,7 @@
         <div class="suggestion-list">
           @for (prod of suggestions; track prod.id) {
             <div class="suggestion-card">
-              <img [src]="prod.imagen" [alt]="prod.nombre">
+              <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy">
               <div class="info">
                 <p class="title">{{ prod.nombre }}</p>
                 <p class="meta">{{ prod.coleccion }} · {{ prod.categoria }}</p>

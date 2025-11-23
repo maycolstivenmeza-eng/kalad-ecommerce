@@ -23,11 +23,13 @@ interface AssuranceInfo {
 }
 
 interface ReviewInfo {
+  id?: string;
   name: string;
-  location: string;
-  date: string;
+  location?: string;
   rating: number;
   comment: string;
+  date?: string;
+  createdAt?: string;
 }
 
 interface ThumbnailVariant {
@@ -65,7 +67,23 @@ export class DetailsProductsComponent implements OnInit, OnDestroy {
 
   thumbnailImages: ThumbnailVariant[] = [];
 
+  reviewsDb: ReviewInfo[] = [];
+  newReview = {
+    name: '',
+    location: '',
+    rating: 5,
+    comment: '',
+  };
+  isSubmittingReview = false;
+  reviewError: string | null = null;
+  reviewSuccess: string | null = null;
+
+  // paginación de reseñas
+  pageSize = 3;
+  currentPage = 0;
+
   private sub?: Subscription;
+  private reviewsSub?: Subscription;
   selectedVariant?: ThumbnailVariant;
 
   // Dimensiones por defecto si el producto no las tiene
@@ -199,6 +217,7 @@ thumbs: any;
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
+     this.reviewsSub?.unsubscribe();
   }
 
   // =======================
@@ -243,6 +262,10 @@ thumbs: any;
         product.copyPremium?.trim() ||
         product.caracteristicas?.trim() ||
         this.buildDefaultFeatureText(product.nombre);
+
+      if (product.id) {
+        this.loadReviews(product.id);
+      }
     });
   }
 
@@ -250,6 +273,16 @@ thumbs: any;
     const nombreLimpio = nombre?.trim();
     const prefijo = nombreLimpio ? `La ${nombreLimpio}` : 'La pieza';
     return `${prefijo} ${this.fallbackFeatureSuffix}`;
+  }
+
+  private loadReviews(productId: string): void {
+    this.reviewsSub?.unsubscribe();
+    this.reviewsSub = this.productService
+      .getProductReviews(productId)
+      .subscribe((reviews: any[]) => {
+        this.reviewsDb = reviews as ReviewInfo[];
+        this.currentPage = 0;
+      });
   }
 
   private buildThumbnailList(product: Product): ThumbnailVariant[] {
@@ -555,6 +588,81 @@ thumbs: any;
   buyNow(): void {
     this.addToCart();
     this.router.navigate(['/checkout']);
+  }
+
+  // =======================
+  // OPINIONES
+  // =======================
+  async submitReview(): Promise<void> {
+    if (!this.product) return;
+
+    const name = (this.newReview.name || 'cliente').trim();
+    const comment = this.newReview.comment.trim();
+
+    if (!name || !comment) {
+      this.reviewError = 'Por favor escribe tu nombre y comentario.';
+      this.reviewSuccess = null;
+      return;
+    }
+
+    this.isSubmittingReview = true;
+    this.reviewError = null;
+    this.reviewSuccess = null;
+
+    try {
+      await this.productService.addProductReview(this.product.id, {
+        name,
+        location: this.newReview.location?.trim() || '',
+        rating: this.newReview.rating || 5,
+        comment,
+      });
+
+      this.newReview = {
+        name: '',
+        location: '',
+        rating: 5,
+        comment: '',
+      };
+      this.reviewSuccess = 'Gracias por compartir tu opinión.';
+    } catch (error) {
+      console.error('Error al guardar la opinión', error);
+      this.reviewError = 'Hubo un problema al guardar tu opinión. Inténtalo de nuevo.';
+    } finally {
+      this.isSubmittingReview = false;
+    }
+  }
+
+  get averageRating(): number {
+    const source = this.reviewsDb.length ? this.reviewsDb : this.reviews;
+    if (!source.length) return 0;
+    const total = source.reduce((sum, review) => sum + review.rating, 0);
+    return total / source.length;
+  }
+
+  get roundedAverageRating(): number {
+    return Math.round(this.averageRating);
+  }
+
+  get totalPages(): number {
+    if (!this.reviewsDb.length) return 1;
+    return Math.ceil(this.reviewsDb.length / this.pageSize);
+  }
+
+  get paginatedReviews(): ReviewInfo[] {
+    const start = this.currentPage * this.pageSize;
+    return this.reviewsDb.slice(start, start + this.pageSize);
+  }
+
+  nextPage(): void {
+    if (this.currentPage + 1 < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+    }
   }
 
   // =======================

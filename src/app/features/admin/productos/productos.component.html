@@ -136,7 +136,7 @@
 
     <!-- PREVIEW IMAGEN PRINCIPAL -->
     <div class="preview-container" *ngIf="previewUrl">
-      <img [src]="previewUrl" class="preview-img"/>
+      <img [src]="previewUrl" class="preview-img" loading="lazy"/>
       <button type="button" class="btn-eliminar-img" (click)="limpiarImagen()">Eliminar imagen</button>
     </div>
 
@@ -146,7 +146,7 @@
 
     <div class="preview-multiplas" *ngIf="previewImagenes.length > 0">
       <div class="preview-multi-item" *ngFor="let img of previewImagenes; let i = index">
-        <img [src]="img" class="preview-multi-img"/>
+        <img [src]="img" class="preview-multi-img" loading="lazy"/>
         <button type="button" class="preview-multi-delete" (click)="eliminarImagenSecundaria(i)">x</button>
       </div>
     </div>
@@ -216,7 +216,7 @@
         <tr *ngFor="let prod of productosFiltrados">
           <td>
             <ng-container *ngIf="obtenerImagenProducto(prod) as imagen; else sinImagenTpl">
-              <img [src]="imagen" [alt]="prod.nombre" class="img-tabla" />
+              <img [src]="imagen" [alt]="prod.nombre" class="img-tabla" loading="lazy" />
             </ng-container>
           </td>
           <td>{{ prod.nombre }}</td>
@@ -253,7 +253,15 @@
   </ng-template>
 
   <h3 class="titulo-lista">Pedidos</h3>
-  <div class="pedidos" *ngIf="pedidos.length; else sinPedidos">
+
+  <div class="filtros-bar pedidos-filtros" *ngIf="pedidos.length">
+    <select [(ngModel)]="filtroEstadoPedido">
+      <option value="">Todos los estados</option>
+      <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
+    </select>
+  </div>
+
+  <div class="pedidos" *ngIf="pedidosFiltrados.length; else sinPedidos">
     <table class="tabla-productos">
       <thead>
         <tr>
@@ -269,7 +277,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let p of pedidos">
+        <tr *ngFor="let p of pedidosFiltrados">
           <td>{{ p.id }}</td>
           <td>{{ p.userId }}</td>
           <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }}</td>

@@ -89,6 +89,7 @@
             class="img primary"
             [src]="resolveImage(p)"
             [alt]="p.nombre"
+            loading="lazy"
             (error)="onImageError($event)"
           />
           <button
@@ -102,7 +103,8 @@
             class="img hover"
             *ngIf="p.imagenes && p.imagenes.length > 0"
             [src]="p.imagenes[0]"
-            [alt]="p.nombre" />
+            [alt]="p.nombre"
+            loading="lazy" />
           </a>
 
           <a class="title" [routerLink]="['/products', p.id]">
