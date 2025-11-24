@@ -13,6 +13,7 @@ export class HistoryComponent implements OnInit {
   constructor(private title: Title, private meta: Meta) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.title.setTitle('Historia | Kalad');
     this.meta.updateTag({
       name: 'description',
@@ -20,3 +21,4 @@ export class HistoryComponent implements OnInit {
     });
   }
 }
+

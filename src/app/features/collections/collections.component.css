@@ -59,6 +59,38 @@ body {
   display: none; /* usamos solo el background con degradado */
 }
 
+.coleccion-banner-ediciones {
+  height: 360px;
+  background-image:
+    linear-gradient(90deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(255, 255, 255, 0.78) 40%,
+      rgba(255, 255, 255, 0.32) 70%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    url('/assets/images/Banner_historia4.webp');
+  background-size: cover;
+  background-position: center right;
+}
+
+.coleccion-banner-essencia {
+  height: 360px;
+  background-image:
+    linear-gradient(90deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 255, 255, 0.74) 40%,
+      rgba(255, 255, 255, 0.28) 70%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    url('/assets/images/KALAD-AIRE.jpeg');
+  background-size: cover;
+  background-position: center right;
+}
+
+.coleccion-banner-essencia img {
+  display: none;
+}
+
 /* EFECTO HOVER */
 .coleccion-banner:hover img {
   transform: scale(1.02);
@@ -79,6 +111,17 @@ body {
   margin: 0;
   text-align: center;
   transition: color 0.3s ease;
+}
+
+.coleccion-banner .coleccion-subtitle {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 40px);
+  transform: translate(-50%, -50%);
+  font-family: "Quicksand", sans-serif;
+  font-size: 15px;
+  color: #5c4728;
+  margin: 0;
 }
 
 /* EFECTO HOVER EN EL TEXTO */

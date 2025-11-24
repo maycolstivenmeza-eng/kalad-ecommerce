@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -64,6 +64,7 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.title.setTitle('Productos | Kalad');
     this.meta.updateTag({
       name: 'description',
@@ -137,17 +138,14 @@ export class ProductsComponent implements OnInit {
   aplicarFiltros() {
     let lista = [...this.products];
 
-    // FILTRO CATEGORIA
     if (this.filtroCategoria) {
       lista = lista.filter((p) => p.categoria === this.filtroCategoria);
     }
 
-    // FILTRO COLOR (si el producto trae colores)
     if (this.filtroColor) {
       lista = lista.filter((p) => p.colores?.includes(this.filtroColor));
     }
 
-    // FILTRO PRECIO
     if (this.minPrice != null) {
       lista = lista.filter((p) => p.precio >= this.minPrice!);
     }
@@ -155,7 +153,6 @@ export class ProductsComponent implements OnInit {
       lista = lista.filter((p) => p.precio <= this.maxPrice!);
     }
 
-    // ORDENAMIENTO
     lista = this.ordenarLista(lista);
 
     this.productosFiltrados = lista;
@@ -225,9 +222,6 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  // =======================
-  //  Ver detalles del producto
-  // =======================
   viewProductDetails(productId: string): void {
     const product = this.products.find((p) => p.id === productId);
     if (product) {
@@ -236,9 +230,6 @@ export class ProductsComponent implements OnInit {
     this.router.navigate(['/products', productId]);
   }
 
-  // =======================
-  //  Carrito
-  // =======================
   addToCart(product: Product) {
     this.cartService.addProduct(product, 1);
     this.analytics.trackAddToCart(product, 1, 'Productos');
@@ -278,7 +269,6 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  // Formatear precio
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',

@@ -124,7 +124,7 @@ export class ProductService {
       typeof review?.rating === 'number' && review.rating > 0 && review.rating <= 5
         ? review.rating
         : 5;
-    const comment = String(review?.comment ?? '').trim();
+    const comment = String(review?.comment ?? '').trim().slice(0, 200);
 
     const displayName =
       (user && (user.displayName || (user.email ? user.email.split('@')[0] : ''))) ||

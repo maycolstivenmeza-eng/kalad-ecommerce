@@ -1,8 +1,8 @@
-import { environment } from '../../../environments/environment';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { environment } from "../../../environments/environment";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
+import { firstValueFrom } from "rxjs";
 
 declare global {
   interface Window {
@@ -41,7 +41,7 @@ export interface WompiCheckoutConfig {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class WompiService {
   private widgetCheckout: any;
@@ -61,19 +61,17 @@ export class WompiService {
         return;
       }
 
-      // Si ya está cargado, evitar duplicarlo
-      if (document.querySelector('#wompi-script')) {
+      if (document.querySelector("#wompi-script")) {
         resolve();
         return;
       }
 
-      const script = document.createElement('script');
-      script.src = 'https://checkout.wompi.co/widget.js';
-      script.id = 'wompi-script';
+      const script = document.createElement("script");
+      script.src = "https://checkout.wompi.co/widget.js";
+      script.id = "wompi-script";
       script.async = true;
 
       script.onload = () => {
-        console.log('Wompi script loaded');
         resolve();
       };
 
@@ -82,76 +80,50 @@ export class WompiService {
   }
 
   //----------------------------------------------------------------------
-  // 2. GENERAR FIRMA SHA-256
-  //----------------------------------------------------------------------
-  private async generateIntegritySignature(
-    reference: string,
-    amountInCents: number,
-    currency: string,
-  ): Promise<string> {
-    const secret = environment.wompi.integritySecret;
-
-    if (!secret || secret === 'TU_CLAVE_INTEGRIDAD_AQUI') {
-      throw new Error('Integrity secret not configured');
-    }
-
-    const raw = `${reference}${amountInCents}${currency}${secret}`;
-    const encoded = new TextEncoder().encode(raw);
-    const hash = await crypto.subtle.digest('SHA-256', encoded);
-
-    return Array.from(new Uint8Array(hash))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
-
-  //----------------------------------------------------------------------
-  // 3. ABRIR CHECKOUT CON CALLBACK
+  // 2. ABRIR CHECKOUT (LEGADO) -> REDIRIGE AL FLUJO SEGURO
   //----------------------------------------------------------------------
   async openCheckout(
     config: Partial<WompiCheckoutConfig>,
     onResult?: (transaction: any) => Promise<void> | void
   ): Promise<void> {
+    const reference = config.reference || this.generateReference();
+    await this.openCheckoutFromBackend(reference, config, onResult);
+  }
+
+  //----------------------------------------------------------------------
+  // 3. ABRIR CHECKOUT USANDO CONFIG GENERADA EN BACKEND
+  //----------------------------------------------------------------------
+  async openCheckoutFromBackend(
+    pedidoId: string,
+    extraConfig: Partial<WompiCheckoutConfig> = {},
+    onResult?: (transaction: any) => Promise<void> | void
+  ): Promise<void> {
     await this.loadWompiScript();
 
-    // Config base
-    const checkoutConfig: WompiCheckoutConfig = {
-      currency: environment.wompi.currency,
-      amountInCents: config.amountInCents!,
-      reference: config.reference || this.generateReference(),
-      publicKey: environment.wompi.publicKey,
-      redirectUrl: environment.wompi.redirectUrl,
-      ...config
-    };
+    const base =
+      (environment as any)?.wompi?.functionsBase ||
+      `https://us-central1-${environment.firebase.projectId}.cloudfunctions.net`;
+    const url = `${base}/createWompiCheckout`;
 
-    // Firma de integridad
-    const integrity = await this.generateIntegritySignature(
-      checkoutConfig.reference,
-      checkoutConfig.amountInCents,
-      checkoutConfig.currency
+    const backendConfig = await firstValueFrom(
+      this.http.post<any>(url, { pedidoId })
     );
 
-    checkoutConfig.signature = { integrity };
+    const checkoutConfig: WompiCheckoutConfig = {
+      currency: backendConfig.currency || environment.wompi.currency,
+      amountInCents: backendConfig.amountInCents,
+      reference: backendConfig.reference || pedidoId,
+      publicKey: backendConfig.publicKey || environment.wompi.publicKey,
+      redirectUrl: environment.wompi.redirectUrl,
+      signature: backendConfig.signature,
+      ...extraConfig,
+    };
 
-    console.log('Wompi Checkout Config:', checkoutConfig);
-
-    // Crear widget
     this.widgetCheckout = new window.WidgetCheckout(checkoutConfig);
 
-    // ABRIR EL WIDGET Y MANEJAR EL RESULTADO
     this.widgetCheckout.open(async (result: any) => {
       const tx = result.transaction;
-      console.log('Transaction result:', tx);
 
-      // Manejo explícito por estado
-      if (tx.status === 'APPROVED') {
-        console.log('Pago aprobado');
-      } else if (tx.status === 'DECLINED') {
-        console.log('Pago rechazado');
-      } else if (tx.status === 'ERROR') {
-        console.log('Error en el pago');
-      }
-
-      // Si el checkout.component pasó un callback → devolverle el resultado
       if (onResult) {
         await onResult(tx);
       }
@@ -159,7 +131,7 @@ export class WompiService {
   }
 
   //----------------------------------------------------------------------
-  // REFERENCIA ÚNICA
+  // REFERENCIA ÚNICA (RESERVA)
   //----------------------------------------------------------------------
   private generateReference(): string {
     return `KALAD-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
@@ -173,13 +145,14 @@ export class WompiService {
   }
 
   //----------------------------------------------------------------------
-  // VERIFICAR TRANSACCION (sin backend)
+  // VERIFICAR TRANSACCIÓN (FRONT)
   //----------------------------------------------------------------------
   async verifyTransaction(id: string): Promise<any> {
-    if (!id) throw new Error('Id de transaccion requerido');
-    const base = (environment as any)?.wompi?.apiBase || 'https://sandbox.wompi.co';
+    if (!id) throw new Error("Id de transaccion requerido");
+    const base = (environment as any)?.wompi?.apiBase || "https://sandbox.wompi.co";
     const url = `${base}/v1/transactions/${id}`;
     const resp = await firstValueFrom(this.http.get<any>(url));
     return resp?.data;
   }
 }
+

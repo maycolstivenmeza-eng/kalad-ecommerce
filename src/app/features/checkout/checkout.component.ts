@@ -49,6 +49,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.initializeForm();
     this.cartItems = this.cartService.items;
     this.computeShipping(this.getSubtotal());
@@ -237,8 +238,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       );
 
       const checkoutConfig = {
-        amountInCents: this.getTotalInCents(),
-        reference: pedidoId || `KALAD-${Date.now()}`,
         customerData: {
           email: formValue.email,
           fullName: formValue.fullName,
@@ -253,11 +252,10 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           region: formValue.department,
           country: "CO",
           phoneNumber: formValue.phone
-        },
-        redirectUrl: window.location.origin + "/confirmation"
+        }
       };
 
-      await this.wompiService.openCheckout(checkoutConfig, async (tx) => {
+      await this.wompiService.openCheckoutFromBackend(pedidoId, checkoutConfig, async (tx) => {
         const txId = tx?.id;
         let status = tx?.status?.toLowerCase?.() || "error";
 

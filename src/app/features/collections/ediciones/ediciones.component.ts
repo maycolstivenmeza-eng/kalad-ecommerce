@@ -13,13 +13,13 @@ import { Title, Meta } from '@angular/platform-browser';
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
 @Component({
-  selector: 'app-origen',
+  selector: 'app-ediciones',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './origen.component.html',
-  styleUrl: './origen.component.css'
+  templateUrl: './ediciones.component.html',
+  styleUrl: './ediciones.component.css'
 })
-export class OrigenComponent implements OnInit, OnDestroy {
+export class EdicionesComponent implements OnInit, OnDestroy {
   productos: Product[] = [];
   productosFiltrados: Product[] = [];
   orden: OrderOption = 'az';
@@ -30,6 +30,7 @@ export class OrigenComponent implements OnInit, OnDestroy {
   maxPrice: number | null = null;
   open = [false, false, false];
 
+  // Mismos filtros de color y categoría que en Kalad Origen
   colores = [
     { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
     { id: 'cafe', label: 'Cafe', hex: '#6a4e3a' },
@@ -51,13 +52,14 @@ export class OrigenComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Kalad Origen | Colección');
+    this.title.setTitle('Ediciones Especiales | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Colección Kalad Origen: mochilas artesanales con diseño único. Filtra por color, precio y ordena por destacados.'
+      content:
+        'Mochilas y accesorios de edición especial Kalad: piezas de diseño con materiales más elegantes y producción limitada.'
     });
     this.sub = this.productService
-      .getProductsByCollection('kalad-origen')
+      .getProductsByCollection('ediciones-especiales')
       .subscribe((items) => {
         this.productos = [...items];
         this.aplicarFiltros();
@@ -209,4 +211,3 @@ export class OrigenComponent implements OnInit, OnDestroy {
     }
   }
 }
-

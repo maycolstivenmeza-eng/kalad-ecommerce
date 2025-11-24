@@ -27,6 +27,7 @@ export class ContactComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.title.setTitle('Contacto | Kalad');
     this.meta.updateTag({
       name: 'description',
@@ -65,3 +66,4 @@ export class ContactComponent implements OnInit {
     }
   }
 }
+

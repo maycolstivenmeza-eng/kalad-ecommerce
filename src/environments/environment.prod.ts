@@ -23,10 +23,10 @@
   // Configuracion de Wompi para produccion
   wompi: {
     publicKey: 'TU_CLAVE_PUBLICA_PRODUCCION_AQUI',
-    integritySecret: 'TU_CLAVE_INTEGRIDAD_PRODUCCION_AQUI',
     currency: 'COP',
     redirectUrl: 'https://tudominio.com',
     apiBase: 'https://production.wompi.co',
+    functionsBase: 'https://us-central1-kalad3-8a000.cloudfunctions.net',
     feePercent: 0,
     feeFixed: 0
   }

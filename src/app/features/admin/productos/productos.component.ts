@@ -73,7 +73,8 @@ export class ProductosComponent implements OnInit, OnDestroy {
   readonly categorias = ["Mochilas", "Bolsas"]; // se retiraron Morrales y Zapatos
   readonly colecciones = [
     { id: "kalad-origen", label: "Kalad Origen" },
-    { id: "kalad-essencia", label: "Kalad Essencia" }
+    { id: "kalad-essencia", label: "Kalad Essencia" },
+    { id: "ediciones-especiales", label: "Ediciones especiales" }
   ];
   readonly badges: Product["badge"][] = ["Nuevo", "Oferta", "Limitada", null];
   private imagenCache = new Map<string, string>();

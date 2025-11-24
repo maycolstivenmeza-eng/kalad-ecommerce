@@ -23,10 +23,10 @@
   // Configuracion de Wompi
   wompi: {
     publicKey: 'pub_test_BdzugKP1hhQ7K2oXBQcc5KNKXLfjtFc5',
-    integritySecret: 'test_integrity_g7dwHkOG1WJf78VADux02AjruMvsu4vG',
     currency: 'COP',
     redirectUrl: 'http://localhost:4200',
     apiBase: 'https://sandbox.wompi.co',
+    functionsBase: 'https://us-central1-kalad3-8a000.cloudfunctions.net',
     // Comision estimada (referencial, no se cobra al cliente)
     feePercent: 0.0349,
     feeFixed: 900

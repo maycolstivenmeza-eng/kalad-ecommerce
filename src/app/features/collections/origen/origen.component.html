@@ -1,7 +1,9 @@
-﻿<div class="coleccion-container">
+<div class="coleccion-container">
 
   <div class="breadcrumb">
-    Inicio / Colecciones / Kalad origen
+    <a routerLink="/home">Inicio</a> /
+    <a routerLink="/collections">Colecciones</a> /
+    <span>Kalad Origen</span>
   </div>
 
   <div class="layout">
@@ -63,11 +65,11 @@
     <div class="contenido">
 
       <!-- ====== BANNER DE LA COLECCIÓN ====== -->
-  <section class="banner-coleccion">
-    <h2 class="banner-title">KALAD ORIGEN</h2>
-  </section>
-  <!-- ====== FIN BANNER ====== -->
-  
+      <section class="banner-coleccion">
+        <h2 class="banner-title">KALAD ORIGEN</h2>
+        <p class="banner-subtitle">El origen de una nueva elegancia.</p>
+      </section>
+      <!-- ====== FIN BANNER ====== -->
 
       <div class="ordenar-right">
         <label for="ordenSelect">Ordenar por:</label>
@@ -85,26 +87,26 @@
               {{ p.badge }}
             </span>
             <span class="badge out" *ngIf="((p.stock || 0)) <= 0">Sin stock</span>
-          <img
-            class="img primary"
-            [src]="resolveImage(p)"
-            [alt]="p.nombre"
-            loading="lazy"
-            (error)="onImageError($event)"
-          />
-          <button
-            class="fav-btn"
-            type="button"
-            [class.active]="favorites.isFavorite(p.id)"
-            (click)="toggleFavorite(p, $event)">
-            <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
-          </button>
-          <img
-            class="img hover"
-            *ngIf="p.imagenes && p.imagenes.length > 0"
-            [src]="p.imagenes[0]"
-            [alt]="p.nombre"
-            loading="lazy" />
+            <img
+              class="img primary"
+              [src]="resolveImage(p)"
+              [alt]="p.nombre"
+              loading="lazy"
+              (error)="onImageError($event)"
+            />
+            <button
+              class="fav-btn"
+              type="button"
+              [class.active]="favorites.isFavorite(p.id)"
+              (click)="toggleFavorite(p, $event)">
+              <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+            </button>
+            <img
+              class="img hover"
+              *ngIf="p.imagenes && p.imagenes.length > 0"
+              [src]="p.imagenes[0]"
+              [alt]="p.nombre"
+              loading="lazy" />
           </a>
 
           <a class="title" [routerLink]="['/products', p.id]">
@@ -116,8 +118,8 @@
           <div class="price-row">
             <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
             <button
-            class="cart-btn"
-            type="button"
+              class="cart-btn"
+              type="button"
               (click)="addToCart(p, $event)"
               [disabled]="((p.stock || 0)) <= 0"
             >

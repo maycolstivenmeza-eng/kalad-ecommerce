@@ -40,6 +40,7 @@ export class CartComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.sub = this.cartItems$.subscribe((items) => {
       this.loadRecommendations(items);
       const subtotal = items.reduce((acc, i) => acc + i.precio * i.qty, 0);

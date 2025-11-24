@@ -14,6 +14,7 @@ export class CollectionsComponent implements OnInit {
   constructor(private title: Title, private meta: Meta) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.title.setTitle('Colecciones | Kalad');
     this.meta.updateTag({
       name: 'description',

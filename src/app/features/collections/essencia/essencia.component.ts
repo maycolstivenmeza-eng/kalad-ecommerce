@@ -50,6 +50,7 @@ export class EssenciaComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.title.setTitle('Kalad Essencia | Colección');
     this.meta.updateTag({
       name: 'description',
@@ -208,3 +209,4 @@ export class EssenciaComponent implements OnInit, OnDestroy {
     }
   }
 }
+

@@ -8,6 +8,37 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.admin == true;
     }
 
+    // Reseñas de productos: lectura pública, escritura solo usuarios autenticados
+    match /productos/{productId}/reviews/{reviewId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isAdmin() {
+        return isSignedIn() && request.auth.token.admin == true;
+      }
+
+      function isOwner() {
+        return isSignedIn() && request.auth.uid == request.resource.data.userId;
+      }
+
+      function reviewValida() {
+        let d = request.resource.data;
+        return
+          d.rating is number &&
+          d.rating >= 1 &&
+          d.rating <= 5 &&
+          d.comment is string &&
+          d.comment.size() <= 200 &&
+          // Evitar HTML obvio
+          !(d.comment.matches('.*<.*') || d.comment.matches('.*script.*'));
+      }
+
+      allow read: if true;
+      allow create: if isOwner() && reviewValida();
+      allow update, delete: if isAdmin();
+    }
+
     // Cupones: lectura pública para validación; solo admin puede escribir
     match /cupones/{code} {
       allow read: if true;
@@ -36,25 +67,37 @@ service cloud.firestore {
           (!('subtotal' in d) || (d.subtotal is number && d.subtotal >= 0)) &&
           (!('envio' in d) || (d.envio is number && d.envio >= 0)) &&
           (!('descuento' in d) || (d.descuento is number && d.descuento >= 0)) &&
-          // Si vienen todos los campos, total debe ser consistente
           (!('subtotal' in d && 'envio' in d && 'descuento' in d)
             || d.total == d.subtotal + d.envio - d.descuento);
       }
 
-      // Crear pedido: solo el dueño (userId === uid) y montos coherentes
       allow create: if isOwner() && montosValidos();
 
-      // Leer pedido: dueño o admin
       allow read: if isSignedIn() &&
         (request.auth.uid == resource.data.userId || isAdmin());
 
-      // Actualizar / borrar: solo admin (panel interno)
       allow update, delete: if isAdmin();
     }
 
     // Orders (uso admin / compatibilidad con panel)
     match /orders/{orderId} {
       allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Mensajes de contacto: cualquiera puede crear, solo admin puede leer/gestionar
+    match /contacto/{msgId} {
+      function contactoValido() {
+        let d = request.resource.data;
+        return
+          d.nombre is string && d.nombre.size() > 0 && d.nombre.size() <= 80 &&
+          d.correo is string && d.correo.size() > 0 && d.correo.size() <= 120 &&
+          d.asunto is string && d.asunto.size() > 0 && d.asunto.size() <= 120 &&
+          d.mensaje is string && d.mensaje.size() > 0 && d.mensaje.size() <= 1000 &&
+          !(d.mensaje.matches('.*<.*') || d.mensaje.matches('.*script.*'));
+      }
+
+      allow create: if contactoValido();
+      allow read, update, delete: if request.auth != null && request.auth.token.admin == true;
     }
 
     // Usuarios y subcolecciones (favoritos, direcciones, etc.): solo el dueño

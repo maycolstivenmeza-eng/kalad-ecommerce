@@ -209,6 +209,7 @@ thumbs: any;
   ) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.sub = this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) this.loadProduct(id);

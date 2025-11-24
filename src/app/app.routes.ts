@@ -32,6 +32,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/collections/essencia/essencia.component').then(m => m.EssenciaComponent)
   },
   {
+    path: 'collections/ediciones-especiales',
+    loadComponent: () => import('./features/collections/ediciones/ediciones.component').then(m => m.EdicionesComponent)
+  },
+  {
     path: 'admin',
     redirectTo: 'admin/login',
     pathMatch: 'full'

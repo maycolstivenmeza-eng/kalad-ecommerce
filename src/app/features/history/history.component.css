@@ -1,6 +1,6 @@
 /* ======== BANNER ======== */
 .banner-historia {
-  background: url("/assets/images/Banner_historia4.png") center/cover no-repeat;
+  background: url("/assets/images/Banner_historia4.webp") center/cover no-repeat;
   height: 320px;
   display: flex;
   justify-content: center;
@@ -65,6 +65,16 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
+}
+
+.valores-lista {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 30px;
+}
+
+.valores-lista li {
+  margin-bottom: 8px;
 }
 
 .proposito-titulo {
