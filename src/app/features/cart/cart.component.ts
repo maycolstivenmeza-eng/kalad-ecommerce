@@ -1,6 +1,6 @@
 ﻿import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { Observable, Subscription, map, take } from "rxjs";
 import { CartService, CartItem } from "../../shared/services/cart.service";
@@ -36,7 +36,8 @@ export class CartComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private productService: ProductService,
     private couponService: CouponService,
-    private analytics: AnalyticsService
+    private analytics: AnalyticsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -127,5 +128,9 @@ export class CartComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.cartService.addProduct(product, 1);
     this.analytics.trackAddToCart(product, 1, "Sugerido en carrito");
+  }
+
+  goToCheckout() {
+    this.router.navigate(["/checkout"]);
   }
 }

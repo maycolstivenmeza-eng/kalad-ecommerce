@@ -184,11 +184,12 @@
           <button
             type="submit"
             class="btn-primary"
+            style="background:#cb5e30;color:#ffffff;border-color:#cb5e30;"
             [disabled]="isProcessing">
             @if (isProcessing) {
               <i class="fas fa-spinner fa-spin"></i> Procesando...
             } @else {
-              <i class="fas fa-credit-card"></i> Pagar {{ formatPrice(getTotal()) }}
+              <i class="fas fa-credit-card"></i> Pagar ahora {{ formatPrice(getTotal()) }}
             }
           </button>
         </div>
@@ -240,10 +241,6 @@
         <div class="summary-row">
           <span>Envio</span>
           <span>{{ formatPrice(shipping) }}</span>
-        </div>
-        <div class="summary-row">
-          <span>Comision Wompi (referencial)</span>
-          <span>{{ formatPrice(getCommission()) }}</span>
         </div>
         <div class="summary-row total">
           <span>Total a pagar</span>

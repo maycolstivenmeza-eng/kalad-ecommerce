@@ -8,6 +8,7 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 
 import { FormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
@@ -29,5 +30,8 @@ export const appConfig: ApplicationConfig = {
 
     // FORMS MODULE (necesario para ngModel en componentes standalone)
     importProvidersFrom(FormsModule),
+
+    // HTTP CLIENT (necesario para WompiService y llamadas HTTP)
+    provideHttpClient(),
   ]
 };

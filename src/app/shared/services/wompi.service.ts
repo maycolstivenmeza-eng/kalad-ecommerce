@@ -121,12 +121,17 @@ export class WompiService {
 
     this.widgetCheckout = new window.WidgetCheckout(checkoutConfig);
 
-    this.widgetCheckout.open(async (result: any) => {
-      const tx = result.transaction;
+    // Esperar a que el usuario complete/cierre el checkout
+    await new Promise<void>((resolve) => {
+      this.widgetCheckout.open(async (result: any) => {
+        const tx = result.transaction;
 
-      if (onResult) {
-        await onResult(tx);
-      }
+        if (onResult) {
+          await onResult(tx);
+        }
+
+        resolve();
+      });
     });
   }
 
@@ -155,4 +160,3 @@ export class WompiService {
     return resp?.data;
   }
 }
-

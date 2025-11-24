@@ -63,7 +63,7 @@
               <strong>{{ (subtotal + shipping - discount) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
             </div>
           </div>
-          <button class="btn-comprar" routerLink="/checkout">Comprar ahora</button>
+          <button class="btn-comprar" type="button" (click)="goToCheckout()">Comprar ahora</button>
         </ng-container>
       </aside>
     </div>

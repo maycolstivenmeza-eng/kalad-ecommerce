@@ -230,7 +230,9 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           subtotal,
           envio: this.shipping,
           descuento: this.discount,
-          cupon: this.discount ? this.couponCode.trim().toUpperCase() : undefined,
+          ...(this.discount
+            ? { cupon: this.couponCode.trim().toUpperCase() }
+            : {}),
           comision: commission,
           comisionPorcentaje: Number((environment.wompi as any).feePercent ?? 0),
           comisionFija: Number((environment.wompi as any).feeFixed ?? 0)
@@ -255,6 +257,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         }
       };
 
+      let finalStatus: string = "error";
+
       await this.wompiService.openCheckoutFromBackend(pedidoId, checkoutConfig, async (tx) => {
         const txId = tx?.id;
         let status = tx?.status?.toLowerCase?.() || "error";
@@ -272,27 +276,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           }
         }
 
-        const estado =
-          status === "approved"
-            ? "pagado"
-            : status === "declined"
-              ? "cancelado"
-              : "creado";
-
-        await this.pedidosService.actualizarPedido(pedidoId, {
-          estado,
-          transaccionId: txId
-        });
-
-        // Si se aprueba, descontar stock y reportar compra
+        // Si se aprueba, reportar compra (el stock se descuenta en el backend)
         if (status === "approved") {
-          await Promise.all(
-            this.cartItems.map((item) =>
-              this.productService.reduceStock(item.id, item.qty).catch((err) => {
-                console.error("No se pudo descontar stock", err);
-              })
-            )
-          );
           this.analytics.trackPurchase(
             pedidoId,
             txId || null,
@@ -310,11 +295,22 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           this.analytics.trackCartAbandoned(this.cartItems, totals.total, `checkout_${status}`);
           this.abandonTracked = true;
         }
+
+        finalStatus = status;
       });
 
-      this.cartService.clear();
-      this.cartItems = [];
-      this.router.navigate(["/confirmation"], { queryParams: { id: pedidoId } });
+      // Navegación según resultado final
+      if (finalStatus === "approved") {
+        this.cartService.clear();
+        this.cartItems = [];
+        this.router.navigate(["/confirmation"], { queryParams: { id: pedidoId, status: "APPROVED" } });
+      } else if (finalStatus === "pending") {
+        this.statusMessage = "Tu pago quedó en estado pendiente. Te avisaremos por correo electrónico.";
+      } else if (finalStatus === "cancelled" || finalStatus === "declined") {
+        this.statusMessage = "El pago fue cancelado o rechazado. No se ha realizado ningún cargo.";
+      } else {
+        this.statusMessage = "No se pudo completar el pago. Por favor intenta de nuevo.";
+      }
     } catch (error) {
       console.error("Error al procesar el pago:", error);
       this.statusMessage = "Ocurrió un error al procesar el pago. Por favor intenta de nuevo.";
