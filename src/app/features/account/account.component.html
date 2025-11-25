@@ -27,7 +27,7 @@
         <ul class="fav-list">
           <li *ngFor="let f of favs">
             <span>{{ f.nombre }}</span>
-            <span class="price">{{ f.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <span class="price">{{ f.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
             <button class="link" [routerLink]="['/products', f.id]">Ver</button>
           </li>
         </ul>
@@ -68,19 +68,28 @@
     <div class="card">
       <h3>Historial de compras</h3>
       <ng-container *ngIf="pedidos$ | async as pedidos">
-        <p *ngIf="!pedidos.length">Aún no tienes compras registradas.</p>
-        <ul class="orders">
+        <p *ngIf="!pedidos.length && !lastOrderSummary">Aún no tienes compras registradas.</p>
+
+        <ul class="orders" *ngIf="pedidos.length">
           <li *ngFor="let p of pedidos">
             <div>
               <strong>{{ p.id }}</strong>
               <p>Estado: {{ p.estado }}</p>
-              <p>Total: {{ p.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+              <p>Total: {{ p.total | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
               <p *ngIf="p.guiaEnvio">Guía: {{ p.guiaEnvio }}</p>
             </div>
             <button class="link" [routerLink]="['/products']">Ver productos</button>
           </li>
         </ul>
+
+        <div class="last-order" *ngIf="!pedidos.length && lastOrderSummary">
+          <p><strong>Último pedido:</strong> {{ lastOrderSummary.id }}</p>
+          <p>Estado: {{ lastOrderSummary.estado }}</p>
+          <p>Total: {{ lastOrderSummary.total | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+          <p class="hint">Este resumen se basa en tu última compra confirmada desde este dispositivo.</p>
+        </div>
       </ng-container>
     </div>
   </div>
 </section>
+

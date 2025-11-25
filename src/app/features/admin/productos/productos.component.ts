@@ -482,6 +482,14 @@ export class ProductosComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin/pedidos']);
   }
 
+  irADashboard(): void {
+    this.router.navigate(['/admin/dashboard']);
+  }
+
+  irAReviews(): void {
+    this.router.navigate(['/admin/reviews']);
+  }
+
   // ==========================================================
   // LOGOUT
   // ==========================================================

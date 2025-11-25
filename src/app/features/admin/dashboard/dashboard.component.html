@@ -1,0 +1,87 @@
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h2>Dashboard de ventas</h2>
+    <div class="admin-header-actions">
+      <button type="button" class="btn-reset" (click)="irAPedidos()">
+        Ver pedidos
+      </button>
+      <button type="button" class="btn-reset" (click)="irAProductos()">
+        Productos
+      </button>
+      <button (click)="logout()" class="logout-btn">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <div class="alert" *ngIf="toastActivo" [ngClass]="toastActivo.tipo">
+    {{ toastActivo.texto }}
+  </div>
+
+  <div class="dashboard-summary">
+    <div class="summary-card">
+      <h3>Ingresos totales</h3>
+      <p>{{ totalIngresos | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+    </div>
+    <div class="summary-card">
+      <h3>Pedidos completados</h3>
+      <p>{{ totalPedidos }}</p>
+    </div>
+  </div>
+
+  <h3 class="titulo-lista">Ventas por colección</h3>
+  <table class="tabla-productos" *ngIf="ventasPorColeccion.length">
+    <thead>
+      <tr>
+        <th>Colección</th>
+        <th>Unidades</th>
+        <th>Ingresos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of ventasPorColeccion">
+        <td>{{ c.coleccion }}</td>
+        <td>{{ c.unidades }}</td>
+        <td>{{ c.ingresos | currency:'COP':'symbol-narrow':'1.0-0' }} COP</td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="!ventasPorColeccion.length && !cargando" class="filtro-resultado">
+    Aún no hay ventas registradas.
+  </p>
+
+  <h3 class="titulo-lista">Top productos por ventas</h3>
+  <table class="tabla-productos" *ngIf="topProductos.length">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Colección</th>
+        <th>Unidades</th>
+        <th>Ingresos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of topProductos">
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.coleccion || 'Sin colección' }}</td>
+        <td>{{ p.unidades }}</td>
+        <td>{{ p.ingresos | currency:'COP':'symbol-narrow':'1.0-0' }} COP</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="cargando" class="filtro-resultado">
+    Cargando datos de ventas...
+  </p>
+</div>
+
+<div
+  class="toast-notification"
+  *ngIf="toastActivo"
+  [ngClass]="toastActivo.tipo"
+  role="status"
+  aria-live="assertive"
+>
+  {{ toastActivo.texto }}
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
 import { SavedAddress } from '../../shared/services/address.service';
@@ -21,6 +21,8 @@ export class AccountComponent implements OnInit {
   favorites$ = this.favoritesService.favorites$;
   addresses$?: Observable<SavedAddress[]>;
   pedidos$?: Observable<Pedido[]>;
+  lastOrderSummary: { id: string; total: number; estado: string } | null = null;
+  ultimoPedidoId: string | null = null;
 
   newAddress: Omit<SavedAddress, 'id'> = {
     label: '',
@@ -35,7 +37,8 @@ export class AccountComponent implements OnInit {
     private favoritesService: FavoritesService,
     private userDataService: UserDataService,
     private pedidosService: PedidosService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
@@ -45,9 +48,22 @@ export class AccountComponent implements OnInit {
         this.router.navigate(['/home']);
       });
     }
+
+    this.route.queryParams.subscribe(params => {
+      this.ultimoPedidoId = params['orderId'] || null;
+    });
+
     this.addresses$ = await this.userDataService.listAddresses$();
     this.pedidos$ = await this.pedidosService.misPedidos$();
     await this.userDataService.saveAuthProfile();
+
+    // Fallback: cargar último pedido guardado en localStorage
+    try {
+      const raw = localStorage.getItem('kalad-last-order');
+      this.lastOrderSummary = raw ? JSON.parse(raw) : null;
+    } catch {
+      this.lastOrderSummary = null;
+    }
   }
 
   async loginGoogle() {

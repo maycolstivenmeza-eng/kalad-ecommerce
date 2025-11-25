@@ -2,6 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { PedidosService, Pedido } from '../../shared/services/pedidos.service';
+import { AuthService } from '../../shared/services/auth.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -18,7 +19,11 @@ export class ConfirmationComponent implements OnInit {
   currentDate: Date = new Date();
   pedido$?: Observable<Pedido | undefined>;
 
-  constructor(private route: ActivatedRoute, private pedidosService: PedidosService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private pedidosService: PedidosService,
+    public authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

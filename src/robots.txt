@@ -1,5 +1,8 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
 
 Sitemap: https://kalad.com.co/sitemap.xml
 

@@ -53,7 +53,7 @@
               <p class="title">{{ prod.nombre }}</p>
               <p class="meta">{{ prod.coleccion }} · {{ prod.categoria }}</p>
             </div>
-            <span class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <span class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
           </div>
         </ng-container>
         <ng-template #emptyResults>
@@ -74,13 +74,13 @@
         <div class="cart-item-info">
           <p class="name">{{ item.nombre }}</p>
           <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
-          <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+          <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
         <button class="remove" (click)="removeItem(item)">×</button>
       </div>
       <div class="cart-summary">
         <span>Total:</span>
-        <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+        <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
       </div>
       <div class="cart-actions">
         <button (click)="goToCart()">Ver carrito</button>
@@ -99,7 +99,7 @@
         <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy">
         <div class="fav-item-info" (click)="goToProduct(prod.id)">
           <p class="name">{{ prod.nombre }}</p>
-          <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+          <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
         <button class="remove" (click)="removeFavorite(prod.id)">×</button>
       </div>
@@ -131,7 +131,7 @@
 <button class="floating-cart" (click)="toggleCartDrawer($event)">
   <div class="pill">
     <span class="label">Carrito</span>
-    <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+    <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
     <span class="bubble" *ngIf="cartCount$ | async as count">{{ count }}</span>
   </div>
 </button>
@@ -150,7 +150,7 @@
         <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
         <div class="info">
           <p class="title">{{ item.nombre }}</p>
-          <p class="meta">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+          <p class="meta">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
         <button class="remove" (click)="removeItem(item)">×</button>
       </div>
@@ -158,7 +158,7 @@
       <div class="drawer-footer">
         <div class="totals">
           <span>Total estimado</span>
-          <strong>{{ calcTotal(items) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+          <strong>{{ calcTotal(items) | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
         </div>
         <div class="actions">
           <button class="ghost" (click)="goToCart()">Ver carrito</button>
@@ -172,3 +172,4 @@
 </div>
 
 <div class="drawer-backdrop" *ngIf="cartDrawerOpen" (click)="cartDrawerOpen=false"></div>
+

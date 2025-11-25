@@ -22,7 +22,7 @@ export class AuthService {
 
   /** Estado booleano */
   isLoggedIn$: Observable<boolean> = this.user$.pipe(
-    map(user => !!user)
+    map(user => !!user && !(user as any).isAnonymous)
   );
 
   /** Email del usuario admin */

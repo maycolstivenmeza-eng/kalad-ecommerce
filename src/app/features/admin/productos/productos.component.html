@@ -7,6 +7,9 @@
       <button type="button" class="btn-reset" (click)="irAPedidos()" title="Ver pedidos">
         Ver pedidos
       </button>
+      <button type="button" class="btn-reset" (click)="irADashboard()" title="Panel de ventas">
+        Panel de ventas
+      </button>
       <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
         Cerrar sesión
       </button>
@@ -71,11 +74,11 @@
     <input id="stock" type="number" name="stock" [(ngModel)]="producto.stock" required min="0" class="input"/>
 
     <!-- DESCRIPCION -->
-    <label for="descripcion">Descripcion</label>
+    <label for="descripcion">Descripción</label>
     <textarea id="descripcion" name="descripcion" [(ngModel)]="producto.descripcion" required rows="4" class="input"></textarea>
 
     <!-- CARACTERISTICAS -->
-    <label for="caracteristicas">Caracteristicas destacadas</label>
+    <label for="caracteristicas">Características destacadas</label>
     <textarea
       id="caracteristicas"
       name="caracteristicas"
@@ -146,7 +149,7 @@
     </div>
 
     <!-- IMAGENES SECUNDARIAS -->
-    <label for="imagenesSec">Imagenes adicionales (maximo 4)</label>
+    <label for="imagenesSec">Imágenes adicionales (máximo 4)</label>
     <input
       id="imagenesSec"
       type="file"
@@ -157,7 +160,7 @@
     />
 
     <p class="input-hint">
-      Recomendacion: Usa imagenes cuadradas o verticales de buena resolucion, en formato JPG o WebP.
+      Recomendación: Usa imágenes cuadradas o verticales de buena resolución, en formato JPG o WebP.
     </p>
 
     <!-- PREVIEW IMAGENES SECUNDARIAS -->
@@ -175,7 +178,7 @@
   </form>
 
   <!-- FILTROS -->
-  <h3 class="titulo-lista">Productos Registrados</h3>
+  <h3 class="titulo-lista">Productos registrados</h3>
 
   <div class="filtros-bar">
     <div>
@@ -190,7 +193,7 @@
     </div>
 
     <div>
-      <label for="filtroCategoria">Categoria</label>
+      <label for="filtroCategoria">Categoría</label>
       <select
         id="filtroCategoria"
         [(ngModel)]="filtroCategoria"
@@ -202,7 +205,7 @@
     </div>
 
     <div>
-      <label for="filtroColeccion">Coleccion</label>
+      <label for="filtroColeccion">Colección</label>
       <select
         id="filtroColeccion"
         [(ngModel)]="filtroColeccion"
@@ -247,8 +250,8 @@
           <th>Imagen</th>
           <th>Nombre</th>
           <th>Precio</th>
-          <th>Categoria</th>
-          <th>Coleccion</th>
+          <th>Categoría</th>
+          <th>Colección</th>
           <th>Badge</th>
           <th>Stock</th>
           <th>Estado</th>
@@ -292,7 +295,7 @@
   </ng-template>
 
   <ng-template #sinProductos>
-    <p class="filtro-resultado">No hay productos registrados todavia.</p>
+    <p class="filtro-resultado">No hay productos registrados todavía.</p>
   </ng-template>
 
   <!-- CUPONES -->
@@ -406,3 +409,4 @@
 >
   {{ toastActivo.texto }}
 </div>
+

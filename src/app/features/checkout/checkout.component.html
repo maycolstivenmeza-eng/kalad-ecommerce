@@ -11,6 +11,22 @@
   <div class="checkout-content">
     <!-- Formulario -->
     <div class="checkout-form-section">
+      <div class="checkout-login-hint" *ngIf="!(isLoggedIn$ | async)">
+        <div class="checkout-login-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="checkout-login-copy">
+          <p class="title">¿Tienes cuenta en Kalad?</p>
+          <p class="subtitle">
+            Inicia sesión con Google para guardar tus datos, ver tu historial de pedidos y usar tus favoritos.
+            Si lo prefieres, puedes continuar tu compra sin iniciar sesión.
+          </p>
+        </div>
+        <button type="button" class="btn-google" (click)="loginWithGoogle()" [disabled]="isProcessing">
+          <i class="fab fa-google"></i>
+          <span>Iniciar sesión con Google</span>
+        </button>
+      </div>
       <form [formGroup]="checkoutForm" (ngSubmit)="processPayment()">
 
         <!-- Datos Personales -->
@@ -282,3 +298,4 @@
     </div>
   </div>
 </div>
+

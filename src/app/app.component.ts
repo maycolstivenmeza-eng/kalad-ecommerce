@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.components';
 import { FooterComponent } from './shared/components/footer/footer.components';
@@ -18,7 +18,16 @@ import { UiMessageService, UiMessage } from './shared/services/ui-message.servic
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Kalad';
   private navSub?: Subscription;
+  private launchIntervalId?: any;
   uiMessage$ = this.uiMessageService.message$;
+
+  // Mensajes rotativos para la franja de lanzamiento
+  launchMessages: string[] = [
+    'Lanzamiento oficial KALAD',
+    'Edición especial disponible',
+    'Envíos nacionales'
+  ];
+  currentLaunchIndex = 0;
 
   constructor(
     private titleService: Title,
@@ -30,8 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.titleService.setTitle('Kalad | Mochilas artesanales');
     this.meta.updateTag({
       name: 'description',
-      content:
-        'Kalad: mochilas artesanales colombianas, piezas únicas hechas a mano. Conoce nuestras colecciones Origen y Essencia.'
+      content: 'Kalad: mochilas artesanales colombianas, piezas únicas hechas a mano. Conoce nuestras colecciones.'
     });
   }
 
@@ -42,9 +50,18 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((event) => {
         this.analytics.trackPageView(event.urlAfterRedirects, this.titleService.getTitle());
       });
+
+    // Rotación de mensajes de lanzamiento
+    this.launchIntervalId = setInterval(() => {
+      this.currentLaunchIndex =
+        (this.currentLaunchIndex + 1) % this.launchMessages.length;
+    }, 4000);
   }
 
   ngOnDestroy(): void {
     this.navSub?.unsubscribe();
+    if (this.launchIntervalId) {
+      clearInterval(this.launchIntervalId);
+    }
   }
 }

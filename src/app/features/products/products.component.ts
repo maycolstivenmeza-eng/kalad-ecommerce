@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -68,7 +68,7 @@ export class ProductsComponent implements OnInit {
     this.title.setTitle('Productos | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Catálogo de mochilas Kalad. Filtra por color, precio y ordena por nuevos o destacados.'
+      content: 'Catálogo de mochilas Kalad: filtra por colección, color y precio para encontrar tu pieza única.'
     });
     this.loadProducts();
   }

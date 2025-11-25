@@ -41,6 +41,13 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'admin/dashboard',
+    canActivate: [adminAuthGuard],
+    loadComponent: () =>
+      import('./features/admin/dashboard/dashboard.component')
+        .then(m => m.DashboardComponent)
+  },
+  {
     path: 'admin/login',
     loadComponent: () =>
       import('./features/admin/login/login.component')
@@ -52,6 +59,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/admin/productos/productos.component')
         .then(m => m.ProductosComponent)
+  },
+  {
+    path: 'admin/reviews',
+    canActivate: [adminAuthGuard],
+    loadComponent: () =>
+      import('./features/admin/reviews/reviews.component')
+        .then(m => m.ReviewsComponent)
   },
   {
     path: 'admin/pedidos',

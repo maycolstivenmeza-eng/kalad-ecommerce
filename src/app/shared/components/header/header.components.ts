@@ -101,8 +101,6 @@ export class HeaderComponent {
   async goToCheckout() {
     this.cartOpen = false;
     this.cartDrawerOpen = false;
-    const logged = await this.ensureLoggedIn();
-    if (!logged) return;
     this.router.navigate(['/checkout']);
   }
 

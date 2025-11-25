@@ -1,0 +1,27 @@
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: #f8f4ec;
+  border: 1px solid #e2d6c4;
+}
+
+.summary-card h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.summary-card p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+

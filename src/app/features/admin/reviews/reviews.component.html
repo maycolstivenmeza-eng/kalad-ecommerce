@@ -1,0 +1,93 @@
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h2>Reseñas de productos</h2>
+    <div class="admin-header-actions">
+      <button type="button" class="btn-reset" (click)="irAProductos()" title="Volver a productos">
+        Productos
+      </button>
+      <button type="button" class="btn-reset" (click)="irAPedidos()" title="Ver pedidos">
+        Pedidos
+      </button>
+      <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <div class="alert" *ngIf="toastActivo" [ngClass]="toastActivo.tipo">
+    {{ toastActivo.texto }}
+  </div>
+
+  <div class="filtros-bar">
+    <div>
+      <label for="productoSelect">Producto</label>
+      <select
+        id="productoSelect"
+        [(ngModel)]="productoSeleccionadoId"
+        (ngModelChange)="onSeleccionarProducto()"
+      >
+        <option [ngValue]="null">Selecciona un producto</option>
+        <option *ngFor="let p of productos" [value]="p.id">
+          {{ p.nombre }} <span *ngIf="p.coleccion">({{ p.coleccion }})</span>
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <ng-container *ngIf="productoSeleccionadoId; else eligeProductoTpl">
+    <p class="filtro-resultado" *ngIf="!cargandoReviews">
+      {{ reviews.length ? (reviews.length + ' reseñas encontradas') : 'Aún no hay reseñas para este producto.' }}
+    </p>
+
+    <table class="tabla-productos" *ngIf="reviews.length">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Comentario</th>
+          <th>Calificación</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of reviews">
+          <td>{{ r.name }}</td>
+          <td class="review-comment-cell">"{{ r.comment }}"</td>
+          <td>{{ r.rating }}/5</td>
+          <td>{{ r.createdAt || '—' }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn-eliminar"
+              (click)="eliminarReview(r)"
+            >
+              Eliminar reseña
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="cargandoReviews" class="filtro-resultado">
+      Cargando reseñas...
+    </p>
+  </ng-container>
+
+  <ng-template #eligeProductoTpl>
+    <p class="filtro-resultado">
+      Selecciona un producto para ver y gestionar sus reseñas.
+    </p>
+  </ng-template>
+</div>
+
+<div
+  class="toast-notification"
+  *ngIf="toastActivo"
+  [ngClass]="toastActivo.tipo"
+  role="status"
+  aria-live="assertive"
+>
+  {{ toastActivo.texto }}
+</div>
+

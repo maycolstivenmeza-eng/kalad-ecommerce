@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContactService, ContactReason } from '../../shared/services/contact.service';
@@ -31,7 +31,7 @@ export class ContactComponent implements OnInit {
     this.title.setTitle('Contacto | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Ponte en contacto con Kalad para dudas, pedidos especiales o información sobre nuestras colecciones.'
+      content: 'Ponte en contacto con Kalad para dudas de pedidos, compras especiales o información sobre nuestras colecciones.'
     });
   }
 

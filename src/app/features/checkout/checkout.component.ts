@@ -24,6 +24,7 @@ import { Product } from "../../shared/models/product.model";
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
   checkoutForm!: FormGroup;
+  isLoggedIn$ = this.authService.isLoggedIn$;
   isProcessing = false;
   cartItems: CartItem[] = [];
   couponCode = "";
@@ -174,13 +175,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const logged = await this.ensureLoggedIn();
-    if (!logged) return;
 
     this.isProcessing = true;
 
     try {
       const formValue = this.checkoutForm.value;
+      const isLoggedIn = await firstValueFrom(this.authService.isLoggedIn$);
 
       // Validar stock antes de cobrar
       const sinStock = await this.validateStock();
@@ -192,6 +192,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
 
       // Guardar perfil y direccion
+      if (isLoggedIn) {
       await this.userDataService.saveAuthProfile();
       await this.userDataService.addAddress({
         label: formValue.address || "Envio",
@@ -200,6 +201,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         region: formValue.department,
         postal: formValue.postalCode
       });
+      }
 
       const subtotal = this.getSubtotal();
       this.computeShipping(subtotal);
@@ -227,6 +229,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         this.getTotal(),
         "creado",
         {
+          // Totales
           subtotal,
           envio: this.shipping,
           descuento: this.discount,
@@ -235,7 +238,18 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             : {}),
           comision: commission,
           comisionPorcentaje: Number((environment.wompi as any).feePercent ?? 0),
-          comisionFija: Number((environment.wompi as any).feeFixed ?? 0)
+          comisionFija: Number((environment.wompi as any).feeFixed ?? 0),
+          // Datos de contacto y envío (siempre, logueado o invitado)
+          nombreCliente: formValue.fullName,
+          emailCliente: formValue.email,
+          telefonoCliente: formValue.phone,
+          tipoDocumento: formValue.documentType,
+          numeroDocumento: formValue.documentNumber,
+          direccionEnvio: formValue.address,
+          ciudadEnvio: formValue.city,
+          departamentoEnvio: formValue.department,
+          codigoPostal: formValue.postalCode,
+          notasCliente: formValue.notes
         }
       );
 
@@ -291,6 +305,19 @@ export class CheckoutComponent implements OnInit, OnDestroy {
             }
           );
           this.purchaseTracked = true;
+
+          // Guardar un resumen básico del último pedido en localStorage
+          try {
+            const lastOrder = {
+              id: pedidoId,
+              total: totals.total,
+              estado: "pagado",
+              createdAt: new Date().toISOString()
+            };
+            localStorage.setItem("kalad-last-order", JSON.stringify(lastOrder));
+          } catch (e) {
+            console.warn("No se pudo guardar el resumen del último pedido", e);
+          }
         } else if (!this.abandonTracked) {
           this.analytics.trackCartAbandoned(this.cartItems, totals.total, `checkout_${status}`);
           this.abandonTracked = true;
@@ -330,18 +357,13 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     this.router.navigate(["/products"]);
   }
 
-  private async ensureLoggedIn(): Promise<boolean> {
-    const logged = await firstValueFrom(this.authService.isLoggedIn$);
-    if (logged) return true;
+  async loginWithGoogle(): Promise<void> {
     try {
       await this.authService.loginWithGoogle();
-      return true;
-    } catch {
-      this.statusMessage = "Debes iniciar sesión con Google para completar la compra.";
-      return false;
+    } catch (e) {
+      console.warn("Login cancelado o fallido", e);
     }
   }
-
   private async validateStock(): Promise<{ id: string; nombre: string }[]> {
     const sinStock: { id: string; nombre: string }[] = [];
     for (const item of this.cartItems) {

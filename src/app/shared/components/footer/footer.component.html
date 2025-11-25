@@ -5,14 +5,18 @@
         <div class="footer-col">
             <img src="/assets/images/logo footer.svg" alt="Logo KALAD" class="footer-logo" loading="lazy">
             <h4 style="margin-top: 10px;">SUSCRÍBETE A KALAD</h4>
-            <form class="newsletter-form">
+            <form class="newsletter-form" (submit)="onSubmitNewsletter($event)">
                 <input
                   id="newsletter-email"
                   name="newsletterEmail"
                   type="email"
                   placeholder="Tu correo electrónico"
+                  [(ngModel)]="newsletterEmail"
+                  [disabled]="isSubmitting"
                   required>
-                <button type="submit">Suscribirse</button>
+                <button type="submit" [disabled]="isSubmitting">
+                  {{ isSubmitting ? 'Enviando...' : 'Suscribirse' }}
+                </button>
             </form>
         </div>
 
@@ -59,3 +63,4 @@
         © 2025 <strong>KALAD</strong>. Todos los derechos reservados.
     </div>
 </footer>
+

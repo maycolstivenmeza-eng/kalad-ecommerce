@@ -8,23 +8,28 @@
 
 <section class="catalogo">
   <h2 class="catalogo-frase"><em>"La elegancia tiene forma. Se llama KALAD."</em></h2>
+  <p class="catalogo-subfrase">Productos elaborados 100% a mano en Colombia.</p>
   <div class="section-divider">
-    <hr>
+    <hr />
     <span><i class="fas fa-fire"></i> Lo mas vendido</span>
-    <hr>
+    <hr />
   </div>
 
   <ng-container *ngIf="loading; else destacados">
-    <div style="text-align: center; padding: 40px; color: #666;">
-      <i class="fa-solid fa-spinner fa-spin" style="font-size: 32px;"></i>
-      <p style="margin-top: 10px;">Cargando productos...</p>
+    <div style="text-align: center; padding: 40px; color: #666">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size: 32px"></i>
+      <p style="margin-top: 10px">Cargando productos...</p>
     </div>
   </ng-container>
 
   <ng-template #destacados>
     <ng-container *ngIf="featuredProducts.length > 0; else sinDestacados">
       <div class="product-grid">
-        <article class="product-card" [attr.data-id]="product.id" *ngFor="let product of featuredProducts; trackBy: trackById">
+        <article
+          class="product-card"
+          [attr.data-id]="product.id"
+          *ngFor="let product of featuredProducts; trackBy: trackById"
+        >
           <a class="thumb" [routerLink]="['/products', product.id]">
             <span class="badge" *ngIf="product.badge" [ngClass]="product.badge">
               {{ product.badge }}
@@ -49,8 +54,14 @@
               type="button"
               [class.active]="favorites.isFavorite(product.id)"
               (click)="toggleFavorite(product, $event)"
-              [attr.aria-label]="favorites.isFavorite(product.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'">
-              <i class="fa-solid" [ngClass]="favorites.isFavorite(product.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+              [attr.aria-label]="
+                favorites.isFavorite(product.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'
+              "
+            >
+              <i
+                class="fa-solid"
+                [ngClass]="favorites.isFavorite(product.id) ? 'fa-heart' : 'fa-heart-circle-plus'"
+              ></i>
             </button>
           </a>
 
@@ -60,19 +71,14 @@
           <p class="excerpt" *ngIf="product.descripcionCorta">{{ product.descripcionCorta }}</p>
 
           <div class="price-row">
-            <span class="price">{{ formatPrice(product.precio) }}</span>
+            <span class="price">{{ formatPrice(product.precio) }} COP</span>
             <button
               class="cart-btn"
               type="button"
               (click)="addToCart(product, $event)"
               [disabled]="(product.stock || 0) <= 0"
             >
-              <svg
-                class="cart-icon"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                focusable="false"
-              >
+              <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path
                   d="M3 5h2l1.2 6.2a1 1 0 0 0 .98.8H17a1 1 0 0 0 .97-.76L20 8H7"
                   fill="none"
@@ -90,39 +96,82 @@
       </div>
     </ng-container>
     <ng-template #sinDestacados>
-      <div style="text-align: center; padding: 40px; color: #666;">
+      <div style="text-align: center; padding: 40px; color: #666">
         <p>No hay productos destacados disponibles.</p>
-        <a routerLink="/products" style="color: #333; text-decoration: underline;">Ver todos los productos</a>
+        <a routerLink="/products" style="color: #333; text-decoration: underline"
+          >Ver todos los productos</a
+        >
       </div>
     </ng-template>
   </ng-template>
 </section>
 
 <section class="historia-section">
-  <img src="/assets/images/historia.webp" alt="Historia" class="historia-imagen" loading="lazy">
+  <img src="/assets/images/historia.webp" alt="Historia" class="historia-imagen" loading="lazy" />
   <div class="historia-texto">
     <h2>HISTORIA</h2>
     <p>
-      Mochilas tejidas con identidad, disenadas para mujeres, hombres y jovenes que valoran el estilo, la calidad
-      y la historia.
+      Mochilas tejidas con identidad, diseñadas para mujeres, hombres y jóvenes que valoran el estilo,
+      la calidad y la historia.
     </p>
-    <button id="btnConocerMas" routerLink="/history">CONOCER MAS</button>
+    <button id="btnConocerMas" routerLink="/history">CONOCER MÁS</button>
   </div>
 </section>
 
 <section class="raices-section">
   <h2>Explora nuestras raíces</h2>
-    <div class="raices-grid">
-      <div class="raiz-item">
-        <img src="assets/images/origen-raiz-azulclaro-01 2.webp" alt="KALAD ORIGEN" class="img-kalad-aire" loading="lazy" />
-        <h3>KALAD ORIGEN</h3>
-        <a routerLink="/collections/origen" class="link" style="text-decoration: underline;">EXPLORAR COLECCIÓN</a>
-      </div>
-
-      <div class="raiz-item">
-        <img src="/assets/images/KALAD-ORIGEN.jpeg" alt="KALAD ESSENCIA" class="img-kalad-origen" loading="lazy" />
-        <h3>KALAD ESSENCIA</h3>
-        <a routerLink="/collections/essencia" class="link" style="text-decoration: underline;">EXPLORAR COLECCIÓN</a>
-      </div>
+  <div class="raices-grid">
+    <div class="raiz-item">
+      <img
+        src="assets/images/origen-raiz-azulclaro-01 2.webp"
+        alt="KALAD ORIGEN"
+        class="img-kalad-aire"
+        loading="lazy"
+      />
+      <h3>KALAD ORIGEN</h3>
+      <a
+        routerLink="/collections/origen"
+        class="link"
+        style="text-decoration: underline"
+      >
+        EXPLORAR COLECCIÓN
+      </a>
     </div>
-  </section>
+
+    <div class="raiz-item">
+      <img
+        src="/assets/images/Edicion_especial_dorado-01.webp"
+        alt="Colección Edición Especial"
+        class="img-kalad-origen"
+        loading="lazy"
+      />
+      <h3>EDICIÓN ESPECIAL</h3>
+      <a
+        routerLink="/collections/ediciones-especiales"
+        class="link"
+        style="text-decoration: underline"
+      >
+        EXPLORAR COLECCIÓN
+      </a>
+    </div>
+
+    <!-- Colección ESSENCIA (en pausa hasta tener productos)
+    <div class="raiz-item">
+      <img
+        src="/assets/images/KALAD-ORIGEN.jpeg"
+        alt="KALAD ESSENCIA"
+        class="img-kalad-origen"
+        loading="lazy"
+      />
+      <h3>KALAD ESSENCIA</h3>
+      <a
+        routerLink="/collections/essencia"
+        class="link"
+        style="text-decoration: underline"
+      >
+        EXPLORAR COLECCIÓN
+      </a>
+    </div>
+    -->
+  </div>
+</section>

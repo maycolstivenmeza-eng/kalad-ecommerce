@@ -2,7 +2,7 @@
   <div class="confirmation-card">
     <div class="success-icon">
       <div class="success-circle">
-        <i class="fas fa-check"></i>
+        <i class="fa-solid fa-check"></i>
       </div>
     </div>
 
@@ -61,11 +61,13 @@
 
     <div class="confirmation-message">
       <div class="message-icon">
-        <i class="fas fa-envelope"></i>
+        <i class="fa-brands fa-whatsapp"></i>
       </div>
       <div class="message-text">
-        <p><strong>Te hemos enviado un correo de confirmacion</strong></p>
-        <p class="text-muted">Revisa tu bandeja de entrada para mas detalles sobre tu pedido y seguimiento del envio.</p>
+        <p><strong>Recibirás la confirmación de tu pedido por WhatsApp</strong></p>
+        <p class="text-muted">
+          También te enviaremos tu número de guía y el enlace de seguimiento por este medio.
+        </p>
       </div>
     </div>
 
@@ -78,7 +80,7 @@
         </li>
         <li>
           <i class="fas fa-circle-check"></i>
-          <span>Recibiras un correo con el numero de seguimiento</span>
+          <span>Te confirmaremos tu pedido y te enviaremos tu número de guía por WhatsApp</span>
         </li>
         <li>
           <i class="fas fa-circle-check"></i>
@@ -88,18 +90,34 @@
     </div>
 
     <div class="confirmation-actions">
-      <button class="btn-secondary" routerLink="/products">
-        <i class="fas fa-shopping-bag"></i> Seguir Comprando
+      <button class="btn-secondary" routerLink="/products" type="button">
+        <i class="fas fa-shopping-bag"></i>
+        Seguir comprando
       </button>
-      <button class="btn-primary" routerLink="/history">
-        <i class="fas fa-history"></i> Ver Mis Pedidos
+      <button
+        class="btn-primary"
+        [routerLink]="['/account']"
+        [queryParams]="{ orderId: orderReference }"
+        type="button"
+        style="background:#cb5e30; color:#ffffff; border:2px solid #cb5e30;"
+        *ngIf="(authService.isLoggedIn$ | async)"
+      >
+        <i class="fas fa-clipboard-list"></i>
+        Ver mi pedido
       </button>
     </div>
 
     <div class="help-section">
       <p>
         <i class="fas fa-question-circle"></i>
-        Necesitas ayuda? <a routerLink="/contact">Contactanos</a>
+        ¿Necesitas ayuda?&nbsp;
+        <a
+          href="https://wa.me/573007288569?text=Hola%20KALAD,%20acabo%20de%20realizar%20una%20compra%20y%20tengo%20una%20duda."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Contáctanos por WhatsApp
+        </a>
       </p>
     </div>
   </div>

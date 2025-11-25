@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -54,7 +54,7 @@ export class OrigenComponent implements OnInit, OnDestroy {
     this.title.setTitle('Kalad Origen | Colección');
     this.meta.updateTag({
       name: 'description',
-      content: 'Colección Kalad Origen: mochilas artesanales con diseño único. Filtra por color, precio y ordena por destacados.'
+      content: 'Colección Kalad Origen: mochilas artesanales inspiradas en las raíces caribeñas, con colores vivos y tejidos tradicionales.'
     });
     this.sub = this.productService
       .getProductsByCollection('kalad-origen')

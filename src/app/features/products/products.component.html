@@ -38,8 +38,6 @@
         </button>
       </div>
 
-      <div class="linea-unica"></div>
-
       <div class="filtro" (click)="toggle(2)">
         <span>Precio</span>
         <span class="flecha" [class.open]="open[2]">&#9662;</span>
@@ -50,6 +48,8 @@
         <label>Max <input type="number" [(ngModel)]="maxPrice" (change)="setPriceRange()" placeholder="200000" /></label>
         <button type="button" (click)="resetPrice()">Limpiar</button>
       </div>
+
+      <div class="linea-unica"></div>
 
       <div
         class="categoria"
@@ -109,7 +109,7 @@
           <p class="excerpt" *ngIf="p.descripcionCorta">{{ p.descripcionCorta }}</p>
 
           <div class="price-row">
-            <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
             <button
               class="cart-btn"
               type="button"

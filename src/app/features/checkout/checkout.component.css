@@ -66,6 +66,69 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+.checkout-login-hint {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff8f1;
+}
+
+.checkout-login-icon i {
+  font-size: 26px;
+  color: var(--brand);
+}
+
+.checkout-login-copy .title {
+  margin: 0 0 2px;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.checkout-login-copy .subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #dadce0;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3c4043;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn-google i {
+  color: #4285f4;
+}
+
+.btn-google:hover:not(:disabled) {
+  background: #f8f9fa;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+}
+
+.btn-google:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
 .form-section {
   margin-bottom: 30px;
   padding-bottom: 30px;

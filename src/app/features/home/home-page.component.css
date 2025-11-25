@@ -57,7 +57,7 @@ body {
     linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.74) 40%, rgba(255, 255, 255, 0.28) 70%, rgba(255, 255, 255, 0) 100%),
     url('/assets/images/Baner_index.webp');
   background-size: cover;
-  background-position: center right;
+  background-position: center;
   height: 520px;
   display: flex;
   align-items: center;
@@ -131,7 +131,7 @@ body {
   .kalad-hero {
     height: 480px;
     padding: 70px 40px;
-    background-position: 70% center;
+    background-position: center top;
   }
 
   .hero-overlay {
@@ -143,7 +143,7 @@ body {
   .kalad-hero {
     height: 440px;
     padding: 60px 26px;
-    background-position: 65% center;
+    background-position: center top;
   }
 
   .hero-overlay {
@@ -1013,4 +1013,42 @@ body.modal-open { overflow: hidden; }
 }
 
 
+
+
+.catalogo-subfrase {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: #6b5d4b;
+  text-align: center;
+}
+
+
+@media (max-width: 600px) {
+  .kalad-hero {
+    height: auto;
+    padding: 40px 16px;
+    justify-content: center;
+  }
+  .hero-overlay {
+    max-width: 90%;
+    padding: 24px 20px;
+    border-left-width: 3px;
+  }
+  .hero-overlay h1 {
+    font-size: 1.9rem;
+  }
+  .historia-section {
+    flex-direction: column;
+    padding: 40px 20px;
+    text-align: center;
+    gap: 20px;
+  }
+  .historia-imagen,
+  .historia-texto {
+    width: 100%;
+  }
+  .historia-texto {
+    text-align: center;
+  }
+}
 

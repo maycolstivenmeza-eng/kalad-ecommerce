@@ -1,4 +1,4 @@
-﻿export const environment = {
+export const environment = {
   production: true,
   useStorageUploadProxy: false,
 
@@ -22,9 +22,9 @@
 
   // Configuracion de Wompi para produccion
   wompi: {
-    publicKey: 'TU_CLAVE_PUBLICA_PRODUCCION_AQUI',
+    publicKey: 'pub_prod_iR7U8YBjqm46AjHLCcqZCiHZthHiPZue',
     currency: 'COP',
-    redirectUrl: 'https://tudominio.com',
+    redirectUrl: 'https://kalad.com.co',
     apiBase: 'https://production.wompi.co',
     functionsBase: 'https://us-central1-kalad3-8a000.cloudfunctions.net',
     feePercent: 0,

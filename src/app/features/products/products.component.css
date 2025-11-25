@@ -195,7 +195,7 @@
   height: 265px;
   object-fit: cover;
   display: block;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: opacity 0.25s ease;
 }
 
 .img.hover {
@@ -211,13 +211,6 @@
 .thumb:hover .img.hover {
   opacity: 1;
   transform: scale(1.03);
-}
-
-.product-card:hover img {
-  opacity: 1;
-  filter: none;
-  transform: scale(1.01);
-  transition: transform 0.25s ease;
 }
 
 .title {

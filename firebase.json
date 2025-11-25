@@ -1,18 +1,24 @@
 {
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "cleanUrls": true
-  },
-  "functions": {
-    "source": "functions"
-  },
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  }
+    "hosting":  {
+                    "public":  "dist/kalad-ecommerce/browser",
+                    "ignore":  [
+                                   "firebase.json",
+                                   "**/.*",
+                                   "**/node_modules/**"
+                               ],
+                    "cleanUrls":  true,
+                    "rewrites":  [
+                                     {
+                                         "destination":  "/index.html",
+                                         "source":  "**"
+                                     }
+                                 ]
+                },
+    "functions":  {
+                      "source":  "functions"
+                  },
+    "firestore":  {
+                      "rules":  "firestore.rules",
+                      "indexes":  "firestore.indexes.json"
+                  }
 }

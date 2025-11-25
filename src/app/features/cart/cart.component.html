@@ -19,7 +19,7 @@
                 <span>{{ item.qty }}</span>
                 <button (click)="increase(item)" aria-label="Aumentar cantidad">+</button>
               </div>
-              <strong>{{ (item.precio * item.qty) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+              <strong>{{ (item.precio * item.qty) | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
             </div>
           </div>
           <button class="remove" (click)="remove(item)" aria-label="Eliminar del carrito">Eliminar</button>
@@ -36,7 +36,7 @@
           </div>
           <div class="subtotal">
             <span>Productos ({{ totalItems$ | async }})</span>
-            <strong>{{ subtotal | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+            <strong>{{ subtotal | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
           </div>
 
           <div class="cupon">
@@ -53,14 +53,14 @@
           <p class="cupon-msg" *ngIf="couponMessage">{{ couponMessage }}</p>
 
           <div class="totales">
-            <p>Descuento: <strong>- {{ discount | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+            <p>Descuento: <strong>- {{ discount | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong></p>
             <p>
               Envio:
-              <strong>{{ shipping | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+              <strong>{{ shipping | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
             </p>
             <div class="total-final">
               <span>Total</span>
-              <strong>{{ (subtotal + shipping - discount) | currency:'COP':'symbol-narrow':'1.0-0' }}</strong>
+              <strong>{{ (subtotal + shipping - discount) | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
             </div>
           </div>
           <button class="btn-comprar" type="button" (click)="goToCheckout()">Comprar ahora</button>

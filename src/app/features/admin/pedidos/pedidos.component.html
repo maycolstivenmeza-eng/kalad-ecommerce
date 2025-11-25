@@ -27,7 +27,8 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Usuario</th>
+          <th>Cliente</th>
+          <th>Contacto / env&iacute;o</th>
           <th>Total</th>
           <th>Estado</th>
           <th>Cambiar estado</th>
@@ -40,8 +41,19 @@
       <tbody>
         <tr *ngFor="let p of pedidosFiltrados">
           <td>{{ p.id }}</td>
-          <td>{{ p.userId }}</td>
-          <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }}</td>
+          <td>
+            <div><strong>{{ p.nombreCliente || 'Sin nombre' }}</strong></div>
+            <div class="mini-text">UID: {{ p.userId }}</div>
+          </td>
+          <td>
+            <div *ngIf="p.emailCliente">📧 {{ p.emailCliente }}</div>
+            <div *ngIf="p.telefonoCliente">📱 {{ p.telefonoCliente }}</div>
+            <div *ngIf="p.direccionEnvio">
+              📦 {{ p.direccionEnvio }},
+              {{ p.ciudadEnvio }} - {{ p.departamentoEnvio }}
+            </div>
+          </td>
+          <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }} COP</td>
           <td>{{ p.estado }}</td>
           <td>
             <select [ngModel]="p.estado" (ngModelChange)="cambiarEstadoPedido(p, $event)">
@@ -72,4 +84,3 @@
   </div>
 
 </div>
-

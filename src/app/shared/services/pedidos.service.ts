@@ -1,4 +1,4 @@
-﻿import { Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import {
   Firestore,
   addDoc,
@@ -12,8 +12,8 @@ import {
   orderBy,
   updateDoc
 } from '@angular/fire/firestore';
-import { Auth } from '@angular/fire/auth';
-import { firstValueFrom, Observable } from 'rxjs';
+import { Auth, signInAnonymously } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 export type PedidoItem = {
   productId: string;
@@ -28,6 +28,7 @@ export type Pedido = {
   userId: string;
   items: PedidoItem[];
   total: number;
+  // Totales y costos
   subtotal?: number;
   envio?: number;
   descuento?: number;
@@ -35,6 +36,18 @@ export type Pedido = {
   comision?: number;
   comisionPorcentaje?: number;
   comisionFija?: number;
+  // Datos de contacto / envío
+  nombreCliente?: string;
+  emailCliente?: string;
+  telefonoCliente?: string;
+  tipoDocumento?: string;
+  numeroDocumento?: string;
+  direccionEnvio?: string;
+  ciudadEnvio?: string;
+  departamentoEnvio?: string;
+  codigoPostal?: string;
+  notasCliente?: string;
+  // Gestión interna
   guiaEnvio?: string;
   notaAdmin?: string;
   estado: 'creado' | 'pagado' | 'enviado' | 'entregado' | 'cancelado';
@@ -51,8 +64,11 @@ export class PedidosService {
   constructor(private firestore: Firestore, private auth: Auth) {}
 
   private async requireUid(): Promise<string> {
-    const user = (this.auth as any).currentUser || (await firstValueFrom((this.auth as any).authState ?? []));
-    if (!user) throw new Error('Debes iniciar sesion.');
+    let user = (this.auth as any).currentUser;
+    if (!user) {
+      const cred = await signInAnonymously(this.auth);
+      user = cred.user;
+    }
     return user.uid;
   }
 

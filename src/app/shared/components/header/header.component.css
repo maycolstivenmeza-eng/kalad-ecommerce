@@ -15,6 +15,11 @@
   height: 36px;
 }
 
+.kalad-nav {
+  display: flex;
+  align-items: center;
+}
+
 .kalad-nav a {
   margin: 0 15px;
   text-decoration: none;
@@ -561,3 +566,46 @@
   from { transform: translateY(-8px); }
   to { transform: translateY(0); }
 }
+
+@media (max-width: 960px) {
+  .kalad-header {
+    padding: 10px 20px;
+  }
+  .header-container {
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .kalad-logo {
+    height: 32px;
+  }
+  .header-icons {
+    margin-left: auto;
+  }
+  .kalad-nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .kalad-nav a {
+    margin: 4px 10px;
+    font-size: 13px;
+  }
+}
+@media (max-width: 640px) {
+  .kalad-header {
+    padding: 8px 12px;
+  }
+  .kalad-logo {
+    height: 30px;
+  }
+  .kalad-nav {
+    justify-content: space-between;
+  }
+  .kalad-nav a {
+    margin: 2px 6px;
+    font-size: 12px;
+  }
+}
+

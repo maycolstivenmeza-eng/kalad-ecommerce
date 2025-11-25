@@ -1,0 +1,7 @@
+.review-comment-cell {
+  max-width: 420px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

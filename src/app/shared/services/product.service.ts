@@ -145,6 +145,14 @@ export class ProductService {
     await addDoc(this.reviewsColRef(productId), payload);
   }
 
+  async deleteProductReview(productId: string, reviewId: string): Promise<void> {
+    if (!productId || !reviewId) {
+      throw new Error('Review inválida');
+    }
+    const ref = doc(this.firestore, `${this.COLLECTION_NAME}/${productId}/reviews/${reviewId}`);
+    await deleteDoc(ref);
+  }
+
   // ===========================================
   // CRUD BÁSICO
   // ===========================================
