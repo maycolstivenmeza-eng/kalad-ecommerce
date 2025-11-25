@@ -12,7 +12,7 @@
       <div class="header-search" role="button" aria-label="Buscar productos" (click)="toggleSearch($event)">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="header-auth" role="button" aria-label="Abrir menÃº de cuenta" (click)="toggleAuthMenu($event)">
+      <div class="header-auth" role="button" aria-label="Abrir menú de cuenta" (click)="toggleAuthMenu($event)">
         <i class="fa-regular fa-user"></i>
       </div>
       <div class="header-fav" role="button" aria-label="Ver favoritos" (click)="toggleFavorites($event)">
@@ -76,7 +76,7 @@
           <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
           <p class="qty">x{{ item.qty }} Â· {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeItem(item)">Ã—</button>
+        <button class="remove" (click)="removeItem(item)">×</button>
       </div>
       <div class="cart-summary">
         <span>Total:</span>
@@ -88,7 +88,7 @@
       </div>
     </ng-container>
     <ng-template #emptyCart>
-      <p class="empty">Tu carrito estÃ¡ vacÃ­o.</p>
+      <p class="empty">Tu carrito está vacío.</p>
     </ng-template>
   </div>
 
@@ -101,25 +101,25 @@
           <p class="name">{{ prod.nombre }}</p>
           <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeFavorite(prod.id)">Ã—</button>
+        <button class="remove" (click)="removeFavorite(prod.id)">×</button>
       </div>
       <div class="fav-actions">
         <button (click)="favoritesOpen = false">Cerrar</button>
       </div>
     </ng-container>
     <ng-template #emptyFavs>
-      <p class="empty">No tienes favoritos aÃºn.</p>
+      <p class="empty">No tienes favoritos aún.</p>
     </ng-template>
   </div>
 
   <div class="auth-dropdown" *ngIf="authMenuOpen" (click)="$event.stopPropagation()">
     <ng-container *ngIf="isLoggedIn$ | async; else loginTpl">
-      <p class="auth-status">SesiÃ³n activa</p>
+      <p class="auth-status">Sesión activa</p>
       <button class="auth-btn primary" routerLink="/account" (click)="authMenuOpen=false">Ir a mi cuenta</button>
-      <button class="auth-btn" (click)="logout($event)">Cerrar sesiÃ³n</button>
+      <button class="auth-btn" (click)="logout($event)">Cerrar sesión</button>
     </ng-container>
     <ng-template #loginTpl>
-      <p class="auth-status">Inicia sesiÃ³n para comprar y guardar favoritos</p>
+      <p class="auth-status">Inicia sesión para comprar y guardar favoritos</p>
       <button class="auth-btn primary" (click)="loginWithGoogle($event)">
         <i class="fa-brands fa-google"></i>
         Entrar con Google
@@ -139,8 +139,8 @@
 <div class="cart-drawer" [class.open]="cartDrawerOpen" (click)="$event.stopPropagation()">
   <div class="drawer-header">
     <div>
-      <p class="eyebrow">Tu selecciÃ³n</p>
-      <h4>Carrito rÃ¡pido</h4>
+      <p class="eyebrow">Tu selección</p>
+      <h4>Carrito rápido</h4>
     </div>
     <button class="close" (click)="cartDrawerOpen=false" aria-label="Cerrar carrito">&times;</button>
   </div>
@@ -152,7 +152,7 @@
           <p class="title">{{ item.nombre }}</p>
           <p class="meta">x{{ item.qty }} Â· {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeItem(item)">Ã—</button>
+        <button class="remove" (click)="removeItem(item)">×</button>
       </div>
     </div>
       <div class="drawer-footer">
@@ -167,7 +167,7 @@
     </div>
   </ng-container>
   <ng-template #drawerEmpty>
-    <p class="drawer-empty">Tu carrito estÃ¡ vacÃ­o.</p>
+    <p class="drawer-empty">Tu carrito está vacío.</p>
   </ng-template>
 </div>
 

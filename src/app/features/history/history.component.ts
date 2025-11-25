@@ -17,7 +17,7 @@ export class HistoryComponent implements OnInit {
     this.title.setTitle('Historia | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Conoce la historia de Kalad: inspiraciÃ³n, artesanas y proceso detrÃ¡s de cada mochila.'
+      content: 'Conoce la historia de Kalad: inspiración, artesanas y proceso detrás de cada mochila.'
     });
   }
 }

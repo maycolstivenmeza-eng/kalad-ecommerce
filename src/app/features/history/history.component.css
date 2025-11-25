@@ -1,4 +1,4 @@
-/* ======== BANNER ======== */
+﻿/* ======== BANNER ======== */
 .banner-historia {
   background: url("/assets/images/Banner_historia4.webp") center/cover no-repeat;
   height: 320px;
@@ -26,14 +26,14 @@
   font-family: "Playfair Display", serif;
   font-size: 42px;
   letter-spacing: 2px;
-  color: #3B2C20; /* 💯 tono oficial */
+  color: #3B2C20; /* ðŸ’¯ tono oficial */
   text-shadow: 0 2px 4px rgba(241, 237, 229, 0.4); /* opcional: brillo beige */
 }
 
 .banner-content p {
   font-family: "Quicksand", sans-serif;
   font-size: 15px;
-  color: #3B2C20;    /* color marrón oficial, sólido */
+  color: #3B2C20;    /* color marrón oficial, sÃ³lido */
   margin-top: 12px;
   letter-spacing: 0.5px;
   text-shadow: 0 0 4px rgba(255,255,255,0.4); /* pequeño glow para sobresalir */
@@ -60,7 +60,7 @@
   margin-bottom: 30px;
 }
 
-/* ======== PROPÃ“SITO ======== */
+/* ======== PROPÓSITO ======== */
 .proposito-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -100,7 +100,7 @@
   margin-top: 6px;
 }
 
-/* ======== METODOLOGÃA ======== */
+/* ======== METODOLOGÍA ======== */
 .metodologia {
   margin-top: 50px;
 }
@@ -130,13 +130,13 @@
   padding-left: 0;
 }
 
-/* âœ… Ã­cono mÃ¡s pequeÃ±o y gris */
+/* Ã¢Å“â€¦ ícono más pequeño y gris */
 .metodologia i {
   color: #6f6f6f;
   font-size: 15px;
 }
 
-/* âœ… lÃ­nea vertical gris clara (como la maqueta original) */
+/* Ã¢Å“â€¦ línea vertical gris clara (como la maqueta original) */
 .metodologia li:not(:last-child)::after {
   content: "";
   position: absolute;

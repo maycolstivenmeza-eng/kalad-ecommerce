@@ -145,7 +145,7 @@ export class HomePageComponent implements OnInit {
       const now = await firstValueFrom(this.authService.isLoggedIn$);
       if (now) this.favorites.toggle(product);
     } catch (e) {
-      console.warn('No se pudo iniciar sesiÃ³n para favoritos', e);
+      console.warn('No se pudo iniciar sesión para favoritos', e);
     }
   }
 }
