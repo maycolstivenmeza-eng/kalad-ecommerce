@@ -1,58 +1,4 @@
-/* === RESET === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Quicksand', sans-serif;
-  color: #2E2E2E;
-  background-color: #fff;
-}
-
-/* === HEADER === */
-.kalad-header {
-  background-color: #ffffff;
-  padding: 15px 20px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.header-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.kalad-logo {
-  height: 40px;
-}
-
-.kalad-nav {
-  display: flex;
-  gap: 25px;
-}
-
-.kalad-nav a {
-  font-size: 14px;
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
-.header-icons {
-  display: flex;
-  gap: 18px;
-  font-size: 16px;
-  color: #2E2E2E;
-}
-
-
-/* === HERO SECTION === */
-.kalad-hero {
+﻿.kalad-hero {
   background-image:
     linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.74) 40%, rgba(255, 255, 255, 0.28) 70%, rgba(255, 255, 255, 0) 100%),
     url('/assets/images/Baner_index.webp');
@@ -185,7 +131,7 @@ body {
 }
 
 .section-divider i {
-  color: #cb5e30; /* fuego naranja cálido */
+  color: #cb5e30; /* fuego naranja cÃ¡lido */
   margin-right: 6px;
 }
 
@@ -266,14 +212,14 @@ body {
   opacity: 1;
 }
 
-/* Apagar el shimmer cuando la imagen está cargada */
+/* Apagar el shimmer cuando la imagen estÃ¡ cargada */
 .product-card img.loaded ~ .img-wrapper::before,
 .product-card img.loaded + .img-wrapper::before,
 .product-card .img-wrapper.loaded::before {
   display: none !important;
 }
 
-/* Versión correcta: detectar que el contenedor tiene imagen cargada */
+/* VersiÃ³n correcta: detectar que el contenedor tiene imagen cargada */
 .product-card .img-wrapper.loaded::before {
   display: none !important;
 }
@@ -301,7 +247,7 @@ body {
   background-color: #1E88E5;
 }
 
-/* Título del producto */
+/* TÃ­tulo del producto */
 .product-card h3 {
    font-family: "Playfair Display", serif;
   font-size: 1.1rem;         /* antes 0.9 o 1rem */
@@ -326,7 +272,7 @@ body {
   margin-top: 4px;
 }
 
-/* Botón carrito */
+/* BotÃ³n carrito */
 .product-card .btn-carrito {
   border: 1px solid #3b2c20;
   border-radius: 20px;
@@ -339,14 +285,14 @@ body {
 }
 
 .product-card .btn-carrito:hover {
-    background-color: #3b2c20;   /* cambia el fondo al café de marca */
-  color: #fff;                 /* el ícono o texto pasa a blanco */
+    background-color: #3b2c20;   /* cambia el fondo al cafÃ© de marca */
+  color: #fff;                 /* el Ã­cono o texto pasa a blanco */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
 }
 
 
-/* === SECCIÓN HISTORIA === */
+/* === SECCIÃ“N HISTORIA === */
 .historia-section {
   display: flex;
   align-items: center;
@@ -392,7 +338,7 @@ body {
 }
 
 .historia-section button {
-  background-color: #3B2C20; /* tono café marca */
+  background-color: #3B2C20; /* tono cafÃ© marca */
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -408,7 +354,7 @@ body {
   transform: translateY(-3px);
 }
 
-/* === SECCIÓN RAÍCES IGUAL A LA MAQUETA === */
+/* === SECCIÃ“N RAÃCES IGUAL A LA MAQUETA === */
 .raices-section {
   background-color: #f1ede5;
   padding: 80px 100px;
@@ -429,13 +375,13 @@ body {
   margin: 0 auto;
   display: flex;
   justify-content: center; /* centra horizontalmente */
-  gap: 60px; /* más espacio entre las dos tarjetas */
+  gap: 60px; /* mÃ¡s espacio entre las dos tarjetas */
   flex-wrap: wrap;
 }
 
 .raiz-item {
   flex: 1 1 calc(50% - 60px); /* antes 33.33% */
-  max-width: 400px; /* un poco más ancho para balancear visualmente */
+  max-width: 400px; /* un poco mÃ¡s ancho para balancear visualmente */
   display: flex;
   flex-direction: column;
   align-items: center; /* centramos contenido */
@@ -468,7 +414,7 @@ body {
 
 .raiz-item .link {
   font-family: "Quicksand", sans-serif;
-  color: #946037; /* tono dorado/marrón cálido */
+  color: #946037; /* tono dorado/marrÃ³n cÃ¡lido */
   font-size: 0.95rem;
   text-decoration: none;
   transition: color 0.3s ease;
@@ -494,7 +440,7 @@ body {
 
 .testimonios-container {
   display: flex;
-  justify-content: space-between; /* Cambiado para que se distribuya como las imágenes */
+  justify-content: space-between; /* Cambiado para que se distribuya como las imÃ¡genes */
   align-items: stretch;
   gap: 30px;
   max-width: 1140px; /* Igual que .raices-grid */
@@ -524,7 +470,7 @@ body {
 }
 
 
-/* ===== FOOTER - ya puedes tenerlo pero lo incluyo por si lo quieres en este archivo también ===== */
+/* ===== FOOTER - ya puedes tenerlo pero lo incluyo por si lo quieres en este archivo tambiÃ©n ===== */
 
 footer {
   background-color: #5D4524;
@@ -651,7 +597,7 @@ body.modal-open { overflow: hidden; }
   border-radius: 3px;
 }
 
-/* Botón cerrar (X) */
+/* BotÃ³n cerrar (X) */
 .cerrar {
   position: absolute;
   top: 10px;
@@ -666,7 +612,7 @@ body.modal-open { overflow: hidden; }
   color: #CB5E30;
 }
 
-/* === Título del modal === */
+/* === TÃ­tulo del modal === */
 .modal-contenido h2 {
   font-size: 20px;
   font-weight: 700;
@@ -715,7 +661,7 @@ body.modal-open { overflow: hidden; }
   color: #666;
 }
 
-/* === BOTÓN ELIMINAR PRODUCTO === */
+/* === BOTÃ“N ELIMINAR PRODUCTO === */
 .btn-eliminar {
   position: absolute;
   right: 0;
@@ -734,7 +680,7 @@ body.modal-open { overflow: hidden; }
   color: #A84D24;
 }
 
-/* === CUPÓN === */
+/* === CUPÃ“N === */
 .cupon {
   margin-top: 20px;
   border-top: 1px solid #eee;
@@ -800,7 +746,7 @@ body.modal-open { overflow: hidden; }
   color: #3b2c20;
 }
 
-/* === BOTÓN PAGAR === */
+/* === BOTÃ“N PAGAR === */
 .btn-pagar {
   width: 100%;
   margin-top: 20px;
@@ -828,7 +774,7 @@ body.modal-open { overflow: hidden; }
   }
 }
 
-/* Animación de entrada */
+/* AnimaciÃ³n de entrada */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -862,7 +808,7 @@ body.modal-open { overflow: hidden; }
 
 
 
-/* Ajuste: replicar dimensiones del cat�logo principal */
+/* Ajuste: replicar dimensiones del catálogo principal */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));

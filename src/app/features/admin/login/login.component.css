@@ -43,3 +43,11 @@ h2 {
   margin-bottom: 10px;
   font-size: 14px;
 }
+
+@media (max-width: 480px) {
+  .login-container {
+    margin: 40px 16px;
+    padding: 20px;
+  }
+}
+

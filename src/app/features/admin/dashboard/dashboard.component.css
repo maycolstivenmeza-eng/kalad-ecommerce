@@ -25,3 +25,10 @@
   font-weight: 700;
 }
 
+
+@media (max-width: 768px) {
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+  }
+}
+

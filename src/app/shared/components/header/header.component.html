@@ -1,4 +1,4 @@
-<header class="kalad-header">
+﻿<header class="kalad-header">
   <div class="header-container">
     <img src="/assets/images/logo.svg" alt="Logo KALAD" class="kalad-logo" routerLink="/home" style="cursor: pointer;">
     <nav class="kalad-nav">
@@ -12,7 +12,7 @@
       <div class="header-search" role="button" aria-label="Buscar productos" (click)="toggleSearch($event)">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="header-auth" role="button" aria-label="Abrir menú de cuenta" (click)="toggleAuthMenu($event)">
+      <div class="header-auth" role="button" aria-label="Abrir menÃº de cuenta" (click)="toggleAuthMenu($event)">
         <i class="fa-regular fa-user"></i>
       </div>
       <div class="header-fav" role="button" aria-label="Ver favoritos" (click)="toggleFavorites($event)">
@@ -42,7 +42,7 @@
           (input)="onSearchChange($any($event.target).value)"
           autofocus
         />
-        <button class="close" (click)="showSearch = false">&times;</button>
+        <button class="close" (click)="showSearch = false" aria-label="Cerrar búsqueda">&times;</button>
       </div>
 
       <div class="search-results" *ngIf="!searchLoading; else loadingSearch">
@@ -51,7 +51,7 @@
             <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy" />
             <div class="info">
               <p class="title">{{ prod.nombre }}</p>
-              <p class="meta">{{ prod.coleccion }} · {{ prod.categoria }}</p>
+              <p class="meta">{{ prod.coleccion }} Â· {{ prod.categoria }}</p>
             </div>
             <span class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
           </div>
@@ -74,9 +74,9 @@
         <div class="cart-item-info">
           <p class="name">{{ item.nombre }}</p>
           <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
-          <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+          <p class="qty">x{{ item.qty }} Â· {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeItem(item)">×</button>
+        <button class="remove" (click)="removeItem(item)">Ã—</button>
       </div>
       <div class="cart-summary">
         <span>Total:</span>
@@ -88,7 +88,7 @@
       </div>
     </ng-container>
     <ng-template #emptyCart>
-      <p class="empty">Tu carrito está vacío.</p>
+      <p class="empty">Tu carrito estÃ¡ vacÃ­o.</p>
     </ng-template>
   </div>
 
@@ -101,25 +101,25 @@
           <p class="name">{{ prod.nombre }}</p>
           <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeFavorite(prod.id)">×</button>
+        <button class="remove" (click)="removeFavorite(prod.id)">Ã—</button>
       </div>
       <div class="fav-actions">
         <button (click)="favoritesOpen = false">Cerrar</button>
       </div>
     </ng-container>
     <ng-template #emptyFavs>
-      <p class="empty">No tienes favoritos aún.</p>
+      <p class="empty">No tienes favoritos aÃºn.</p>
     </ng-template>
   </div>
 
   <div class="auth-dropdown" *ngIf="authMenuOpen" (click)="$event.stopPropagation()">
     <ng-container *ngIf="isLoggedIn$ | async; else loginTpl">
-      <p class="auth-status">Sesión activa</p>
+      <p class="auth-status">SesiÃ³n activa</p>
       <button class="auth-btn primary" routerLink="/account" (click)="authMenuOpen=false">Ir a mi cuenta</button>
-      <button class="auth-btn" (click)="logout($event)">Cerrar sesión</button>
+      <button class="auth-btn" (click)="logout($event)">Cerrar sesiÃ³n</button>
     </ng-container>
     <ng-template #loginTpl>
-      <p class="auth-status">Inicia sesión para comprar y guardar favoritos</p>
+      <p class="auth-status">Inicia sesiÃ³n para comprar y guardar favoritos</p>
       <button class="auth-btn primary" (click)="loginWithGoogle($event)">
         <i class="fa-brands fa-google"></i>
         Entrar con Google
@@ -139,10 +139,10 @@
 <div class="cart-drawer" [class.open]="cartDrawerOpen" (click)="$event.stopPropagation()">
   <div class="drawer-header">
     <div>
-      <p class="eyebrow">Tu selección</p>
-      <h4>Carrito rápido</h4>
+      <p class="eyebrow">Tu selecciÃ³n</p>
+      <h4>Carrito rÃ¡pido</h4>
     </div>
-    <button class="close" (click)="cartDrawerOpen=false">&times;</button>
+    <button class="close" (click)="cartDrawerOpen=false" aria-label="Cerrar carrito">&times;</button>
   </div>
   <ng-container *ngIf="(cartItems$ | async) as items; else drawerEmpty">
     <div class="drawer-list">
@@ -150,9 +150,9 @@
         <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
         <div class="info">
           <p class="title">{{ item.nombre }}</p>
-          <p class="meta">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+          <p class="meta">x{{ item.qty }} Â· {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeItem(item)">×</button>
+        <button class="remove" (click)="removeItem(item)">Ã—</button>
       </div>
     </div>
       <div class="drawer-footer">
@@ -167,9 +167,10 @@
     </div>
   </ng-container>
   <ng-template #drawerEmpty>
-    <p class="drawer-empty">Tu carrito está vacío.</p>
+    <p class="drawer-empty">Tu carrito estÃ¡ vacÃ­o.</p>
   </ng-template>
 </div>
 
 <div class="drawer-backdrop" *ngIf="cartDrawerOpen" (click)="cartDrawerOpen=false"></div>
+
 

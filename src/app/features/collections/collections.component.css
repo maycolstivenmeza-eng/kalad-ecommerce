@@ -128,3 +128,55 @@ body {
 .coleccion-banner:hover h2 {
   color: #946037; /* tono beige de la marca */
 }
+
+/* =====================
+   RESPONSIVE
+   ===================== */
+@media (max-width: 768px) {
+  .colecciones-section {
+    padding: 24px 0 12px;
+  }
+
+  .breadcrumb {
+    margin-left: 12px;
+    margin-bottom: 18px;
+  }
+
+  .coleccion-banner-origen,
+  .coleccion-banner-ediciones,
+  .coleccion-banner-essencia {
+    height: 260px;
+    background-position: center;
+  }
+
+  .coleccion-banner h2 {
+    font-size: 26px;
+  }
+
+  .coleccion-banner .coleccion-subtitle {
+    top: calc(50% + 28px);
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .colecciones-section {
+    padding: 20px 0 10px;
+  }
+
+  .coleccion-banner-origen,
+  .coleccion-banner-ediciones,
+  .coleccion-banner-essencia {
+    height: 220px;
+  }
+
+  .coleccion-banner h2 {
+    font-size: 22px;
+  }
+
+  .coleccion-banner .coleccion-subtitle {
+    top: calc(50% + 24px);
+    font-size: 13px;
+    max-width: 85%;
+  }
+}

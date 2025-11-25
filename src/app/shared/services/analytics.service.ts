@@ -42,9 +42,19 @@ export class AnalyticsService {
     }
 
     this.initialized = true;
-    this.ensureDataLayer();
-    this.loadTagManager();
-    this.loadGa4();
+
+    const start = () => {
+      this.ensureDataLayer();
+      this.loadTagManager();
+      this.loadGa4();
+    };
+
+    const win = this.document.defaultView as any;
+    if (win && typeof win.requestIdleCallback === 'function') {
+      win.requestIdleCallback(start, { timeout: 5000 });
+    } else {
+      setTimeout(start, 3000);
+    }
   }
 
   trackPageView(url: string, title?: string): void {

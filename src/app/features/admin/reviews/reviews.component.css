@@ -5,3 +5,10 @@
   text-overflow: ellipsis;
 }
 
+
+@media (max-width: 768px) {
+  .review-comment-cell {
+    max-width: 260px;
+  }
+}
+
