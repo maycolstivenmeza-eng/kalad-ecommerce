@@ -4,12 +4,12 @@ import { adminAuthGuard } from './shared/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    loadComponent: () => import('./features/home/home-page.component').then(m => m.HomePageComponent)
   },
   {
     path: 'home',
-    loadComponent: () => import('./features/home/home-page.component').then(m => m.HomePageComponent)
+    redirectTo: '',
+    pathMatch: 'full'
   },
   {
     path: 'products',

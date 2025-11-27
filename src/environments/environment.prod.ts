@@ -5,7 +5,7 @@ export const environment = {
   // Configuracion de Firebase para produccion
   firebase: {
     apiKey: "AIzaSyDY4hRh6LriMeNn6QI3pdeHdZXPzGnU2ug",
-    authDomain: "kalad3-8a000.firebaseapp.com",
+    authDomain: "kalad.com.co",
     projectId: "kalad3-8a000",
     storageBucket: "kalad3-8a000.firebasestorage.app",
     messagingSenderId: "776478537902",

@@ -4,6 +4,7 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { FavoritesService } from '../../shared/services/favorites.service';
 import { SavedAddress } from '../../shared/services/address.service';
+import { CartService } from '../../shared/services/cart.service';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom, Observable } from 'rxjs';
 import { PedidosService, Pedido } from '../../shared/services/pedidos.service';
@@ -37,6 +38,7 @@ export class AccountComponent implements OnInit {
     private favoritesService: FavoritesService,
     private userDataService: UserDataService,
     private pedidosService: PedidosService,
+    private cartService: CartService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -45,7 +47,7 @@ export class AccountComponent implements OnInit {
     const logged = await firstValueFrom(this.authService.isLoggedIn$);
     if (!logged) {
       await this.authService.loginWithGoogle().catch(() => {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
       });
     }
 
@@ -72,7 +74,28 @@ export class AccountComponent implements OnInit {
 
   async logout() {
     await this.authService.logout();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
+  }
+
+  clearLocalData() {
+    try {
+      this.cartService.clear();
+    } catch {
+      // ignore
+    }
+
+    try {
+      this.favoritesService.clearLocal();
+    } catch {
+      // ignore
+    }
+
+    try {
+      localStorage.removeItem('kalad-last-order');
+      localStorage.removeItem('kalad-addresses');
+    } catch {
+      // ignore
+    }
   }
 
   addAddress() {

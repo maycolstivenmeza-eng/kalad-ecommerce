@@ -171,12 +171,27 @@ body {
   }
 
   .coleccion-banner h2 {
-    font-size: 22px;
+    font-size: 20px;
+    line-height: 1.15;
+    max-width: 80%;
   }
 
   .coleccion-banner .coleccion-subtitle {
-    top: calc(50% + 24px);
+    top: calc(50% + 34px);
     font-size: 13px;
-    max-width: 85%;
+    max-width: 80%;
+  }
+
+  /* Ajustes ligeros para EDICIONES ESPECIALES en m��vil */
+  .coleccion-banner-ediciones h2 {
+    max-width: 95%;
+  }
+
+  .coleccion-banner-ediciones .coleccion-subtitle {
+    top: calc(50% + 46px); /* separaci��n moderada, igual que ORIGEN */
+  }
+
+  .coleccion-banner-origen .coleccion-subtitle {
+    top: calc(50% + 26px); /* a��n m��s cerca del t��tulo para igualar visualmente */
   }
 }
