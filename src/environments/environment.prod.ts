@@ -21,13 +21,14 @@ export const environment = {
   },
 
   // Configuracion de Wompi para produccion
-  wompi: {
+   wompi: {
     publicKey: 'pub_prod_iR7U8YBjqm46AjHLCcqZCiHZthHiPZue',
     currency: 'COP',
     redirectUrl: 'https://kalad.com.co',
     apiBase: 'https://production.wompi.co',
     functionsBase: 'https://us-central1-kalad3-8a000.cloudfunctions.net',
-    feePercent: 0,
-    feeFixed: 0
+    // Comision estimada (referencial, no se cobra al cliente)
+    feePercent: 0.0349,
+    feeFixed: 900
   }
 };

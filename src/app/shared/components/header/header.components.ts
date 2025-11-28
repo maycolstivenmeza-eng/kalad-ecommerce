@@ -1,8 +1,8 @@
-import { Component, HostListener } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService, CartItem } from '../../services/cart.service';
-import { Observable, firstValueFrom, map } from 'rxjs';
+import { Observable, Subscription, firstValueFrom, map, filter } from 'rxjs';
 import { FavoritesService } from '../../services/favorites.service';
 import { Product } from '../../models/product.model';
 import { AuthService } from '../../services/auth.service';
@@ -15,7 +15,7 @@ import { ProductService } from '../../services/product.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   cartItems$: Observable<CartItem[]> = this.cartService.items$;
   cartCount$ = this.cartService.items$.pipe(
     map((items) => items.reduce((acc, item) => acc + item.qty, 0))
@@ -38,6 +38,8 @@ export class HeaderComponent {
   allProducts: Product[] = [];
   favoritesOpen = false;
   authMenuOpen = false;
+  isAdminRoute = false;
+  private routerSub?: Subscription;
 
   constructor(
     private cartService: CartService,
@@ -45,10 +47,24 @@ export class HeaderComponent {
     private authService: AuthService,
     private router: Router,
     private productService: ProductService
-  ) {}
+  ) {
+    this.isAdminRoute = this.router.url.startsWith('/admin');
+  }
 
-  get isAdminRoute(): boolean {
-    return this.router.url.startsWith('/admin');
+  ngOnInit(): void {
+    this.routerSub = this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        )
+      )
+      .subscribe((event) => {
+        this.isAdminRoute = event.urlAfterRedirects.startsWith('/admin');
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
   }
 
   toggleCart(event: Event) {
