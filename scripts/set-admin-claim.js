@@ -1,36 +1,54 @@
-/**
- * Asigna el custom claim { admin: true } a un usuario de Firebase Auth.
+/* Utilidad local para marcar un usuario como admin en Firebase Auth.
  *
  * Uso:
- *   export GOOGLE_APPLICATION_CREDENTIALS="ruta/al/serviceAccountKey.json"
- *   export ADMIN_UID="uid-del-usuario"
- *   node scripts/set-admin-claim.js
+ * 1. En Firebase Console -> Configuración del proyecto -> Cuentas de servicio,
+ *    genera una clave privada y guárdala como serviceAccount.json (NO la subas a git).
+ * 2. En tu terminal, exporta la ruta:
+ *      Linux/macOS:  export GOOGLE_APPLICATION_CREDENTIALS=./serviceAccount.json
+ *      Windows PS:  $env:GOOGLE_APPLICATION_CREDENTIALS=\"C:\\ruta\\serviceAccount.json\"
+ * 3. Ejecuta:
+ *      npm run set-admin -- tu-correo-admin@ejemplo.com
  *
- * Nota:
- * - Necesitas un service account con permisos de editor/owner del proyecto.
- * - Tras asignar el claim, el usuario debe cerrar sesión y volver a entrar.
+ * Esto añadirá customClaims { admin: true } a ese usuario.
  */
-const admin = require('firebase-admin');
+
+const admin = require("firebase-admin");
 
 async function main() {
-  const uid = process.env.ADMIN_UID;
-  if (!uid) {
-    throw new Error('Define la variable de entorno ADMIN_UID con el UID del usuario.');
+  const email = process.argv[2];
+
+  if (!email) {
+    console.error("Uso: node scripts/set-admin-claim.js <email-admin>");
+    process.exit(1);
   }
 
   if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    throw new Error('Define GOOGLE_APPLICATION_CREDENTIALS apuntando al JSON del service account.');
+    console.error(
+      "Falta GOOGLE_APPLICATION_CREDENTIALS.\n" +
+        "Apunta esta variable a tu serviceAccount.json antes de ejecutar el script."
+    );
+    process.exit(1);
   }
 
-  if (!admin.apps.length) {
-    admin.initializeApp();
-  }
+  admin.initializeApp();
 
-  await admin.auth().setCustomUserClaims(uid, { admin: true });
-  console.log(`Claim admin asignado a ${uid}. El usuario debe volver a iniciar sesión.`);
+  try {
+    const user = await admin.auth().getUserByEmail(email);
+    const currentClaims = user.customClaims || {};
+
+    await admin
+      .auth()
+      .setCustomUserClaims(user.uid, { ...currentClaims, admin: true });
+
+    console.log(
+      `Marcado como admin: ${email} (uid=${user.uid}). Claims actuales:`,
+      { ...currentClaims, admin: true }
+    );
+  } catch (err) {
+    console.error("No se pudo asignar el claim admin:", err);
+    process.exit(1);
+  }
 }
 
-main().catch((err) => {
-  console.error('No se pudo asignar el claim:', err);
-  process.exit(1);
-});
+main();
+

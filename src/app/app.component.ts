@@ -20,6 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private navSub?: Subscription;
   private launchIntervalId?: any;
   uiMessage$ = this.uiMessageService.message$;
+  isAdminRoute = false;
 
   // Mensajes rotativos para la franja de lanzamiento
   launchMessages: string[] = [
@@ -49,6 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.navSub = this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
+        this.isAdminRoute = event.urlAfterRedirects.startsWith("/admin");
         this.analytics.trackPageView(
           event.urlAfterRedirects,
           this.titleService.getTitle()

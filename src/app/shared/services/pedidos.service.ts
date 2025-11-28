@@ -112,6 +112,12 @@ export class PedidosService {
   async actualizarPedido(id: string, data: Partial<Pedido>) {
     if (!id) throw new Error('Pedido invalido');
     const ref = doc(this.firestore, `${this.collectionName}/${id}`);
-    await updateDoc(ref, { ...data });
+    const payload: any = {};
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        (payload as any)[key] = value;
+      }
+    });
+    await updateDoc(ref, payload);
   }
 }

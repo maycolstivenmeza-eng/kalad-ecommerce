@@ -128,7 +128,7 @@
   </div>
 </header>
 
-<button class="floating-cart" (click)="toggleCartDrawer($event)">
+<button class="floating-cart" *ngIf="!isAdminRoute" (click)="toggleCartDrawer($event)">
   <div class="pill">
     <span class="label">Carrito</span>
     <strong>{{ (cartTotal$ | async) | currency:'COP':'symbol-narrow':'1.0-0' }} COP</strong>
@@ -136,7 +136,7 @@
   </div>
 </button>
 
-<div class="cart-drawer" [class.open]="cartDrawerOpen" (click)="$event.stopPropagation()">
+<div class="cart-drawer" *ngIf="!isAdminRoute" [class.open]="cartDrawerOpen" (click)="$event.stopPropagation()">
   <div class="drawer-header">
     <div>
       <p class="eyebrow">Tu selección</p>
@@ -171,6 +171,4 @@
   </ng-template>
 </div>
 
-<div class="drawer-backdrop" *ngIf="cartDrawerOpen" (click)="cartDrawerOpen=false"></div>
-
-
+<div class="drawer-backdrop" *ngIf="!isAdminRoute && cartDrawerOpen" (click)="cartDrawerOpen=false"></div>

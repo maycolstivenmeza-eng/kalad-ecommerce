@@ -23,47 +23,69 @@
   </div>
 
   <div class="pedidos" *ngIf="pedidosFiltrados.length; else sinPedidos">
-    <table class="tabla-productos">
+    <table class="tabla-productos tabla-pedidos">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Cliente</th>
-          <th>Contacto / env&iacute;o</th>
-          <th>Total</th>
-          <th>Estado</th>
-          <th>Cambiar estado</th>
-          <th>Guía envío</th>
-          <th>Nota admin</th>
-          <th>Items</th>
-          <th>Fecha</th>
+          <th class="col-id">ID</th>
+          <th class="col-cliente">Cliente</th>
+          <th class="col-contacto">Contacto / envío</th>
+          <th class="col-total">Total</th>
+          <th class="col-estado">Estado</th>
+          <th class="col-estado">Cambiar estado</th>
+          <th class="col-guia">Guía envío</th>
+          <th class="col-nota">Nota admin</th>
+          <th class="col-items">Items</th>
+          <th class="col-fecha">Fecha</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let p of pedidosFiltrados">
-          <td>{{ p.id }}</td>
-          <td>
+          <td class="col-id mono">{{ p.id }}</td>
+          <td class="col-cliente">
             <div><strong>{{ p.nombreCliente || 'Sin nombre' }}</strong></div>
             <div class="mini-text">UID: {{ p.userId }}</div>
           </td>
-          <td>
-            <div *ngIf="p.emailCliente">📧 {{ p.emailCliente }}</div>
-            <div *ngIf="p.telefonoCliente">📱 {{ p.telefonoCliente }}</div>
+          <td class="col-contacto">
+            <div *ngIf="p.emailCliente">Email: {{ p.emailCliente }}</div>
+            <div *ngIf="p.telefonoCliente">Tel: {{ p.telefonoCliente }}</div>
             <div *ngIf="p.direccionEnvio">
-              📦 {{ p.direccionEnvio }},
+              Dirección: {{ p.direccionEnvio }},
               {{ p.ciudadEnvio }} - {{ p.departamentoEnvio }}
             </div>
           </td>
-          <td>{{ p.total | currency:'COP':'symbol':'1.0-0' }} COP</td>
-          <td>{{ p.estado }}</td>
-          <td>
+          <td class="col-total nowrap">
+            {{ p.total | currency:'COP':'symbol':'1.0-0' }}
+          </td>
+          <td class="col-estado nowrap">
+            {{ p.estado }}
+          </td>
+          <td class="col-estado">
             <select [ngModel]="p.estado" (ngModelChange)="cambiarEstadoPedido(p, $event)">
               <option *ngFor="let e of estadosPedido" [value]="e">{{ e }}</option>
             </select>
           </td>
-          <td><input class="mini-input" type="text" [(ngModel)]="p.guiaEnvio" placeholder="Guía" /></td>
-          <td><input class="mini-input" type="text" [(ngModel)]="p.notaAdmin" placeholder="Nota" /></td>
-          <td>{{ p.items.length || 0 }}</td>
-          <td>{{ p.createdAt?.toDate ? (p.createdAt.toDate() | date:'short') : '-' }}</td>
+          <td class="col-guia">
+            <input
+              class="mini-input"
+              type="text"
+              [(ngModel)]="p.guiaEnvio"
+              placeholder="Guía"
+            />
+          </td>
+          <td class="col-nota">
+            <input
+              class="mini-input"
+              type="text"
+              [(ngModel)]="p.notaAdmin"
+              placeholder="Nota"
+            />
+          </td>
+          <td class="col-items nowrap">
+            {{ p.items.length || 0 }}
+          </td>
+          <td class="col-fecha nowrap">
+            {{ p.createdAt?.toDate ? (p.createdAt.toDate() | date:'short') : '-' }}
+          </td>
         </tr>
       </tbody>
     </table>

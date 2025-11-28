@@ -12,7 +12,7 @@ import { AuthService } from "../../../shared/services/auth.service";
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: "./pedidos.component.html",
-  styleUrls: ["../productos/productos.component.css"],
+  styleUrls: ["../productos/productos.component.css", "./pedidos.component.css"],
 })
 export class PedidosComponent implements OnInit, OnDestroy {
   pedidos: Pedido[] = [];
@@ -120,4 +120,3 @@ export class PedidosComponent implements OnInit, OnDestroy {
     }, 4000);
   }
 }
-

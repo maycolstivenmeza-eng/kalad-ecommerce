@@ -47,6 +47,10 @@ export class HeaderComponent {
     private productService: ProductService
   ) {}
 
+  get isAdminRoute(): boolean {
+    return this.router.url.startsWith('/admin');
+  }
+
   toggleCart(event: Event) {
     event.stopPropagation();
     this.cartOpen = !this.cartOpen;
