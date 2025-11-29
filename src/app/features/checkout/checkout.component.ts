@@ -266,13 +266,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       // Guardar perfil y direccion
       if (isLoggedIn) {
       await this.userDataService.saveAuthProfile();
-      await this.userDataService.addAddress({
+      const addressPayload: any = {
         label: formValue.address || "Envio",
         line1: formValue.address,
         city: formValue.city,
-        region: formValue.department,
-        postal: undefined
-      });
+        region: formValue.department
+      };
+      if (formValue.postalCode) {
+        addressPayload.postal = formValue.postalCode;
+      }
+      await this.userDataService.addAddress(addressPayload);
       }
 
       const subtotal = this.getSubtotal();
@@ -450,5 +453,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       }
     }
     return sinStock;
+  }
+  trackCartItem(_index: number, item: CartItem): string {
+    return `${item.id}_${item.color ?? "default"}`;
+  }
+
+  trackProduct(_index: number, product: Product): string {
+    return product?.id ?? "";
   }
 }

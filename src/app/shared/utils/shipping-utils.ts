@@ -68,13 +68,22 @@ export function isMetroAreaBarranquilla(
   return false;
 }
 
+export type ShippingOptions = {
+  requireAddress?: boolean;
+};
+
 export function calculateShippingCost(
   subtotal: number,
   city?: string,
   department?: string,
-  config?: Partial<ShippingConfig>
+  config?: Partial<ShippingConfig>,
+  options: ShippingOptions = {}
 ): number {
   const resolved = resolveConfig(config);
+  const hasAddress = !!city && !!department;
+  if (options.requireAddress && !hasAddress) {
+    return 0;
+  }
   if (!Number.isFinite(subtotal)) {
     return resolved.defaultCost;
   }

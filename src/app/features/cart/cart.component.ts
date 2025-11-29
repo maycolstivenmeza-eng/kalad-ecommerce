@@ -30,6 +30,8 @@ export class CartComponent implements OnInit, OnDestroy {
   discount = 0;
   shipping = 0;
   couponMessage: string | null = null;
+  shippingBadgeText = "Envío GRATIS en el Área Metropolitana de Barranquilla";
+  shippingNote = "El costo se actualizará automáticamente al ingresar tu dirección.";
   recommendedProducts: Product[] = [];
   private sub?: Subscription;
   private cartViewed = false;
@@ -106,7 +108,8 @@ export class CartComponent implements OnInit, OnDestroy {
       subtotal,
       undefined,
       undefined,
-      (environment as any).shipping
+      (environment as any).shipping,
+      { requireAddress: true }
     );
   }
 

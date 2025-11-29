@@ -41,16 +41,14 @@
               formControlName="fullName"
               placeholder="Ej: Juan Perez"
               [class.error]="f['fullName'].invalid && f['fullName'].touched">
-            @if (f['fullName'].invalid && f['fullName'].touched) {
-              <span class="error-message">
-                @if (f['fullName'].errors?.['required']) {
-                  El nombre es requerido
-                }
-                @if (f['fullName'].errors?.['minlength']) {
-                  El nombre debe tener al menos 3 caracteres
-                }
-              </span>
-            }
+            <span class="error-message" *ngIf="f['fullName'].invalid && f['fullName'].touched">
+              <ng-container *ngIf="f['fullName'].errors?.['required']">
+                El nombre es requerido
+              </ng-container>
+              <ng-container *ngIf="f['fullName'].errors?.['minlength']">
+                El nombre debe tener al menos 3 caracteres
+              </ng-container>
+            </span>
           </div>
 
           <div class="form-row">
@@ -62,16 +60,14 @@
                 formControlName="email"
                 placeholder="ejemplo@correo.com"
                 [class.error]="f['email'].invalid && f['email'].touched">
-              @if (f['email'].invalid && f['email'].touched) {
-                <span class="error-message">
-                  @if (f['email'].errors?.['required']) {
-                    El correo es requerido
-                  }
-                  @if (f['email'].errors?.['email']) {
-                    Ingresa un correo valido
-                  }
-                </span>
-              }
+              <span class="error-message" *ngIf="f['email'].invalid && f['email'].touched">
+                <ng-container *ngIf="f['email'].errors?.['required']">
+                  El correo es requerido
+                </ng-container>
+                <ng-container *ngIf="f['email'].errors?.['email']">
+                  Ingresa un correo valido
+                </ng-container>
+              </span>
             </div>
 
             <div class="form-group">
@@ -83,11 +79,9 @@
                 placeholder="3001234567"
                 maxlength="10"
                 [class.error]="f['phone'].invalid && f['phone'].touched">
-              @if (f['phone'].invalid && f['phone'].touched) {
-                <span class="error-message">
-                  Ingresa un telefono valido de 10 digitos
-                </span>
-              }
+              <span class="error-message" *ngIf="f['phone'].invalid && f['phone'].touched">
+                Ingresa un telefono valido de 10 digitos
+              </span>
             </div>
           </div>
 
@@ -110,11 +104,9 @@
                 formControlName="documentNumber"
                 placeholder="1234567890"
                 [class.error]="f['documentNumber'].invalid && f['documentNumber'].touched">
-              @if (f['documentNumber'].invalid && f['documentNumber'].touched) {
-                <span class="error-message">
-                  Ingresa solo numeros
-                </span>
-              }
+              <span class="error-message" *ngIf="f['documentNumber'].invalid && f['documentNumber'].touched">
+                Ingresa solo numeros
+              </span>
             </div>
           </div>
         </section>
@@ -131,9 +123,9 @@
               formControlName="address"
               placeholder="Ej: Calle 123 #45-67, Apto 801"
               [class.error]="f['address'].invalid && f['address'].touched">
-            @if (f['address'].invalid && f['address'].touched) {
-              <span class="error-message">La direccion es requerida</span>
-            }
+            <span class="error-message" *ngIf="f['address'].invalid && f['address'].touched">
+              La direccion es requerida
+            </span>
           </div>
 
           <div class="form-row">
@@ -145,9 +137,9 @@
                 formControlName="city"
                 placeholder="Ej: Bogota"
                 [class.error]="f['city'].invalid && f['city'].touched">
-              @if (f['city'].invalid && f['city'].touched) {
-                <span class="error-message">La ciudad es requerida</span>
-              }
+              <span class="error-message" *ngIf="f['city'].invalid && f['city'].touched">
+                La ciudad es requerida
+              </span>
             </div>
 
             <div class="form-group">
@@ -158,9 +150,9 @@
                 formControlName="department"
                 placeholder="Ej: Cundinamarca"
                 [class.error]="f['department'].invalid && f['department'].touched">
-              @if (f['department'].invalid && f['department'].touched) {
-                <span class="error-message">El departamento es requerido</span>
-              }
+              <span class="error-message" *ngIf="f['department'].invalid && f['department'].touched">
+                El departamento es requerido
+              </span>
             </div>
           </div>
 
@@ -193,11 +185,12 @@
             class="btn-primary"
             style="background:#cb5e30;color:#ffffff;border-color:#cb5e30;"
             [disabled]="isProcessing">
-            @if (isProcessing) {
+            <ng-container *ngIf="isProcessing; else payLabel">
               <i class="fas fa-spinner fa-spin"></i> Procesando...
-            } @else {
+            </ng-container>
+            <ng-template #payLabel>
               <i class="fas fa-credit-card"></i> Pagar ahora {{ formatPrice(getTotal()) }}
-            }
+            </ng-template>
           </button>
         </div>
       </form>
@@ -208,19 +201,20 @@
       <h2>Resumen del Pedido</h2>
 
       <div class="cart-items">
-        @for (item of cartItems; track item.id) {
-          <div class="cart-item">
-            <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
-            <div class="item-details">
-              <h3>{{ item.nombre }}</h3>
-              <p>Color: {{ item.color }}</p>
-              <p>Cantidad: {{ item.qty }}</p>
-            </div>
-            <div class="item-price">
-              {{ formatPrice(item.precio * item.qty) }}
-            </div>
+        <div
+          class="cart-item"
+          *ngFor="let item of cartItems; trackBy: trackCartItem"
+        >
+          <img [src]="item.imagen" [alt]="item.nombre" loading="lazy" />
+          <div class="item-details">
+            <h3>{{ item.nombre }}</h3>
+            <p>Color: {{ item.color }}</p>
+            <p>Cantidad: {{ item.qty }}</p>
           </div>
-        }
+          <div class="item-price">
+            {{ formatPrice(item.precio * item.qty) }}
+          </div>
+        </div>
       </div>
 
       <div class="cupon">
@@ -228,7 +222,6 @@
           type="text"
           placeholder="Cupon (ej: KALAD10)"
           [(ngModel)]="couponCode"
-          (keydown.enter)="applyCoupon()"
         />
         <button type="button" (click)="applyCoupon()">Aplicar</button>
         <button type="button" class="link" *ngIf="discount" (click)="resetCoupon()">Quitar</button>
@@ -275,19 +268,20 @@
       <div class="suggestions" *ngIf="suggestions.length">
         <p class="eyebrow">Te puede interesar</p>
         <div class="suggestion-list">
-          @for (prod of suggestions; track prod.id) {
-            <div class="suggestion-card">
-              <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy">
-              <div class="info">
-                <p class="title">{{ prod.nombre }}</p>
-                <p class="meta">{{ prod.coleccion }} · {{ prod.categoria }}</p>
-                <p class="price">{{ formatPrice(prod.precio) }}</p>
-              </div>
-              <button type="button" class="mini" (click)="addSuggested(prod)">
-                Agregar
-              </button>
+          <div
+            class="suggestion-card"
+            *ngFor="let prod of suggestions; trackBy: trackProduct"
+          >
+            <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy" />
+            <div class="info">
+              <p class="title">{{ prod.nombre }}</p>
+              <p class="meta">{{ prod.coleccion }} · {{ prod.categoria }}</p>
+              <p class="price">{{ formatPrice(prod.precio) }}</p>
             </div>
-          }
+            <button type="button" class="mini" (click)="addSuggested(prod)">
+              Agregar
+            </button>
+          </div>
         </div>
       </div>
 
