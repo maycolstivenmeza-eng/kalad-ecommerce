@@ -6,7 +6,7 @@ import { FavoritesService } from '../../shared/services/favorites.service';
 import { SavedAddress } from '../../shared/services/address.service';
 import { CartService } from '../../shared/services/cart.service';
 import { FormsModule } from '@angular/forms';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable, map } from 'rxjs';
 import { PedidosService, Pedido } from '../../shared/services/pedidos.service';
 import { UserDataService } from '../../shared/services/user-data.service';
 
@@ -56,7 +56,15 @@ export class AccountComponent implements OnInit {
     });
 
     this.addresses$ = await this.userDataService.listAddresses$();
-    this.pedidos$ = await this.pedidosService.misPedidos$();
+    const pedidos$ = await this.pedidosService.misPedidos$();
+    this.pedidos$ = pedidos$.pipe(
+      map((list) =>
+        (list ?? []).filter((pedido) => {
+          const estado = (pedido.estado ?? '').toLowerCase();
+          return estado === 'pagado' || estado === 'paid' || estado === 'success';
+        })
+      )
+    );
     await this.userDataService.saveAuthProfile();
 
     // Fallback: cargar último pedido guardado en localStorage
@@ -106,5 +114,9 @@ export class AccountComponent implements OnInit {
 
   removeAddress(id: string) {
     this.userDataService.deleteAddress(id);
+  }
+
+  sanitizeLabel(text?: string): string {
+    return (text ?? '').replace(/Â/g, '').trim();
   }
 }

@@ -7,88 +7,79 @@
     </div>
   </header>
 
-  <div class="grid">
-    <div class="card">
+  <div class="grid top-row">
+    <article class="card profile-card">
       <h3>Perfil</h3>
       <ng-container *ngIf="user$ | async as user; else loginPrompt">
-        <p><strong>Nombre:</strong> {{ user.displayName || 'Sin nombre' }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
+        <div class="profile-content">
+          <p><strong>Nombre:</strong> {{ user.displayName || 'Sin nombre' }}</p>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
       </ng-container>
       <ng-template #loginPrompt>
         <p>Inicia sesión para guardar tu actividad.</p>
         <button class="btn" (click)="loginGoogle()">Entrar con Google</button>
       </ng-template>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card favorites-card">
       <h3>Favoritos</h3>
       <ng-container *ngIf="favorites$ | async as favs">
-        <p *ngIf="!favs.length">Aún no tienes favoritos.</p>
-        <ul class="fav-list">
+        <p *ngIf="!favs.length" class="empty-state">Aún no tienes favoritos.</p>
+        <ul class="fav-list" *ngIf="favs.length">
           <li *ngFor="let f of favs">
-            <span>{{ f.nombre }}</span>
-            <span class="price">{{ f.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
-            <button class="link" [routerLink]="['/products', f.id]">Ver</button>
+            <div class="fav-item">
+              <div class="fav-info">
+                <span class="fav-name">{{ f.nombre }}</span>
+                <span class="fav-meta" *ngIf="f.color">{{ sanitizeLabel(f.color) }}</span>
+                <span class="fav-meta" *ngIf="!f.color && f.categoria">{{ sanitizeLabel(f.categoria) }}</span>
+              </div>
+              <div class="fav-price">
+                {{ f.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP
+              </div>
+              <div class="fav-view" [routerLink]="['/products', f.id]">Ver</div>
+            </div>
           </li>
         </ul>
       </ng-container>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card history-card">
+      <h3>Historial de compras</h3>
+      <ng-container *ngIf="pedidos$ | async as pedidos">
+        <div class="history-placeholder" *ngIf="!pedidos.length">
+          <p>Aún no tienes compras registradas.</p>
+        </div>
+        <ul class="orders" *ngIf="pedidos.length">
+          <li *ngFor="let p of pedidos">
+            <div>
+              <strong>{{ p.id }}</strong>
+              <p>Total: {{ p.total | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+              <p *ngIf="p.guiaEnvio">Guía: {{ p.guiaEnvio }}</p>
+            </div>
+            <button class="link" [routerLink]="['/orders', p.id]">Ver detalles</button>
+          </li>
+        </ul>
+      </ng-container>
+    </article>
+  </div>
+
+  <section class="addresses-section">
+    <article class="card directions-card">
       <h3>Direcciones guardadas</h3>
       <ng-container *ngIf="addresses$ | async as addrs">
         <p *ngIf="!addrs.length">No tienes direcciones guardadas.</p>
-        <ul class="addr-list">
-          <li *ngFor="let a of addrs">
+        <ul class="addr-list address-card-list">
+          <li *ngFor="let a of addrs" class="addr-card">
             <div class="addr">
               <strong>{{ a.label || 'Dirección' }}</strong>
               <p>{{ a.line1 }}</p>
-              <p>{{ a.city }}{{ a.region ? ', ' + a.region : '' }} {{ a.postal }}</p>
+              <p>{{ a.city }}{{ a.region ? ', ' + a.region : '' }}</p>
             </div>
             <button class="link danger" (click)="removeAddress(a.id)">Eliminar</button>
           </li>
         </ul>
       </ng-container>
-
-      <form class="addr-form" (ngSubmit)="addAddress()">
-        <label>Alias</label>
-        <input type="text" [(ngModel)]="newAddress.label" name="label" placeholder="Casa, Oficina" />
-        <label>Dirección</label>
-        <input type="text" [(ngModel)]="newAddress.line1" name="line1" required />
-        <label>Ciudad</label>
-        <input type="text" [(ngModel)]="newAddress.city" name="city" required />
-        <label>Departamento</label>
-        <input type="text" [(ngModel)]="newAddress.region" name="region" />
-        <label>Código postal</label>
-        <input type="text" [(ngModel)]="newAddress.postal" name="postal" />
-        <button class="btn" type="submit">Guardar dirección</button>
-      </form>
-    </div>
-
-    <div class="card">
-      <h3>Historial de compras</h3>
-      <ng-container *ngIf="pedidos$ | async as pedidos">
-        <p *ngIf="!pedidos.length && !lastOrderSummary">Aún no tienes compras registradas.</p>
-
-        <ul class="orders" *ngIf="pedidos.length">
-          <li *ngFor="let p of pedidos">
-            <div>
-              <strong>{{ p.id }}</strong>
-              <p>Estado: {{ p.estado }}</p>
-              <p>Total: {{ p.total | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
-              <p *ngIf="p.guiaEnvio">Guía: {{ p.guiaEnvio }}</p>
-            </div>
-            <button class="link" [routerLink]="['/products']">Ver productos</button>
-          </li>
-        </ul>
-
-        <div class="last-order" *ngIf="!pedidos.length && lastOrderSummary">
-          <p><strong>Último pedido:</strong> {{ lastOrderSummary.id }}</p>
-          <p>Estado: {{ lastOrderSummary.estado }}</p>
-          <p>Total: {{ lastOrderSummary.total | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
-          <p class="hint">Este resumen se basa en tu última compra confirmada desde este dispositivo.</p>
-        </div>
-      </ng-container>
-    </div>
-  </div>
+    </article>
+  </section>
 </section>

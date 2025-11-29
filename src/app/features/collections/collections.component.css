@@ -129,6 +129,18 @@ body {
   color: #946037; /* tono beige de la marca */
 }
 
+.coleccion-banner-origen {
+  transition: background-size 0.5s ease, background-position 0.5s ease, filter 0.5s ease;
+  background-size: 100% 100%;
+  background-position: center right;
+}
+
+.coleccion-banner-origen:hover {
+  background-size: 104% 104%;
+  background-position: center;
+  filter: brightness(1.04);
+}
+
 /* =====================
    RESPONSIVE
    ===================== */

@@ -2,11 +2,11 @@
   <div class="header-container">
     <img src="/assets/images/logo.svg" alt="Logo KALAD" class="kalad-logo" routerLink="/" style="cursor: pointer;">
     <nav class="kalad-nav">
-      <a routerLink="/" routerLinkActive="active">Inicio</a>
-      <a routerLink="/collections" routerLinkActive="active">Colecciones</a>
-      <a routerLink="/products" routerLinkActive="active">Productos</a>
-      <a routerLink="/history" routerLinkActive="active">Historia</a>
-      <a routerLink="/contact" routerLinkActive="active">Contacto</a>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a routerLink="/collections" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Colecciones</a>
+      <a routerLink="/products" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Productos</a>
+      <a routerLink="/history" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Historia</a>
+      <a routerLink="/contact" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Contacto</a>
     </nav>
     <div class="header-icons">
       <div class="header-search" role="button" aria-label="Buscar productos" (click)="toggleSearch($event)">
@@ -54,10 +54,13 @@
       <div class="search-results" *ngIf="!searchLoading; else loadingSearch">
         <ng-container *ngIf="searchResults.length; else emptyResults">
           <div class="result" *ngFor="let prod of searchResults" (click)="goToSearchResult(prod.id)">
-            <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy" />
+            <img [src]="prod.imagen" [alt]="sanitizeLabel(prod.nombre)" loading="lazy" />
             <div class="info">
-              <p class="title">{{ prod.nombre }}</p>
-              <p class="meta">{{ prod.coleccion }} Â· {{ prod.categoria }}</p>
+              <p class="title">{{ sanitizeLabel(prod.nombre) }}</p>
+              <p class="meta">
+                {{ sanitizeLabel(prod.coleccion) }}
+                <span *ngIf="prod.categoria">· {{ sanitizeLabel(prod.categoria) }}</span>
+              </p>
             </div>
             <span class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
           </div>
@@ -78,9 +81,9 @@
       <div class="cart-item" *ngFor="let item of items">
         <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
         <div class="cart-item-info">
-          <p class="name">{{ item.nombre }}</p>
+          <p class="name">{{ sanitizeLabel(item.nombre) }}</p>
           <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
-          <p class="qty">x{{ item.qty }} Â· {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+          <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
         <button class="remove" (click)="removeItem(item)">×</button>
       </div>
@@ -104,7 +107,7 @@
       <div class="fav-item" *ngFor="let prod of favs">
         <img [src]="prod.imagen" [alt]="prod.nombre" loading="lazy">
         <div class="fav-item-info" (click)="goToProduct(prod.id)">
-          <p class="name">{{ prod.nombre }}</p>
+          <p class="name">{{ sanitizeLabel(prod.nombre) }}</p>
           <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
         <button class="remove" (click)="removeFavorite(prod.id)">×</button>
@@ -155,8 +158,8 @@
       <div class="drawer-item" *ngFor="let item of items">
         <img [src]="item.imagen" [alt]="item.nombre" loading="lazy">
         <div class="info">
-          <p class="title">{{ item.nombre }}</p>
-          <p class="meta">x{{ item.qty }} Â· {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
+          <p class="title">{{ sanitizeLabel(item.nombre) }}</p>
+          <p class="meta">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
         <button class="remove" (click)="removeItem(item)">×</button>
       </div>

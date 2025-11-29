@@ -238,5 +238,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     await this.authService.logout();
     this.authMenuOpen = false;
   }
+
+  sanitizeLabel(text?: string): string {
+    return (text ?? '')
+      .replace(/Â/g, '')
+      .replace(/Ã/g, '')
+      .replace(/�/g, '')
+      .replace(/ǧ/g, 'ñ')
+      .trim();
+  }
 }
 
