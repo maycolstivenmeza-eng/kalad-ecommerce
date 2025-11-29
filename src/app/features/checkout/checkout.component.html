@@ -164,15 +164,6 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="postalCode">Codigo Postal (Opcional)</label>
-            <input
-              type="text"
-              id="postalCode"
-              formControlName="postalCode"
-              placeholder="110111"
-              maxlength="6">
-          </div>
         </section>
 
         <!-- Notas Adicionales -->
@@ -264,9 +255,21 @@
         </div>
       </div>
 
-      <div class="shipping-psych">
-        <p class="label">Envío fijo a todo Colombia por solo $12.000</p>
-        <p class="sub">Entrega rápida y segura</p>
+      <div
+        class="shipping-psych"
+        *ngIf="shippingMessageDetail"
+        style="border:1px solid #f1c7a0; border-radius:12px; background:#fff3e5; padding:14px 16px; color:#a0470a; margin-top:16px;"
+      >
+        <div
+          style="display:flex; align-items:center; gap:10px; margin-bottom:4px;"
+          aria-live="polite"
+        >
+          <span style="font-size:20px;">🚚</span>
+          <p class="label" style="margin:0; font-weight:600;">{{ shippingBadgeText }}</p>
+        </div>
+        <p class="sub" style="margin:0; font-style:italic; color:#6b3f12;">
+          {{ shippingMessageDetail }}
+        </p>
       </div>
 
       <div class="suggestions" *ngIf="suggestions.length">

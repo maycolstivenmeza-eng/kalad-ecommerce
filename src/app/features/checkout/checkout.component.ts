@@ -8,12 +8,16 @@ import { AuthService } from "../../shared/services/auth.service";
 import { PedidosService } from "../../shared/services/pedidos.service";
 import { UserDataService } from "../../shared/services/user-data.service";
 import { ProductService } from "../../shared/services/product.service";
-import { firstValueFrom, take } from "rxjs";
+import { firstValueFrom, merge, of, Subscription, take } from "rxjs";
 import { CouponService } from "../../shared/services/coupon.service";
 import { environment } from "../../../environments/environment";
 import { FormsModule } from "@angular/forms";
 import { AnalyticsService } from "../../shared/services/analytics.service";
 import { Product } from "../../shared/models/product.model";
+import {
+  calculateShippingCost,
+  isMetroAreaBarranquilla
+} from "../../shared/utils/shipping-utils";
 
 @Component({
   selector: "app-checkout",
@@ -35,6 +39,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   suggestions: Product[] = [];
   private purchaseTracked = false;
   private abandonTracked = false;
+  shippingBadgeText = "Envío GRATIS en el Área Metropolitana de Barranquilla";
+  shippingMessageDetail =
+    "El costo se actualizará automáticamente cuando termines de completar la dirección.";
+  metroRecommendation = false;
+  private shippingWatcher?: Subscription;
+  private cartSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -52,12 +62,17 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.initializeForm();
-    this.cartItems = this.cartService.items;
-    this.computeShipping(this.getSubtotal());
-    this.loadSuggestions();
+    this.setupShippingWatcher();
+    this.cartSub = this.cartService.items$.subscribe((items) => {
+      this.cartItems = items;
+      this.loadSuggestions();
+      this.refreshShipping();
+    });
   }
 
   ngOnDestroy(): void {
+    this.cartSub?.unsubscribe();
+    this.shippingWatcher?.unsubscribe();
     if (!this.purchaseTracked && !this.abandonTracked && this.cartItems.length) {
       this.analytics.trackCartAbandoned(this.cartItems, this.getTotal(), "checkout_exit");
       this.abandonTracked = true;
@@ -74,7 +89,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       address: ["", Validators.required],
       city: ["", Validators.required],
       department: ["", Validators.required],
-      postalCode: ["", Validators.pattern(/^[0-9]{6}$/)],
       notes: [""]
     });
   }
@@ -132,8 +146,48 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  computeShipping(subtotal: number): void {
-    this.shipping = subtotal >= 200000 || subtotal === 0 ? 0 : 12000;
+  computeShipping(subtotal: number, city?: string, department?: string): void {
+    const shippingConfig = (environment as any).shipping || {};
+    const defaultCost = shippingConfig?.defaultCost ?? 12000;
+    const threshold = shippingConfig?.freeThreshold ?? 200000;
+    const cityValue = city?.toString().trim();
+    const departmentValue = department?.toString().trim();
+
+    if (!cityValue || !departmentValue) {
+      this.shipping = 0;
+      this.shippingMessageDetail =
+        "Completa tu ciudad y departamento para calcular el envío. El costo se actualizará automáticamente cuando termines de completar la dirección.";
+      this.metroRecommendation = false;
+      return;
+    }
+
+    this.shipping = calculateShippingCost(
+      subtotal,
+      cityValue,
+      departmentValue,
+      shippingConfig
+    );
+
+    const isMetro = isMetroAreaBarranquilla(
+      cityValue,
+      departmentValue,
+      shippingConfig
+    );
+    this.metroRecommendation = isMetro;
+
+    if (this.shipping === 0) {
+      if (subtotal >= threshold && subtotal > 0) {
+        this.shippingMessageDetail = "Tu envío ya está incluido en el total.";
+      } else if (isMetro) {
+        this.shippingMessageDetail =
+          "Ya estás dentro del Área Metropolitana de Barranquilla, el envío es gratis.";
+      } else {
+        this.shippingMessageDetail =
+          "Tu pedido califica para envío gratis. Gracias por comprar con nosotros.";
+      }
+    } else {
+      this.shippingMessageDetail = "Entrega rápida y segura (envío fijo dentro de Colombia).";
+    }
   }
 
   resetCoupon(): void {
@@ -155,10 +209,28 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     });
   }
 
+  private setupShippingWatcher(): void {
+    const cityControl = this.checkoutForm.get("city");
+    const departmentControl = this.checkoutForm.get("department");
+    const cityChanges = cityControl?.valueChanges ?? of(cityControl?.value);
+    const departmentChanges =
+      departmentControl?.valueChanges ?? of(departmentControl?.value);
+
+    this.shippingWatcher = merge(cityChanges, departmentChanges).subscribe(() => {
+      this.refreshShipping();
+    });
+  }
+
+  private refreshShipping(): void {
+    const subtotal = this.getSubtotal();
+    const city = this.checkoutForm.get("city")?.value;
+    const department = this.checkoutForm.get("department")?.value;
+    this.computeShipping(subtotal, city, department);
+  }
+
   addSuggested(product: Product) {
     this.cartService.addProduct(product, 1);
-    this.cartItems = this.cartService.items;
-    this.computeShipping(this.getSubtotal());
+    this.refreshShipping();
   }
 
   async processPayment(): Promise<void> {
@@ -199,12 +271,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         line1: formValue.address,
         city: formValue.city,
         region: formValue.department,
-        postal: formValue.postalCode
+        postal: undefined
       });
       }
 
       const subtotal = this.getSubtotal();
-      this.computeShipping(subtotal);
+      this.computeShipping(subtotal, formValue.city, formValue.department);
       await this.applyCoupon();
       const commission = this.getCommission();
       const totals = {
@@ -248,7 +320,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           direccionEnvio: formValue.address,
           ciudadEnvio: formValue.city,
           departamentoEnvio: formValue.department,
-          codigoPostal: formValue.postalCode,
           notasCliente: formValue.notes
         }
       );

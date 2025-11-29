@@ -154,7 +154,7 @@ export class WompiService {
   //----------------------------------------------------------------------
   async verifyTransaction(id: string): Promise<any> {
     if (!id) throw new Error("Id de transaccion requerido");
-    const base = (environment as any)?.wompi?.apiBase || "https://sandbox.wompi.co";
+    const base = (environment as any)?.wompi?.apiBase || "https://production.wompi.co";
     const url = `${base}/v1/transactions/${id}`;
     const resp = await firstValueFrom(this.http.get<any>(url));
     return resp?.data;

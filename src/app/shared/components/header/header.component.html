@@ -12,7 +12,13 @@
       <div class="header-search" role="button" aria-label="Buscar productos" (click)="toggleSearch($event)">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="header-auth" role="button" aria-label="Abrir menú de cuenta" (click)="toggleAuthMenu($event)">
+      <div
+        class="header-auth"
+        role="button"
+        aria-label="Abrir menú de cuenta"
+        (click)="toggleAuthMenu($event)"
+        [class.auth-logged-in]="isLoggedIn$ | async"
+      >
         <i class="fa-regular fa-user"></i>
       </div>
       <div class="header-fav" role="button" aria-label="Ver favoritos" (click)="toggleFavorites($event)">

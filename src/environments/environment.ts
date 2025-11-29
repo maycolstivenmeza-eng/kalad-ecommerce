@@ -30,5 +30,19 @@
     // Comision estimada (referencial, no se cobra al cliente)
     feePercent: 0.0349,
     feeFixed: 900
+  },
+  shipping: {
+    freeThreshold: 200000,
+    defaultCost: 12000,
+    metroCities: [
+      'barranquilla',
+      'soledad',
+      'malambo',
+      'galapa',
+      'puerto colombia',
+      'sabanagrande',
+      'sabanalarga'
+    ],
+    metroDepartments: ['atlantico']
   }
 };

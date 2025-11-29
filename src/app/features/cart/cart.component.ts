@@ -8,6 +8,8 @@ import { Product } from "../../shared/models/product.model";
 import { ProductService } from "../../shared/services/product.service";
 import { CouponService } from "../../shared/services/coupon.service";
 import { AnalyticsService } from "../../shared/services/analytics.service";
+import { calculateShippingCost } from "../../shared/utils/shipping-utils";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "app-cart",
@@ -99,8 +101,13 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   computeShipping(subtotal: number) {
-    // Envio gratis desde 200.000
-    this.shipping = subtotal >= 200000 || subtotal === 0 ? 0 : 12000;
+    // Envio gratis desde 200.000 y coste especial para el area metropolitana
+    this.shipping = calculateShippingCost(
+      subtotal,
+      undefined,
+      undefined,
+      (environment as any).shipping
+    );
   }
 
   private loadRecommendations(items: CartItem[]) {

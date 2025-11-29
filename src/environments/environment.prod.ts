@@ -21,7 +21,7 @@ export const environment = {
   },
 
   // Configuracion de Wompi para produccion
-   wompi: {
+  wompi: {
     publicKey: 'pub_prod_iR7U8YBjqm46AjHLCcqZCiHZthHiPZue',
     currency: 'COP',
     redirectUrl: 'https://kalad.com.co',
@@ -30,5 +30,19 @@ export const environment = {
     // Comision estimada (referencial, no se cobra al cliente)
     feePercent: 0.0349,
     feeFixed: 900
+  },
+  shipping: {
+    freeThreshold: 200000,
+    defaultCost: 12000,
+    metroCities: [
+      'barranquilla',
+      'soledad',
+      'malambo',
+      'galapa',
+      'puerto colombia',
+      'sabanagrande',
+      'sabanalarga'
+    ],
+    metroDepartments: ['atlantico']
   }
 };
