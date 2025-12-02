@@ -444,6 +444,22 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .confirmation-card,
+  .success-circle,
+  .confirmation-message,
+  .next-steps li,
+  .confirmation-actions button,
+  .confetti-piece {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .confetti-piece {
+    display: none;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .confirmation-container {

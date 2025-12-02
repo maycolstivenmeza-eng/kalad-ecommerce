@@ -30,12 +30,18 @@
 
 .launch-banner-text {
   letter-spacing: 0.02em;
+  min-width: 220px;
+  display: inline-flex;
+  justify-content: center;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .launch-banner-text-rotating {
   position: relative;
   overflow: hidden;
   min-height: 1.2em;
+  contain: layout paint;
 }
 
 .launch-banner-text-item {

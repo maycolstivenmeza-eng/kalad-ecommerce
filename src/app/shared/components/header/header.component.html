@@ -85,7 +85,13 @@
           <p class="sku" *ngIf="item.sku">SKU: {{ item.sku }}</p>
           <p class="qty">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeItem(item)">×</button>
+        <button
+          class="remove"
+          (click)="removeItem(item)"
+          [attr.aria-label]="'Eliminar ' + sanitizeLabel(item.nombre) + ' del carrito'"
+        >
+          ×
+        </button>
       </div>
       <div class="cart-summary">
         <span>Total:</span>
@@ -110,7 +116,13 @@
           <p class="name">{{ sanitizeLabel(prod.nombre) }}</p>
           <p class="price">{{ prod.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeFavorite(prod.id)">×</button>
+        <button
+          class="remove"
+          (click)="removeFavorite(prod.id)"
+          [attr.aria-label]="'Eliminar ' + sanitizeLabel(prod.nombre) + ' de favoritos'"
+        >
+          ×
+        </button>
       </div>
       <div class="fav-actions">
         <button (click)="favoritesOpen = false">Cerrar</button>
@@ -161,7 +173,13 @@
           <p class="title">{{ sanitizeLabel(item.nombre) }}</p>
           <p class="meta">x{{ item.qty }} · {{ item.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</p>
         </div>
-        <button class="remove" (click)="removeItem(item)">×</button>
+        <button
+          class="remove"
+          (click)="removeItem(item)"
+          [attr.aria-label]="'Eliminar ' + sanitizeLabel(item.nombre) + ' del carrito'"
+        >
+          ×
+        </button>
       </div>
     </div>
       <div class="drawer-footer">

@@ -11,57 +11,53 @@
       <p class="subtitle">Tu pedido ha sido confirmado</p>
     </div>
 
-    <div class="order-info">
-      @if (orderReference) {
-        <div class="info-row">
-          <span class="info-label">
-            <i class="fas fa-receipt"></i> Numero de orden
-          </span>
-          <span class="info-value">{{ orderReference }}</span>
-        </div>
-      }
+    <div class="order-info" role="group" aria-label="Detalles del pedido">
+      <div class="info-row" *ngIf="orderReference">
+        <span class="info-label">
+          <i class="fas fa-receipt" aria-hidden="true"></i> Número de orden
+        </span>
+        <span class="info-value">{{ orderReference }}</span>
+      </div>
 
-      @if (paymentStatus) {
-        <div class="info-row">
-          <span class="info-label">
-            <i class="fas fa-credit-card"></i> Estado del pago
-          </span>
-          <span class="info-value status-badge" [class]="'status-' + paymentStatus">
-            {{ getStatusText(paymentStatus) }}
-          </span>
-        </div>
-      }
+      <div class="info-row" *ngIf="paymentStatus">
+        <span class="info-label">
+          <i class="fas fa-credit-card" aria-hidden="true"></i> Estado del pago
+        </span>
+        <span class="info-value status-badge" [class]="'status-' + paymentStatus">
+          {{ getStatusText(paymentStatus) }}
+        </span>
+      </div>
 
       <div class="info-row">
         <span class="info-label">
-          <i class="fas fa-clock"></i> Fecha
+          <i class="fas fa-clock" aria-hidden="true"></i> Fecha
         </span>
         <span class="info-value">{{ currentDate | date: 'dd/MM/yyyy - HH:mm' }}</span>
       </div>
 
       <ng-container *ngIf="pedido$ | async as pedido">
         <div class="info-row" *ngIf="pedido.estado">
-          <span class="info-label"><i class="fas fa-box"></i> Estado del pedido</span>
+          <span class="info-label"><i class="fas fa-box" aria-hidden="true"></i> Estado del pedido</span>
           <span class="info-value">{{ pedido.estado }}</span>
         </div>
         <div class="info-row" *ngIf="pedido.transaccionId">
-          <span class="info-label"><i class="fas fa-shield-alt"></i> Transaccion</span>
+          <span class="info-label"><i class="fas fa-shield-alt" aria-hidden="true"></i> Transacción</span>
           <span class="info-value">{{ pedido.transaccionId }}</span>
         </div>
         <div class="info-row" *ngIf="pedido.guiaEnvio">
-          <span class="info-label"><i class="fas fa-truck"></i> Guia de envio</span>
+          <span class="info-label"><i class="fas fa-truck" aria-hidden="true"></i> Guía de envío</span>
           <span class="info-value">{{ pedido.guiaEnvio }}</span>
         </div>
         <div class="info-row" *ngIf="pedido.notaAdmin">
-          <span class="info-label"><i class="fas fa-sticky-note"></i> Nota</span>
+          <span class="info-label"><i class="fas fa-sticky-note" aria-hidden="true"></i> Nota</span>
           <span class="info-value">{{ pedido.notaAdmin }}</span>
         </div>
       </ng-container>
     </div>
 
-    <div class="confirmation-message">
+    <div class="confirmation-message" role="status" aria-live="polite">
       <div class="message-icon">
-        <i class="fa-brands fa-whatsapp"></i>
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
       </div>
       <div class="message-text">
         <p><strong>Recibirás la confirmación de tu pedido por WhatsApp</strong></p>
@@ -71,26 +67,26 @@
       </div>
     </div>
 
-    <div class="next-steps">
-      <h3><i class="fas fa-list-check"></i> Que sigue?</h3>
-      <ul>
-        <li>
-          <i class="fas fa-circle-check"></i>
-          <span>Prepararemos tu pedido en las proximas 24 horas</span>
-        </li>
-        <li>
-          <i class="fas fa-circle-check"></i>
-          <span>Te confirmaremos tu pedido y te enviaremos tu número de guía por WhatsApp</span>
-        </li>
-        <li>
-          <i class="fas fa-circle-check"></i>
-          <span>El tiempo estimado de entrega es de 3-5 dias habiles</span>
-        </li>
-      </ul>
-    </div>
+      <div class="next-steps">
+        <h3><i class="fas fa-list-check" aria-hidden="true"></i> Que sigue?</h3>
+        <ul>
+          <li>
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            <span>Prepararemos tu pedido en las proximas 24 horas</span>
+          </li>
+          <li>
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            <span>Te confirmaremos tu pedido y te enviaremos tu número de guía por WhatsApp</span>
+          </li>
+          <li>
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            <span>El tiempo estimado de entrega es de 5-8 dias habiles</span>
+          </li>
+        </ul>
+      </div>
 
     <div class="confirmation-actions">
-      <button class="btn-secondary" routerLink="/products" type="button">
+      <button class="btn-secondary" routerLink="/products" type="button" aria-label="Seguir comprando">
         <i class="fas fa-shopping-bag"></i>
         Seguir comprando
       </button>
@@ -101,6 +97,7 @@
         type="button"
         style="background:#cb5e30; color:#ffffff; border:2px solid #cb5e30;"
         *ngIf="(authService.isLoggedIn$ | async)"
+        aria-label="Ver mi pedido"
       >
         <i class="fas fa-clipboard-list"></i>
         Ver mi pedido
@@ -109,14 +106,15 @@
 
     <div class="help-section">
       <p>
-        <i class="fas fa-question-circle"></i>
-        ¿Necesitas ayuda?&nbsp;
+        <i class="fas fa-question-circle" aria-hidden="true"></i>
+        &iquest;Necesitas ayuda?&nbsp;
         <a
           href="https://wa.me/573007288569?text=Hola%20KALAD,%20acabo%20de%20realizar%20una%20compra%20y%20tengo%20una%20duda."
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="Contactar a WhatsApp para soporte de compra"
         >
-          Contáctanos por WhatsApp
+          Cont&aacute;ctanos por WhatsApp
         </a>
       </p>
     </div>
@@ -131,3 +129,5 @@
     <div class="confetti-piece"></div>
   </div>
 </div>
+
+

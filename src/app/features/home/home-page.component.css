@@ -1,18 +1,37 @@
 ﻿.kalad-hero {
-  background-image:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.74) 40%, rgba(255, 255, 255, 0.28) 70%, rgba(255, 255, 255, 0) 100%),
-    url('/assets/images/Baner_index.webp');
-  background-size: cover;
-  background-position: center;
+  position: relative;
   height: 520px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  position: relative;
   padding: 80px 60px;
   border-bottom-left-radius: 18px;
   border-bottom-right-radius: 18px;
   overflow: hidden;
+  background-color: #f1ede5;
+}
+
+.kalad-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.74) 40%,
+    rgba(255, 255, 255, 0.28) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  z-index: 0;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
 
 .hero-overlay {
@@ -25,6 +44,7 @@
   border-radius: 14px;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.08);
   position: relative;
+  z-index: 1;
 }
 
 .hero-overlay h1 {
@@ -997,4 +1017,5 @@ body.modal-open { overflow: hidden; }
     text-align: center;
   }
 }
+
 
