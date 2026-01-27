@@ -37,19 +37,13 @@ body {
   display: block;
   object-fit: cover;
   border-radius: 6px;
-  transition: transform 0.5s ease, filter 0.4s ease;
 }
 
 /* Banner KALAD ORIGEN con degradado */
 .coleccion-banner-origen {
   height: 360px; /* mismo alto que la imagen original */
   background-image:
-    linear-gradient(90deg,
-      rgba(255, 255, 255, 0.92) 0%,
-      rgba(255, 255, 255, 0.74) 40%,
-      rgba(255, 255, 255, 0.28) 70%,
-      rgba(255, 255, 255, 0) 100%
-    ),
+ 
     url('/assets/images/Banner_colecciones_kaladorigen.webp');
   background-size: cover;
   background-position: center right;
@@ -62,15 +56,22 @@ body {
 .coleccion-banner-ediciones {
   height: 360px;
   background-image:
-    linear-gradient(90deg,
-      rgba(255, 255, 255, 0.94) 0%,
-      rgba(255, 255, 255, 0.78) 40%,
-      rgba(255, 255, 255, 0.32) 70%,
-      rgba(255, 255, 255, 0) 100%
-    ),
     url('/assets/images/Banner_historia4.webp');
   background-size: cover;
   background-position: center right;
+}
+
+.coleccion-banner-alba {
+  height: 360px;
+  background-image:
+
+    url('/assets/images/Banner_coleccion_alba.webp');
+  background-size: cover;
+  background-position: center right;
+}
+
+.coleccion-banner-alba img {
+  display: none;
 }
 
 .coleccion-banner-essencia {
@@ -92,10 +93,6 @@ body {
 }
 
 /* EFECTO HOVER */
-.coleccion-banner:hover img {
-  transform: scale(1.02);
-  filter: brightness(105%);
-}
 
 /* TEXTO SOBRE LAS IMÁGENES */
 .coleccion-banner h2 {
@@ -111,6 +108,11 @@ body {
   margin: 0;
   text-align: center;
   transition: color 0.3s ease;
+  background: rgba(255, 248, 240, 0.78);
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(59, 44, 32, 0.06);
+  max-width: 80%;
 }
 
 .coleccion-banner .coleccion-subtitle {
@@ -122,23 +124,17 @@ body {
   font-size: 15px;
   color: #5c4728;
   margin: 0;
+  background: rgba(255, 248, 240, 0.78);
+  padding: 6px 10px;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(59, 44, 32, 0.06);
+  max-width: 80%;
 }
 
-/* EFECTO HOVER EN EL TEXTO */
-.coleccion-banner:hover h2 {
-  color: #946037; /* tono beige de la marca */
-}
 
 .coleccion-banner-origen {
-  transition: background-size 0.5s ease, background-position 0.5s ease, filter 0.5s ease;
   background-size: 100% 100%;
   background-position: center right;
-}
-
-.coleccion-banner-origen:hover {
-  background-size: 104% 104%;
-  background-position: center;
-  filter: brightness(1.04);
 }
 
 /* =====================
@@ -156,7 +152,8 @@ body {
 
   .coleccion-banner-origen,
   .coleccion-banner-ediciones,
-  .coleccion-banner-essencia {
+  .coleccion-banner-essencia,
+  .coleccion-banner-alba {
     height: 260px;
     background-position: center;
   }
@@ -178,7 +175,8 @@ body {
 
   .coleccion-banner-origen,
   .coleccion-banner-ediciones,
-  .coleccion-banner-essencia {
+  .coleccion-banner-essencia,
+  .coleccion-banner-alba {
     height: 220px;
   }
 
@@ -206,4 +204,8 @@ body {
   .coleccion-banner-origen .coleccion-subtitle {
     top: calc(50% + 26px); /* a��n m��s cerca del t��tulo para igualar visualmente */
   }
+}
+/* EFECTO HOVER EN EL TEXTO */
+.coleccion-banner:hover h2 {
+  color: #946037; /* tono beige de la marca */
 }

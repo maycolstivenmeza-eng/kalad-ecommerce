@@ -73,6 +73,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   readonly categorias = ["Mochilas", "Bolsas"]; // se retiraron Morrales y Zapatos
   readonly colecciones = [
     { id: "kalad-origen", label: "Kalad Origen" },
+    { id: "kalad-alba", label: "Colección Alba" },
     { id: "kalad-essencia", label: "Kalad Essencia" },
     { id: "ediciones-especiales", label: "Ediciones especiales" }
   ];

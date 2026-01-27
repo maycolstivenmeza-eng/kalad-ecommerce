@@ -1,0 +1,151 @@
+<div class="coleccion-container">
+
+  <div class="breadcrumb">
+    <a routerLink="/">Inicio</a> /
+    <a routerLink="/collections">Colecciones</a> /
+    <span>Colección Alba</span>
+  </div>
+
+  <div class="layout">
+
+    <aside class="filtros-left">
+
+      <div class="filtro" (click)="toggle(0)">
+        <span>Ordenar por</span>
+        <span class="flecha" [class.open]="open[0]">&#9662;</span>
+      </div>
+
+      <div class="filtro-opciones" *ngIf="open[0]">
+        <button
+          *ngFor="let o of ordenOpciones"
+          type="button"
+          (click)="onOrderChange(o)"
+          [class.activo]="o === orden">
+          {{ getOrderLabel(o) }}
+        </button>
+      </div>
+
+      <div class="filtro" (click)="toggle(1)">
+        <span>Color</span>
+        <span class="flecha" [class.open]="open[1]">&#9662;</span>
+      </div>
+
+      <div class="filtro-opciones" *ngIf="open[1]">
+        <button
+          *ngFor="let color of colores"
+          type="button"
+          (click)="setFiltroColor(color.id)"
+          [class.activo]="color.id === filtroColor">
+          {{ color.label }}
+        </button>
+      </div>
+
+      <div class="filtro" (click)="toggle(2)">
+        <span>Precio</span>
+        <span class="flecha" [class.open]="open[2]">&#9662;</span>
+      </div>
+      <div class="filtro-opciones precio" *ngIf="open[2]">
+        <label>Min <input type="number" [(ngModel)]="minPrice" (change)="setPriceRange()" placeholder="0" /></label>
+        <label>Max <input type="number" [(ngModel)]="maxPrice" (change)="setPriceRange()" placeholder="200000" /></label>
+        <button type="button" (click)="resetPrice()">Limpiar</button>
+      </div>
+
+      <div class="linea-unica"></div>
+
+      <div
+        class="categoria"
+        *ngFor="let categoria of categorias"
+        (click)="setFiltroCategoria(categoria)"
+        [class.activo]="categoria === filtroCategoria">
+        {{ categoria }}
+      </div>
+
+    </aside>
+
+    <div class="contenido">
+
+      <!-- ====== BANNER DE LA COLECCIÓN ====== -->
+      <section class="banner-coleccion">
+        <h2 class="banner-title">COLECCION ALBA</h2>
+        <p class="banner-subtitle">La luz que inspira nuevas historias.</p>
+      </section>
+      <!-- ====== FIN BANNER ====== -->
+
+      <div class="ordenar-right">
+        <label for="ordenSelect">Ordenar por:</label>
+        <select id="ordenSelect" [ngModel]="orden" (ngModelChange)="onOrderChange($event)">
+          <option *ngFor="let o of ordenOpciones" [ngValue]="o">
+            {{ getOrderLabel(o) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="product-grid">
+        <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
+          <a class="thumb" [routerLink]="['/products', p.id]">
+            <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
+              {{ p.badge }}
+            </span>
+            <span class="badge out" *ngIf="((p.stock || 0)) <= 0">Sin stock</span>
+            <img
+              class="img primary"
+              [src]="resolveImage(p)"
+              [alt]="p.nombre"
+              loading="lazy"
+              (error)="onImageError($event)"
+            />
+            <button
+              class="fav-btn"
+              type="button"
+              [class.active]="favorites.isFavorite(p.id)"
+              (click)="toggleFavorite(p, $event)">
+              <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
+            </button>
+            <img
+              class="img hover"
+              *ngIf="p.imagenes && p.imagenes.length > 0"
+              [src]="p.imagenes[0]"
+              [alt]="p.nombre"
+              loading="lazy" />
+          </a>
+
+          <a class="title" [routerLink]="['/products', p.id]">
+            {{ p.nombre }}
+          </a>
+
+          <p class="excerpt" *ngIf="p.descripcionCorta">{{ p.descripcionCorta }}</p>
+
+          <div class="price-row">
+            <span class="price">{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }} COP</span>
+            <button
+              class="cart-btn"
+              type="button"
+              (click)="addToCart(p, $event)"
+              [disabled]="((p.stock || 0)) <= 0"
+            >
+              <svg
+                class="cart-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M3 5h2l1.2 6.2a1 1 0 0 0 .98.8H17a1 1 0 0 0 .97-.76L20 8H7"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="10" cy="19" r="1.2" fill="currentColor"></circle>
+                <circle cx="17" cy="19" r="1.2" fill="currentColor"></circle>
+              </svg>
+            </button>
+          </div>
+        </article>
+      </div>
+
+    </div>
+
+  </div>
+</div>

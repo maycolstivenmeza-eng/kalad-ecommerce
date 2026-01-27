@@ -28,6 +28,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/collections/origen/origen.component').then(m => m.OrigenComponent)
   },
   {
+    path: 'collections/alba',
+    loadComponent: () => import('./features/collections/alba/alba.component').then(m => m.AlbaComponent)
+  },
+  {
     path: 'collections/essencia',
     loadComponent: () => import('./features/collections/essencia/essencia.component').then(m => m.EssenciaComponent)
   },

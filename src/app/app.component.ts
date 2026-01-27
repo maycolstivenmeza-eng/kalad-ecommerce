@@ -18,17 +18,8 @@ import { UiMessageService } from "./shared/services/ui-message.service";
 export class AppComponent implements OnInit, OnDestroy {
   title = "Kalad";
   private navSub?: Subscription;
-  private launchIntervalId?: any;
   uiMessage$ = this.uiMessageService.message$;
   isAdminRoute = false;
-
-  // Mensajes rotativos para la franja de lanzamiento
-  launchMessages: string[] = [
-    "Lanzamiento oficial KALAD",
-    "Edición especial disponible",
-    "Envíos nacionales",
-  ];
-  currentLaunchIndex = 0;
 
   constructor(
     private titleService: Title,
@@ -57,17 +48,9 @@ export class AppComponent implements OnInit, OnDestroy {
         );
       });
 
-    // Rotación de mensajes de lanzamiento
-    this.launchIntervalId = setInterval(() => {
-      this.currentLaunchIndex =
-        (this.currentLaunchIndex + 1) % this.launchMessages.length;
-    }, 4000);
   }
 
   ngOnDestroy(): void {
     this.navSub?.unsubscribe();
-    if (this.launchIntervalId) {
-      clearInterval(this.launchIntervalId);
-    }
   }
 }
