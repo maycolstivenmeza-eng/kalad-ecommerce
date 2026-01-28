@@ -80,6 +80,11 @@
         </select>
       </div>
 
+      <div class="empty-state" *ngIf="productosFiltrados.length === 0">
+        <p>No hay productos disponibles en esta colección por ahora.</p>
+        <a routerLink="/collections" class="empty-link">Ver otras colecciones</a>
+      </div>
+
       <div class="product-grid">
         <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
           <a class="thumb" [routerLink]="['/products', p.id]">
@@ -98,7 +103,8 @@
               class="fav-btn"
               type="button"
               [class.active]="favorites.isFavorite(p.id)"
-              (click)="toggleFavorite(p, $event)">
+              (click)="toggleFavorite(p, $event)"
+              [attr.aria-label]="favorites.isFavorite(p.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'">
               <i class="fa-solid" [ngClass]="favorites.isFavorite(p.id) ? 'fa-heart' : 'fa-heart-circle-plus'"></i>
             </button>
             <img
@@ -122,6 +128,7 @@
               type="button"
               (click)="addToCart(p, $event)"
               [disabled]="((p.stock || 0)) <= 0"
+              aria-label="Agregar al carrito"
             >
               <svg
                 class="cart-icon"

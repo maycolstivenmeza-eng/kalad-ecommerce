@@ -78,6 +78,7 @@ export class CartService {
     }
 
     this.persist();
+    this.uiMessage.success('Producto agregado al carrito.');
   }
 
   updateQuantity(id: string, qty: number, color?: string) {

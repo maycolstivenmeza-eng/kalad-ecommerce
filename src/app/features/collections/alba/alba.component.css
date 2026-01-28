@@ -186,6 +186,28 @@
   gap: 26px 22px;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b5d4b;
+  background: #faf6f0;
+  border: 1px solid #efe6dc;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
+.empty-state p {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.empty-link {
+  color: #3b2c20;
+  text-decoration: underline;
+  font-weight: 600;
+  font-size: 14px;
+}
+
 
 .thumb {
   display: block;

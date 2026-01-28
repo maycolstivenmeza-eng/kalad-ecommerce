@@ -80,6 +80,11 @@
         </select>
       </div>
 
+      <div class="empty-state" *ngIf="productosFiltrados.length === 0">
+        <p>No hay productos disponibles en esta colección por ahora.</p>
+        <a routerLink="/collections" class="empty-link">Ver otras colecciones</a>
+      </div>
+
       <div class="product-grid">
         <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
           <a class="thumb" [routerLink]="['/products', p.id]">
