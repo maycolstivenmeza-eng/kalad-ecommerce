@@ -7,6 +7,7 @@ import { FavoritesService } from '../../services/favorites.service';
 import { Product } from '../../models/product.model';
 import { AuthService } from '../../services/auth.service';
 import { ProductService } from '../../services/product.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-header',
@@ -46,7 +47,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private favoritesService: FavoritesService,
     private authService: AuthService,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private analytics: AnalyticsService
   ) {
     this.isAdminRoute = this.router.url.startsWith('/admin');
   }
@@ -125,6 +127,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   removeItem(item: CartItem) {
+    this.analytics.trackRemoveFromCart(item, item.qty, 'Header', 'direct');
     this.cartService.removeItem(item.id, item.color);
   }
 
@@ -185,6 +188,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   goToSearchResult(productId: string) {
     if (!productId) return;
+    this.analytics.setLastProductSource('search');
     this.showSearch = false;
     this.searchTerm = '';
     this.cartOpen = false;

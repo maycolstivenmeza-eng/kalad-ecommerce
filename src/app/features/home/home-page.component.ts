@@ -8,6 +8,7 @@ import { FavoritesService } from '../../shared/services/favorites.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Title, Meta } from '@angular/platform-browser';
+import { AnalyticsService } from '../../shared/services/analytics.service';
 
 @Component({
   selector: 'app-home-page',
@@ -29,7 +30,8 @@ export class HomePageComponent implements OnInit {
     public favorites: FavoritesService,
     private authService: AuthService,
     private title: Title,
-    private meta: Meta
+    private meta: Meta,
+    private analytics: AnalyticsService
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +93,12 @@ export class HomePageComponent implements OnInit {
   }
 
   viewProductDetails(productId: string): void {
+    this.analytics.setLastProductSource('recommended');
     this.router.navigate(['/products', productId]);
+  }
+
+  setProductSource(): void {
+    this.analytics.setLastProductSource('recommended');
   }
 
   formatPrice(price: number): string {
@@ -128,6 +135,7 @@ export class HomePageComponent implements OnInit {
   addToCart(product: Product, event?: Event) {
     event?.stopPropagation();
     this.cartService.addProduct(product, 1);
+    this.analytics.trackAddToCart(product, 1, 'Home recomendados', 'recommended');
   }
 
   toggleFavorite(product: Product, event?: Event) {

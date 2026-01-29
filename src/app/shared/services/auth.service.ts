@@ -4,7 +4,8 @@ import {
   authState,
   signInWithEmailAndPassword,
   signOut,
-  signInWithPopup
+  signInWithPopup,
+  getAuth
 } from '@angular/fire/auth';
 
 import { Observable } from 'rxjs';
@@ -31,8 +32,10 @@ export class AuthService {
   );
 
   /** Login */
-  login(email: string, password: string) {
-    return signInWithEmailAndPassword(this.auth, email, password);
+  async login(email: string, password: string) {
+    const cred = await signInWithEmailAndPassword(this.auth, email, password);
+    await cred.user.getIdToken(true);
+    return cred;
   }
 
   /** Login con Google */
@@ -40,11 +43,32 @@ export class AuthService {
     const authMod = await import('firebase/auth');
     const provider = new (authMod as any).GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    return await signInWithPopup(this.auth, provider as any);
+    const cred = await signInWithPopup(this.auth, provider as any);
+    await cred.user.getIdToken(true);
+    return cred;
   }
 
   /** Logout */
   logout() {
     return signOut(this.auth);
   }
+
+  /** Forzar refresh del token (para claims nuevos) */
+  async refreshIdToken(): Promise<void> {
+    const user = getAuth().currentUser;
+    if (!user) return;
+    await user.getIdToken(true);
+  }
+
+  async getIdTokenResult(forceRefresh = false): Promise<any | null> {
+    const user = getAuth().currentUser;
+    if (!user) return null;
+    return await user.getIdTokenResult(forceRefresh);
+  }
+
+  getCurrentUserEmail(): string | null {
+    const user = getAuth().currentUser;
+    return user?.email ?? null;
+  }
+
 }

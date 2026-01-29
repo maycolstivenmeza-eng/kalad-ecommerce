@@ -70,10 +70,14 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   remove(item: CartItem) {
+    this.analytics.trackRemoveFromCart(item, item.qty, 'Carrito', 'direct');
     this.cartService.removeItem(item.id, item.color);
   }
 
   clear() {
+    this.cartItems$.pipe(take(1)).subscribe((items) => {
+      items.forEach((item) => this.analytics.trackRemoveFromCart(item, item.qty, 'Carrito', 'direct'));
+    });
     this.cartService.clear();
   }
 
@@ -137,7 +141,7 @@ export class CartComponent implements OnInit, OnDestroy {
   addSuggested(product: Product, event: Event) {
     event.stopPropagation();
     this.cartService.addProduct(product, 1);
-    this.analytics.trackAddToCart(product, 1, "Sugerido en carrito");
+    this.analytics.trackAddToCart(product, 1, 'Sugerido en carrito', 'recommended');
   }
 
   goToCheckout() {

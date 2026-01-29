@@ -233,7 +233,7 @@ thumbs: any;
 
       this.product = product;
       if (product.id && this.viewTrackedId !== product.id) {
-        this.analytics.trackViewItem(product);
+        this.analytics.trackView(product);
         this.viewTrackedId = product.id;
       }
       // SEO meta

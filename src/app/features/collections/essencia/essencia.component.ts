@@ -9,6 +9,7 @@ import { CartService } from '../../../shared/services/cart.service';
 import { FavoritesService } from '../../../shared/services/favorites.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Title, Meta } from '@angular/platform-browser';
+import { AnalyticsService } from '../../../shared/services/analytics.service';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
@@ -46,7 +47,8 @@ export class EssenciaComponent implements OnInit, OnDestroy {
     public favorites: FavoritesService,
     private authService: AuthService,
     private title: Title,
-    private meta: Meta
+    private meta: Meta,
+    private analytics: AnalyticsService
   ) {}
 
   async ngOnInit() {
@@ -188,6 +190,11 @@ export class EssenciaComponent implements OnInit, OnDestroy {
   addToCart(producto: Product, event: Event) {
     event.stopPropagation();
     this.cartService.addProduct(producto, 1);
+    this.analytics.trackAddToCart(producto, 1, 'Coleccion Essencia', 'collection');
+  }
+
+  setProductSource(): void {
+    this.analytics.setLastProductSource('collection');
   }
 
   toggleFavorite(producto: Product, event: Event) {

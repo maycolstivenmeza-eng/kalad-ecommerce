@@ -20,6 +20,7 @@ export const environment = {
     loadGa4Script: true
   },
 
+
   // Configuracion de Wompi para produccion
   wompi: {
     publicKey: 'pub_prod_iR7U8YBjqm46AjHLCcqZCiHZthHiPZue',

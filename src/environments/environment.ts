@@ -20,6 +20,7 @@
     loadGa4Script: true
   },
 
+
   // Configuracion de Wompi
   wompi: {
     publicKey: 'pub_prod_iR7U8YBjqm46AjHLCcqZCiHZthHiPZue',

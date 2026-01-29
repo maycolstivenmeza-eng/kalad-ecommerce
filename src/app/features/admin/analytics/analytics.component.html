@@ -1,0 +1,308 @@
+﻿<div class="admin-container">
+  <div class="admin-header">
+    <h2>Analítica de interacción</h2>
+    <div class="admin-header-actions">
+      <button type="button" class="btn-reset" (click)="irADashboard()" title="Panel de ventas">
+        Panel de ventas
+      </button>
+      <button type="button" class="btn-reset" (click)="irAProductos()" title="Gestión de productos">
+        Productos
+      </button>
+      <button type="button" class="btn-reset" (click)="irAPedidos()" title="Gestión de pedidos">
+        Pedidos
+      </button>
+      <button (click)="logout()" class="logout-btn" title="Cerrar sesión">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <div class="alert error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="filtros-bar analytics-filtros">
+    <div>
+      <label for="filtroRango">Rango</label>
+      <select
+        id="filtroRango"
+        [(ngModel)]="selectedRange"
+        (ngModelChange)="refresh()"
+      >
+        <option *ngFor="let r of rangeOptions" [ngValue]="r.value">{{ r.label }}</option>
+      </select>
+    </div>
+
+    <div *ngIf="selectedRange === 'custom'">
+      <label for="customStart">Inicio</label>
+      <input id="customStart" type="date" [(ngModel)]="customStart" (ngModelChange)="refresh()" />
+    </div>
+
+    <div *ngIf="selectedRange === 'custom'">
+      <label for="customEnd">Fin</label>
+      <input id="customEnd" type="date" [(ngModel)]="customEnd" (ngModelChange)="refresh()" />
+    </div>
+
+    <div>
+      <label for="filtroColeccion">Colección</label>
+      <select
+        id="filtroColeccion"
+        [(ngModel)]="selectedCollection"
+        (ngModelChange)="refresh()"
+      >
+        <option *ngFor="let c of collections" [ngValue]="c.value">
+          {{ c.label }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label for="filtroSource">Source</label>
+      <select
+        id="filtroSource"
+        [(ngModel)]="selectedSource"
+        (ngModelChange)="refresh()"
+      >
+        <option *ngFor="let s of sources" [ngValue]="s.value">
+          {{ s.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filters-actions">
+      <label>&nbsp;</label>
+      <div class="filters-actions-row">
+        <button type="button" class="btn-reset" (click)="resetFilters()">Limpiar</button>
+        <button type="button" class="btn-reset" (click)="exportCsv()" [disabled]="!rows.length">
+          Exportar CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <p class="filtro-resultado" *ngIf="!loading && rows.length">
+    Mostrando {{ rows.length }} productos entre {{ dateRangeLabel }}.
+  </p>
+
+  <div class="kpi-grid" *ngIf="!loading">
+    <div class="kpi-card">
+      <span class="kpi-label">Total vistas</span>
+      <strong>{{ kpis.views | number }}</strong>
+      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.views, prevKpis.views) }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Total agregados al carrito</span>
+      <strong>{{ kpis.addToCart | number }}</strong>
+      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.addToCart, prevKpis.addToCart) }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Total eliminados del carrito</span>
+      <strong>{{ kpis.removeFromCart | number }}</strong>
+      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.removeFromCart, prevKpis.removeFromCart) }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Total inicios de checkout</span>
+      <strong>{{ kpis.beginCheckout | number }}</strong>
+      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.beginCheckout, prevKpis.beginCheckout) }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Total compras</span>
+      <strong>{{ kpis.purchases | number }}</strong>
+      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.purchases, prevKpis.purchases) }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="filtro-resultado">
+    Cargando analítica...
+  </div>
+
+  <div *ngIf="!loading && !rows.length" class="filtro-resultado">
+    Sin datos de interacción en el rango seleccionado.
+  </div>
+
+  <ng-container *ngIf="!loading && rows.length">
+    <h3 class="titulo-lista">Top por fuente</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Views</th>
+          <th>Add to cart</th>
+          <th>Purchases</th>
+          <th>Conversión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of sourceTotals">
+          <td>{{ row.source }}</td>
+          <td>{{ row.views | number }}</td>
+          <td>{{ row.addToCart | number }}</td>
+          <td>{{ row.purchases | number }}</td>
+          <td>{{ row.conversion | percent:'1.0-1' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="titulo-lista">Top 10 más vistos</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Views</th>
+          <th>Add to cart</th>
+          <th>Tasa intención</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of topViews">
+          <td>
+            <img *ngIf="row.imagen" [src]="row.imagen" [alt]="row.nombre" class="img-tabla" loading="lazy" />
+            <span *ngIf="!row.imagen" class="sin-imagen">-</span>
+          </td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.coleccion || 'Sin colección' }}</td>
+          <td>{{ row.views | number }}</td>
+          <td>{{ row.addToCart | number }}</td>
+          <td>{{ row.tasaIntencion | percent:'1.0-1' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="titulo-lista">Top 10 más agregados al carrito</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Add to cart</th>
+          <th>Views</th>
+          <th>Tasa intención</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of topAddToCart">
+          <td>
+            <img *ngIf="row.imagen" [src]="row.imagen" [alt]="row.nombre" class="img-tabla" loading="lazy" />
+            <span *ngIf="!row.imagen" class="sin-imagen">-</span>
+          </td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.coleccion || 'Sin colección' }}</td>
+          <td>{{ row.addToCart | number }}</td>
+          <td>{{ row.views | number }}</td>
+          <td>{{ row.tasaIntencion | percent:'1.0-1' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="titulo-lista">Top 10 por compras</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Purchases</th>
+          <th>Views</th>
+          <th>Conversión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of topPurchases">
+          <td>
+            <img *ngIf="row.imagen" [src]="row.imagen" [alt]="row.nombre" class="img-tabla" loading="lazy" />
+            <span *ngIf="!row.imagen" class="sin-imagen">-</span>
+          </td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.coleccion || 'Sin colección' }}</td>
+          <td>{{ row.purchases | number }}</td>
+          <td>{{ row.views | number }}</td>
+          <td>{{ row.tasaConversion | percent:'1.0-1' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="titulo-lista">Top 10 por tasa de intención</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Tasa intención</th>
+          <th>Add to cart</th>
+          <th>Views</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of topIntention">
+          <td>
+            <img *ngIf="row.imagen" [src]="row.imagen" [alt]="row.nombre" class="img-tabla" loading="lazy" />
+            <span *ngIf="!row.imagen" class="sin-imagen">-</span>
+          </td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.coleccion || 'Sin colección' }}</td>
+          <td>{{ row.tasaIntencion | percent:'1.0-1' }}</td>
+          <td>{{ row.addToCart | number }}</td>
+          <td>{{ row.views | number }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="titulo-lista">Top 10 por tasa de conversión</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Conversión</th>
+          <th>Purchases</th>
+          <th>Views</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of topConversion">
+          <td>
+            <img *ngIf="row.imagen" [src]="row.imagen" [alt]="row.nombre" class="img-tabla" loading="lazy" />
+            <span *ngIf="!row.imagen" class="sin-imagen">-</span>
+          </td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.coleccion || 'Sin colección' }}</td>
+          <td>{{ row.tasaConversion | percent:'1.0-1' }}</td>
+          <td>{{ row.purchases | number }}</td>
+          <td>{{ row.views | number }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="titulo-lista">Tráfico perdido (muchas views, baja conversión)</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Colección</th>
+          <th>Views</th>
+          <th>Purchases</th>
+          <th>Conversión</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of topLowConversion">
+          <td>
+            <img *ngIf="row.imagen" [src]="row.imagen" [alt]="row.nombre" class="img-tabla" loading="lazy" />
+            <span *ngIf="!row.imagen" class="sin-imagen">-</span>
+          </td>
+          <td>{{ row.nombre }}</td>
+          <td>{{ row.coleccion || 'Sin colección' }}</td>
+          <td>{{ row.views | number }}</td>
+          <td>{{ row.purchases | number }}</td>
+          <td>{{ row.tasaConversion | percent:'1.0-1' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>

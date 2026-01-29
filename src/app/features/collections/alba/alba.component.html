@@ -87,7 +87,7 @@
 
       <div class="product-grid">
         <article class="product-card" *ngFor="let p of productosFiltrados" [attr.data-id]="p.id">
-          <a class="thumb" [routerLink]="['/products', p.id]">
+          <a class="thumb" [routerLink]="['/products', p.id]" (click)="setProductSource()">
             <span class="badge" *ngIf="p.badge" [ngClass]="p.badge">
               {{ p.badge }}
             </span>
@@ -115,7 +115,7 @@
               loading="lazy" />
           </a>
 
-          <a class="title" [routerLink]="['/products', p.id]">
+          <a class="title" [routerLink]="['/products', p.id]" (click)="setProductSource()">
             {{ p.nombre }}
           </a>
 

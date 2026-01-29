@@ -40,7 +40,7 @@
           [attr.data-id]="product.id"
           *ngFor="let product of featuredProducts; trackBy: trackById"
         >
-          <a class="thumb" [routerLink]="['/products', product.id]">
+          <a class="thumb" [routerLink]="['/products', product.id]" (click)="setProductSource()">
             <span class="badge" *ngIf="product.badge" [ngClass]="product.badge">
               {{ product.badge }}
             </span>
@@ -75,7 +75,7 @@
             </button>
           </a>
 
-          <a class="title" [routerLink]="['/products', product.id]">
+          <a class="title" [routerLink]="['/products', product.id]" (click)="setProductSource()">
             {{ product.nombre }}
           </a>
           <p class="excerpt" *ngIf="product.descripcionCorta">{{ product.descripcionCorta }}</p>

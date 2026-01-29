@@ -110,6 +110,10 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.router.navigate(["/admin/productos"]);
   }
 
+  irAAnalitica(): void {
+    this.router.navigate(['/admin/analytics']);
+  }
+
   private mostrarToast(tipo: "error" | "exito", texto: string): void {
     this.toastActivo = { tipo, texto };
     if (this.toastTimeout) {

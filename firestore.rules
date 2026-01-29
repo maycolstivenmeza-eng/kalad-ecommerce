@@ -2,22 +2,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Productos: lectura pública; solo admin puede escribir
-    match /productos/{id} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.token.admin == true;
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Reseñas de productos: lectura pública, escritura solo usuarios autenticados
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Productos: lectura publica; solo admin puede escribir
+    match /productos/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Resenas de productos: lectura publica, escritura solo usuarios autenticados
     match /productos/{productId}/reviews/{reviewId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isAdmin() {
-        return isSignedIn() && request.auth.token.admin == true;
-      }
-
       function isOwner() {
         return isSignedIn() && request.auth.uid == request.resource.data.userId;
       }
@@ -39,27 +39,19 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
-    // Cupones: lectura pública para validación; solo admin puede escribir
+    // Cupones: lectura publica para validacion; solo admin puede escribir
     match /cupones/{code} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.admin == true;
+      allow write: if isAdmin();
     }
 
-    // Pedidos: el dueño puede crear/leer. Admins (custom claim) pueden ver/gestionar todos.
+    // Pedidos: el dueno puede crear/leer. Admins pueden ver/gestionar todos.
     match /pedidos/{pedidoId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
       function isOwner() {
         return isSignedIn() && request.auth.uid == request.resource.data.userId;
       }
 
-      function isAdmin() {
-        return isSignedIn() && request.auth.token.admin == true;
-      }
-
-      // Validaciones básicas de montos para evitar pedidos con totales negativos
+      // Validaciones basicas de montos para evitar pedidos con totales negativos
       function montosValidos() {
         let d = request.resource.data;
         return
@@ -81,7 +73,7 @@ service cloud.firestore {
 
     // Orders (uso admin / compatibilidad con panel)
     match /orders/{orderId} {
-      allow read, write: if request.auth != null && request.auth.token.admin == true;
+      allow read, write: if isAdmin();
     }
 
     // Mensajes de contacto: cualquiera puede crear, solo admin puede leer/gestionar
@@ -97,18 +89,35 @@ service cloud.firestore {
       }
 
       allow create: if contactoValido();
-      allow read, update, delete: if request.auth != null && request.auth.token.admin == true;
+      allow read, update, delete: if isAdmin();
     }
 
-    // Usuarios y subcolecciones (favoritos, direcciones, etc.): solo el dueño
+    // Usuarios y subcolecciones (favoritos, direcciones, etc.): solo el dueno
     match /usuarios/{uid} {
-      allow create, read, update, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, read, update, delete: if isSignedIn() && request.auth.uid == uid;
       match /{sub=**} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
+        allow read, write: if isSignedIn() && request.auth.uid == uid;
       }
     }
 
-    // Bloquear todo lo demás
+    // Analitica diaria de productos: solo lectura admin, escrituras bloqueadas en cliente
+    match /productStatsDaily/{productId} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == 'pY5dVgK7YsMUtAOq1CFoQHJxqTE3');
+      allow write: if false;
+
+      match /productDays/{dayId} {
+        allow read: if isAdmin() || (request.auth != null && request.auth.uid == 'pY5dVgK7YsMUtAOq1CFoQHJxqTE3');
+        allow write: if false;
+      }
+    }
+
+    // Permitir lectura de cualquier subcoleccion 'productDays' para admins/uid (collectionGroup)
+    match /{path=**}/productDays/{dayId} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == 'pY5dVgK7YsMUtAOq1CFoQHJxqTE3');
+      allow write: if false;
+    }
+
+    // Bloquear todo lo demas
     match /{document=**} {
       allow read, write: if false;
     }

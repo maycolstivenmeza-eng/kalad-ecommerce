@@ -39,6 +39,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   suggestions: Product[] = [];
   private purchaseTracked = false;
   private abandonTracked = false;
+  private beginCheckoutTracked = false;
   shippingBadgeText = "Envío GRATIS en el Área Metropolitana de Barranquilla";
   shippingMessageDetail =
     "El costo se actualizará automáticamente cuando termines de completar la dirección.";
@@ -67,6 +68,14 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       this.cartItems = items;
       this.loadSuggestions();
       this.refreshShipping();
+      if (!this.beginCheckoutTracked && items.length) {
+        this.analytics.trackBeginCheckout(
+          items,
+          { subtotal: this.getSubtotal(), shipping: this.shipping, discount: this.discount },
+          'direct'
+        );
+        this.beginCheckoutTracked = true;
+      }
     });
   }
 
@@ -230,6 +239,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   addSuggested(product: Product) {
     this.cartService.addProduct(product, 1);
+    this.analytics.trackAddToCart(product, 1, 'Checkout sugeridos', 'recommended');
     this.refreshShipping();
   }
 
@@ -290,7 +300,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         coupon: this.discount ? this.couponCode.trim().toUpperCase() : undefined
       };
 
-      this.analytics.trackBeginCheckout(this.cartItems, totals, this.couponCode);
+      this.analytics.trackBeginCheckout(this.cartItems, totals, 'direct', this.couponCode);
 
       // Crear pedido
       const pedidoId = await this.pedidosService.crearPedido(
@@ -376,7 +386,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
               discount: totals.discount,
               total: totals.total,
               coupon: totals.coupon
-            }
+            },
+            'direct'
           );
           this.purchaseTracked = true;
 

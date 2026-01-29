@@ -166,6 +166,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin/pedidos']);
   }
 
+  irAAnalitica(): void {
+    this.router.navigate(['/admin/analytics']);
+  }
+
   async logout(): Promise<void> {
     await this.authService.logout();
     this.router.navigate(['/admin/login']);

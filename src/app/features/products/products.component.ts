@@ -227,12 +227,17 @@ export class ProductsComponent implements OnInit {
     if (product) {
       this.analytics.trackSelectItem(product, 'Productos');
     }
+    this.analytics.setLastProductSource('catalog');
     this.router.navigate(['/products', productId]);
+  }
+
+  setProductSource(): void {
+    this.analytics.setLastProductSource('catalog');
   }
 
   addToCart(product: Product) {
     this.cartService.addProduct(product, 1);
-    this.analytics.trackAddToCart(product, 1, 'Productos');
+    this.analytics.trackAddToCart(product, 1, 'Productos', 'catalog');
   }
 
   toggleFavorite(product: Product, event: Event) {
