@@ -9,7 +9,7 @@ import { Product } from '../../shared/models/product.model';
 import { ProductService } from '../../shared/services/product.service';
 import { CartService } from '../../shared/services/cart.service';
 import { Title, Meta } from '@angular/platform-browser';
-import { AnalyticsService } from '../../shared/services/analytics.service';
+import { Ga4Service } from '../../shared/services/ga4.service';
 
 interface HighlightInfo {
   icon: string;
@@ -205,7 +205,7 @@ thumbs: any;
     private cartService: CartService,
     private title: Title,
     private meta: Meta,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   ngOnInit(): void {
@@ -683,4 +683,5 @@ thumbs: any;
     }).format(price);
   }
 }
+
 

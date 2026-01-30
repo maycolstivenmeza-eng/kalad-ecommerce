@@ -1,4 +1,4 @@
-ï»¿import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { CartService } from '../../../shared/services/cart.service';
 import { FavoritesService } from '../../../shared/services/favorites.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Title, Meta } from '@angular/platform-browser';
-import { AnalyticsService } from '../../../shared/services/analytics.service';
+import { Ga4Service } from '../../../shared/services/ga4.service';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
@@ -48,15 +48,15 @@ export class EssenciaComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private title: Title,
     private meta: Meta,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Kalad Essencia | ColecciÃ³n');
+    this.title.setTitle('Kalad Essencia | Colección');
     this.meta.updateTag({
       name: 'description',
-      content: 'ColecciÃ³n Kalad Essencia: mochilas artesanales de lÃ­neas limpias y tonos neutros, perfectas para el dÃ­a a dÃ­a.'
+      content: 'Colección Kalad Essencia: mochilas artesanales de líneas limpias y tonos neutros, perfectas para el día a día.'
     });
     this.sub = this.productService
       .getProductsByCollection('kalad-essencia')
@@ -216,4 +216,5 @@ export class EssenciaComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 

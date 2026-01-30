@@ -7,7 +7,7 @@ import { FavoritesService } from '../../services/favorites.service';
 import { Product } from '../../models/product.model';
 import { AuthService } from '../../services/auth.service';
 import { ProductService } from '../../services/product.service';
-import { AnalyticsService } from '../../services/analytics.service';
+import { Ga4Service } from '../../services/ga4.service';
 
 @Component({
   selector: 'app-header',
@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private productService: ProductService,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {
     this.isAdminRoute = this.router.url.startsWith('/admin');
   }
@@ -252,4 +252,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .trim();
   }
 }
+
 

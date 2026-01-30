@@ -1,4 +1,4 @@
-﻿<div class="admin-container">
+﻿<div class="admin-container analytics-container">
   <div class="admin-header">
     <h2>Analítica de interacción</h2>
     <div class="admin-header-actions">
@@ -84,32 +84,211 @@
     Mostrando {{ rows.length }} productos entre {{ dateRangeLabel }}.
   </p>
 
-  <div class="kpi-grid" *ngIf="!loading">
-    <div class="kpi-card">
-      <span class="kpi-label">Total vistas</span>
-      <strong>{{ kpis.views | number }}</strong>
-      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.views, prevKpis.views) }}</span>
-    </div>
-    <div class="kpi-card">
-      <span class="kpi-label">Total agregados al carrito</span>
-      <strong>{{ kpis.addToCart | number }}</strong>
-      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.addToCart, prevKpis.addToCart) }}</span>
-    </div>
-    <div class="kpi-card">
-      <span class="kpi-label">Total eliminados del carrito</span>
-      <strong>{{ kpis.removeFromCart | number }}</strong>
-      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.removeFromCart, prevKpis.removeFromCart) }}</span>
-    </div>
-    <div class="kpi-card">
-      <span class="kpi-label">Total inicios de checkout</span>
-      <strong>{{ kpis.beginCheckout | number }}</strong>
-      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.beginCheckout, prevKpis.beginCheckout) }}</span>
-    </div>
-    <div class="kpi-card">
-      <span class="kpi-label">Total compras</span>
-      <strong>{{ kpis.purchases | number }}</strong>
-      <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.purchases, prevKpis.purchases) }}</span>
-    </div>
+  <div class="dashboard-grid" *ngIf="!loading">
+    <section class="card kpi-panel">
+      <div class="card-header">
+        <div>
+          <h3>Resumen general</h3>
+          <p>KPIs del periodo seleccionado vs rango anterior.</p>
+        </div>
+        <span class="pill">Interacciones</span>
+      </div>
+      <div class="kpi-grid kpi-grid-dashboard">
+        <div class="kpi-card">
+          <span class="kpi-label">Total vistas</span>
+          <strong>{{ kpis.views | number }}</strong>
+          <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.views, prevKpis.views) }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Agregados al carrito</span>
+          <strong>{{ kpis.addToCart | number }}</strong>
+          <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.addToCart, prevKpis.addToCart) }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Eliminados del carrito</span>
+          <strong>{{ kpis.removeFromCart | number }}</strong>
+          <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.removeFromCart, prevKpis.removeFromCart) }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Inicios de checkout</span>
+          <strong>{{ kpis.beginCheckout | number }}</strong>
+          <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.beginCheckout, prevKpis.beginCheckout) }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Compras</span>
+          <strong>{{ kpis.purchases | number }}</strong>
+          <span class="kpi-delta">vs anterior: {{ deltaPercent(kpis.purchases, prevKpis.purchases) }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Embudo de conversión</h3>
+          <p>Relación de pasos clave del usuario.</p>
+        </div>
+        <span class="pill">Funnel</span>
+      </div>
+      <div class="funnel">
+        <div class="funnel-step">
+          <div class="step-label">Vistas</div>
+          <div class="step-bar">
+            <span [style.width.%]="percent(kpis.views, kpis.views || 1)"></span>
+          </div>
+          <div class="step-value">{{ kpis.views | number }}</div>
+        </div>
+        <div class="funnel-step">
+          <div class="step-label">Add to cart</div>
+          <div class="step-bar">
+            <span [style.width.%]="percent(kpis.addToCart, kpis.views)"></span>
+          </div>
+          <div class="step-value">{{ kpis.addToCart | number }}</div>
+        </div>
+        <div class="funnel-step">
+          <div class="step-label">Checkout</div>
+          <div class="step-bar">
+            <span [style.width.%]="percent(kpis.beginCheckout, kpis.views)"></span>
+          </div>
+          <div class="step-value">{{ kpis.beginCheckout | number }}</div>
+        </div>
+        <div class="funnel-step">
+          <div class="step-label">Compras</div>
+          <div class="step-bar">
+            <span [style.width.%]="percent(kpis.purchases, kpis.views)"></span>
+          </div>
+          <div class="step-value">{{ kpis.purchases | number }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Origen de visitas (GA4)</h3>
+          <p>Sesiones agrupadas por fuente/medio.</p>
+        </div>
+        <span class="pill">GA4</span>
+      </div>
+      <div class="filtro-resultado" *ngIf="ga4Loading">Cargando GA4...</div>
+      <div class="alert error" *ngIf="!ga4Loading && ga4Error">{{ ga4Error }}</div>
+      <p class="chart-empty" *ngIf="!ga4Loading && !ga4Error && !ga4Sources.length">
+        Sin datos GA4 para el rango seleccionado.
+      </p>
+      <div class="bar-list" *ngIf="!ga4Loading && !ga4Error && ga4Sources.length">
+        <div class="bar-row" *ngFor="let row of ga4Sources">
+          <div class="bar-label">{{ row.sourceMedium }}</div>
+          <div class="bar-track">
+            <span [style.width.%]="percent(row.sessions, maxGa4Sessions)"></span>
+          </div>
+          <div class="bar-value">{{ row.sessions | number }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Tráfico por red social</h3>
+          <p>Sesiones GA4 agrupadas por red.</p>
+        </div>
+        <span class="pill">Social</span>
+      </div>
+      <p class="chart-empty" *ngIf="!ga4SocialTotals.length && !ga4Loading">
+        Sin tráfico social detectado en el rango seleccionado.
+      </p>
+      <div class="bar-list" *ngIf="ga4SocialTotals.length">
+        <div class="bar-row" *ngFor="let row of ga4SocialTotals">
+          <div class="bar-label">{{ row.source }}</div>
+          <div class="bar-track">
+            <span [style.width.%]="percent(row.sessions, maxGa4SocialSessions)"></span>
+          </div>
+          <div class="bar-value">{{ row.sessions | number }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Fuentes internas</h3>
+          <p>Eventos internos agrupados por fuente.</p>
+        </div>
+        <span class="pill">Eventos</span>
+      </div>
+      <p class="chart-empty" *ngIf="!sourceTotals.length">
+        Sin datos internos para el rango seleccionado.
+      </p>
+      <div class="bar-list" *ngIf="sourceTotals.length">
+        <div class="bar-row" *ngFor="let row of sourceTotals">
+          <div class="bar-label">{{ row.source }}</div>
+          <div class="bar-track">
+            <span [style.width.%]="percent(row.views, maxSourceViews)"></span>
+          </div>
+          <div class="bar-value">{{ row.views | number }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Top productos por vistas</h3>
+          <p>Los productos más vistos del periodo.</p>
+        </div>
+        <span class="pill">Vistas</span>
+      </div>
+      <p class="chart-empty" *ngIf="!topViews.length">Sin datos de vistas.</p>
+      <div class="bar-list" *ngIf="topViews.length">
+        <div class="bar-row" *ngFor="let row of topViews">
+          <div class="bar-label">{{ row.nombre }}</div>
+          <div class="bar-track">
+            <span [style.width.%]="percent(row.views, maxViews)"></span>
+          </div>
+          <div class="bar-value">{{ row.views | number }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Top productos por add to cart</h3>
+          <p>Productos con mayor intención.</p>
+        </div>
+        <span class="pill">Carrito</span>
+      </div>
+      <p class="chart-empty" *ngIf="!topAddToCart.length">Sin datos de carrito.</p>
+      <div class="bar-list" *ngIf="topAddToCart.length">
+        <div class="bar-row" *ngFor="let row of topAddToCart">
+          <div class="bar-label">{{ row.nombre }}</div>
+          <div class="bar-track">
+            <span [style.width.%]="percent(row.addToCart, maxAddToCart)"></span>
+          </div>
+          <div class="bar-value">{{ row.addToCart | number }}</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h3>Top productos por compras</h3>
+          <p>Productos con mayor conversión.</p>
+        </div>
+        <span class="pill">Compras</span>
+      </div>
+      <p class="chart-empty" *ngIf="!topPurchases.length">Sin datos de compras.</p>
+      <div class="bar-list" *ngIf="topPurchases.length">
+        <div class="bar-row" *ngFor="let row of topPurchases">
+          <div class="bar-label">{{ row.nombre }}</div>
+          <div class="bar-track">
+            <span [style.width.%]="percent(row.purchases, maxPurchases)"></span>
+          </div>
+          <div class="bar-value">{{ row.purchases | number }}</div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div *ngIf="loading" class="filtro-resultado">
@@ -120,7 +299,8 @@
     Sin datos de interacción en el rango seleccionado.
   </div>
 
-  <ng-container *ngIf="!loading && rows.length">
+  <details class="details-block" *ngIf="!loading && rows.length">
+    <summary>Ver tablas detalladas</summary>
     <h3 class="titulo-lista">Top por fuente</h3>
     <table class="tabla-productos">
       <thead>
@@ -304,5 +484,5 @@
         </tr>
       </tbody>
     </table>
-  </ng-container>
+  </details>
 </div>

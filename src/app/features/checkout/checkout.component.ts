@@ -12,7 +12,7 @@ import { firstValueFrom, merge, of, Subscription, take } from "rxjs";
 import { CouponService } from "../../shared/services/coupon.service";
 import { environment } from "../../../environments/environment";
 import { FormsModule } from "@angular/forms";
-import { AnalyticsService } from "../../shared/services/analytics.service";
+import { Ga4Service } from "../../shared/services/ga4.service";
 import { Product } from "../../shared/models/product.model";
 import {
   calculateShippingCost,
@@ -57,7 +57,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     private couponService: CouponService,
     private productService: ProductService,
     private router: Router,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   ngOnInit(): void {
@@ -473,3 +473,4 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     return product?.id ?? "";
   }
 }
+

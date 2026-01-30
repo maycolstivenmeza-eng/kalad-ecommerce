@@ -39,13 +39,12 @@ interface AnalyticsItem {
 @Injectable({
   providedIn: 'root'
 })
-export class AnalyticsService {
+export class Ga4Service {
   private initialized = false;
   private readonly measurementId =
-    (environment as any)?.analytics?.measurementId || environment.firebase?.measurementId;
-  private readonly gtmId = (environment as any)?.analytics?.gtmId;
-  private readonly loadGa4Script =
-    (environment as any)?.analytics?.loadGa4Script ?? true;
+    (environment as any)?.ga4MeasurementId ||
+    (environment as any)?.analytics?.measurementId ||
+    environment.firebase?.measurementId;
   private readonly currency = (environment as any)?.wompi?.currency || 'COP';
   private readonly viewDedupeMs = 30 * 60 * 1000;
   private readonly checkoutDedupeMs = 30 * 60 * 1000;
@@ -75,8 +74,6 @@ export class AnalyticsService {
 
     const start = () => {
       this.ensureDataLayer();
-      this.loadTagManager();
-      this.loadGa4();
       this.ensureSessionId();
       this.cacheAttributionSource();
     };
@@ -90,10 +87,18 @@ export class AnalyticsService {
   }
 
   trackPageView(url: string, title?: string): void {
+    const resolvedUrl = this.resolveUrl(url);
     this.dispatch('page_view', {
-      page_location: this.resolveUrl(url),
-      page_title: title || this.document.title
+      page_path: url,
+      page_title: title || this.document.title,
+      page_location: resolvedUrl
     });
+  }
+
+  event(name: string, params?: Record<string, any>): void {
+    if (!isPlatformBrowser(this.platformId) || !this.isEnabled()) return;
+    this.init();
+    this.gtag('event', name, params || {});
   }
 
   trackViewItemList(name: string, products: Product[]): void {
@@ -264,14 +269,7 @@ export class AnalyticsService {
     if (!isPlatformBrowser(this.platformId) || !this.isEnabled()) return;
 
     this.init();
-    const win = this.document.defaultView as any;
-    if (!win || !win.dataLayer) return;
-
-    if (this.shouldLoadGa4()) {
-      this.gtag('event', eventName, params);
-    }
-
-    win.dataLayer.push({ event: eventName, ...params });
+    this.event(eventName, params);
   }
 
   private toItem(product: AnalyticsProduct, quantity = 1, listName?: string, index?: number): AnalyticsItem {
@@ -279,8 +277,8 @@ export class AnalyticsService {
       item_id: product.id,
       item_name: product.nombre,
       item_brand: 'Kalad',
-      item_category: (product as Product)?.categoria || undefined,
-      item_category2: (product as Product)?.coleccion || undefined,
+      item_category: (product as Product)?.coleccion || undefined,
+      item_category2: (product as Product)?.categoria || undefined,
       item_variant: (product as any)?.color || undefined,
       price: this.roundCurrency(product.precio),
       quantity,
@@ -297,51 +295,15 @@ export class AnalyticsService {
     }
   }
 
-  private loadGa4(): void {
-    if (!this.shouldLoadGa4()) return;
-    const id = this.measurementId;
-    if (!id || this.document.querySelector(`script[data-ga-measurement="${id}"]`)) return;
-
-    const script = this.document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
-    script.setAttribute('data-ga-measurement', id);
-    this.document.head.appendChild(script);
-
-    this.gtag('js', new Date());
-    this.gtag('config', id, { send_page_view: false });
-  }
-
-  private loadTagManager(): void {
-    if (!this.shouldLoadGtm()) return;
-    const id = this.gtmId as string;
-    if (this.document.querySelector(`script[data-gtm-id="${id}"]`)) return;
-
-    const script = this.document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
-    script.setAttribute('data-gtm-id', id);
-    this.document.head.appendChild(script);
-  }
-
   private gtag(...args: any[]): void {
-    if (!isPlatformBrowser(this.platformId) || !this.shouldLoadGa4()) return;
-    const win = this.document.defaultView as any;
-    if (!win) return;
-    this.ensureDataLayer();
-    win.dataLayer.push(args);
+    if (!isPlatformBrowser(this.platformId) || !this.isEnabled()) return;
+    const win = this.document.defaultView as Window | null;
+    if (!win || typeof win.gtag !== 'function') return;
+    win.gtag(...args);
   }
 
   private isEnabled(): boolean {
-    return this.shouldLoadGa4() || this.shouldLoadGtm();
-  }
-
-  private shouldLoadGa4(): boolean {
-    return !!this.measurementId && this.loadGa4Script;
-  }
-
-  private shouldLoadGtm(): boolean {
-    return !!this.gtmId && !/xxxx/i.test(this.gtmId);
+    return !!this.measurementId && environment.production;
   }
 
   private resolveUrl(url: string): string {

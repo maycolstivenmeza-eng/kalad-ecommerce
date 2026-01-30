@@ -1,4 +1,4 @@
-ï»¿import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { CartService } from '../../../shared/services/cart.service';
 import { FavoritesService } from '../../../shared/services/favorites.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Title, Meta } from '@angular/platform-browser';
-import { AnalyticsService } from '../../../shared/services/analytics.service';
+import { Ga4Service } from '../../../shared/services/ga4.service';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
@@ -48,15 +48,15 @@ export class OrigenComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private title: Title,
     private meta: Meta,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Kalad Origen | ColecciÃ³n');
+    this.title.setTitle('Kalad Origen | Colección');
     this.meta.updateTag({
       name: 'description',
-      content: 'ColecciÃ³n Kalad Origen: mochilas artesanales inspiradas en las raÃ­ces caribeÃ±as, con colores vivos y tejidos tradicionales.'
+      content: 'Colección Kalad Origen: mochilas artesanales inspiradas en las raíces caribeñas, con colores vivos y tejidos tradicionales.'
     });
     this.sub = this.productService
       .getProductsByCollection('kalad-origen')
@@ -216,4 +216,5 @@ export class OrigenComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 

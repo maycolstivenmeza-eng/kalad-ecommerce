@@ -59,6 +59,18 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   </noscript>
   <!-- Imagen principal del hero: preload removido para evitar warnings en rutas no-home -->
+  <!-- Google Analytics 4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-34LYXS0EGQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    var isLocalhost = ['localhost', '127.0.0.1'].indexOf(window.location.hostname) !== -1;
+    if (!isLocalhost) {
+      gtag('js', new Date());
+      gtag('config', 'G-34LYXS0EGQ', { send_page_view: false });
+    }
+  </script>
 </head>
 <body>
   <app-root></app-root>

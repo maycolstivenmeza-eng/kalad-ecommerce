@@ -1,4 +1,4 @@
-Ôªøimport { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { CartService } from '../../../shared/services/cart.service';
 import { FavoritesService } from '../../../shared/services/favorites.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Title, Meta } from '@angular/platform-browser';
-import { AnalyticsService } from '../../../shared/services/analytics.service';
+import { Ga4Service } from '../../../shared/services/ga4.service';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
@@ -31,7 +31,7 @@ export class EdicionesComponent implements OnInit, OnDestroy {
   maxPrice: number | null = null;
   open = [false, false, false];
 
-  // Mismos filtros de color y categor√≠a que en Kalad Origen
+  // Mismos filtros de color y categorÌa que en Kalad Origen
   colores = [
     { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
     { id: 'cafe', label: 'Cafe', hex: '#6a4e3a' },
@@ -49,7 +49,7 @@ export class EdicionesComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private title: Title,
     private meta: Meta,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   async ngOnInit() {
@@ -58,7 +58,7 @@ export class EdicionesComponent implements OnInit, OnDestroy {
     this.meta.updateTag({
       name: 'description',
       content:
-        'Mochilas de edici√≥n especial Kalad: piezas limitadas con dise√±os de autor y materiales m√°s elegantes.'
+        'Mochilas de ediciÛn especial Kalad: piezas limitadas con diseÒos de autor y materiales m·s elegantes.'
     });
     this.sub = this.productService
       .getProductsByCollection('ediciones-especiales')
@@ -218,3 +218,4 @@ export class EdicionesComponent implements OnInit, OnDestroy {
     }
   }
 }
+

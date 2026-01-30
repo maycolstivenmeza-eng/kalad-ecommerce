@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../shared/services/product.service';
@@ -8,7 +8,7 @@ import { FavoritesService } from '../../shared/services/favorites.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Title, Meta } from '@angular/platform-browser';
-import { AnalyticsService } from '../../shared/services/analytics.service';
+import { Ga4Service } from '../../shared/services/ga4.service';
 
 @Component({
   selector: 'app-home-page',
@@ -31,7 +31,7 @@ export class HomePageComponent implements OnInit {
     private authService: AuthService,
     private title: Title,
     private meta: Meta,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   ngOnInit(): void {
@@ -153,7 +153,8 @@ export class HomePageComponent implements OnInit {
       const now = await firstValueFrom(this.authService.isLoggedIn$);
       if (now) this.favorites.toggle(product);
     } catch (e) {
-      console.warn('No se pudo iniciar sesión para favoritos', e);
+      console.warn('No se pudo iniciar sesi�n para favoritos', e);
     }
   }
 }
+

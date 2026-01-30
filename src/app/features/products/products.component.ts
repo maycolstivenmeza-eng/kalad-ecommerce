@@ -1,4 +1,4 @@
-ï»¿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { FavoritesService } from '../../shared/services/favorites.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { Title, Meta } from '@angular/platform-browser';
-import { AnalyticsService } from '../../shared/services/analytics.service';
+import { Ga4Service } from '../../shared/services/ga4.service';
 
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
@@ -60,7 +60,7 @@ export class ProductsComponent implements OnInit {
     private authService: AuthService,
     private title: Title,
     private meta: Meta,
-    private analytics: AnalyticsService
+    private analytics: Ga4Service
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +68,7 @@ export class ProductsComponent implements OnInit {
     this.title.setTitle('Productos | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'CatÃ¡logo de mochilas Kalad: filtra por colecciÃ³n, color y precio para encontrar tu pieza Ãºnica.'
+      content: 'Catálogo de mochilas Kalad: filtra por colección, color y precio para encontrar tu pieza única.'
     });
     this.loadProducts();
   }
@@ -283,4 +283,5 @@ export class ProductsComponent implements OnInit {
     }).format(price);
   }
 }
+
 

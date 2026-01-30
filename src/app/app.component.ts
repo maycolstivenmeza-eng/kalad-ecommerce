@@ -1,9 +1,9 @@
-﻿import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { HeaderComponent } from "./shared/components/header/header.components";
 import { FooterComponent } from "./shared/components/footer/footer.components";
 import { Meta, Title } from "@angular/platform-browser";
-import { AnalyticsService } from "./shared/services/analytics.service";
+import { Ga4Service } from "./shared/services/ga4.service";
 import { Subscription, filter } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { UiMessageService } from "./shared/services/ui-message.service";
@@ -25,14 +25,14 @@ export class AppComponent implements OnInit, OnDestroy {
     private titleService: Title,
     private meta: Meta,
     private router: Router,
-    private analytics: AnalyticsService,
+    private analytics: Ga4Service,
     private uiMessageService: UiMessageService
   ) {
     this.titleService.setTitle("Kalad | Mochilas artesanales");
     this.meta.updateTag({
       name: "description",
       content:
-        "Kalad: mochilas artesanales colombianas, piezas únicas hechas a mano. Conoce nuestras colecciones.",
+        "Kalad: mochilas artesanales colombianas, piezas �nicas hechas a mano. Conoce nuestras colecciones.",
     });
   }
 
@@ -54,3 +54,4 @@ export class AppComponent implements OnInit, OnDestroy {
     this.navSub?.unsubscribe();
   }
 }
+

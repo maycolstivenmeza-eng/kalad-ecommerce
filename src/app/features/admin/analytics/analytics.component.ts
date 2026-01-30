@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 import {
   Firestore,
@@ -72,6 +73,16 @@ export class AdminAnalyticsComponent implements OnInit {
   topConversion: AggregatedStatsRow[] = [];
   topLowConversion: AggregatedStatsRow[] = [];
   sourceTotals: { source: string; views: number; addToCart: number; purchases: number; conversion: number }[] = [];
+  ga4Sources: { sourceMedium: string; sessions: number; totalUsers: number; newUsers: number }[] = [];
+  ga4Loading = false;
+  ga4Error: string | null = null;
+  ga4SocialTotals: { source: string; sessions: number; users: number }[] = [];
+  maxViews = 0;
+  maxAddToCart = 0;
+  maxPurchases = 0;
+  maxSourceViews = 0;
+  maxGa4Sessions = 0;
+  maxGa4SocialSessions = 0;
 
   kpis = {
     views: 0,
@@ -98,7 +109,8 @@ export class AdminAnalyticsComponent implements OnInit {
     private firestore: Firestore,
     private productService: ProductService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private functions: Functions
   ) {}
 
   ngOnInit(): void {
@@ -276,6 +288,8 @@ export class AdminAnalyticsComponent implements OnInit {
         .slice(0, 10);
 
       await this.loadSourceTotals();
+      await this.loadGa4TrafficSources();
+      this.recomputeDashboardScales();
 
       if (this.prevStartDateKey && this.prevEndDateKey) {
         const prevAgg = await this.fetchRangeAggregates(this.prevStartDateKey, this.prevEndDateKey);
@@ -304,6 +318,15 @@ export class AdminAnalyticsComponent implements OnInit {
       this.topConversion = [];
       this.topLowConversion = [];
       this.sourceTotals = [];
+      this.ga4Sources = [];
+      this.ga4Error = null;
+      this.ga4SocialTotals = [];
+      this.maxViews = 0;
+      this.maxAddToCart = 0;
+      this.maxPurchases = 0;
+      this.maxSourceViews = 0;
+      this.maxGa4Sessions = 0;
+      this.maxGa4SocialSessions = 0;
       this.kpis = { views: 0, addToCart: 0, removeFromCart: 0, beginCheckout: 0, purchases: 0 };
       this.prevKpis = { views: 0, addToCart: 0, removeFromCart: 0, beginCheckout: 0, purchases: 0 };
     } finally {
@@ -441,6 +464,98 @@ export class AdminAnalyticsComponent implements OnInit {
     });
 
     this.sourceTotals = totals;
+    this.maxSourceViews = totals.reduce((acc, row) => Math.max(acc, row.views), 0);
+  }
+
+  private async loadGa4TrafficSources(): Promise<void> {
+    this.ga4Loading = true;
+    this.ga4Error = null;
+    try {
+      const callable = httpsCallable(this.functions, 'getGa4TrafficSources');
+      const response = await callable({
+        startDate: this.startDateKey,
+        endDate: this.endDateKey,
+        limit: 20
+      });
+      const payload = response?.data as any;
+      this.ga4Sources = Array.isArray(payload?.rows) ? payload.rows : [];
+      this.maxGa4Sessions = this.ga4Sources.reduce(
+        (acc, row) => Math.max(acc, Number(row.sessions) || 0),
+        0
+      );
+      this.computeGa4SocialTotals();
+    } catch (error: any) {
+      console.warn('No se pudo cargar GA4', error);
+      this.ga4Sources = [];
+      const msg =
+        error?.message ||
+        error?.details ||
+        'No se pudo cargar el reporte de GA4.';
+      this.ga4Error = msg;
+    } finally {
+      this.ga4Loading = false;
+    }
+  }
+
+  private recomputeDashboardScales(): void {
+    this.maxViews = this.topViews.reduce((acc, row) => Math.max(acc, row.views), 0);
+    this.maxAddToCart = this.topAddToCart.reduce((acc, row) => Math.max(acc, row.addToCart), 0);
+    this.maxPurchases = this.topPurchases.reduce((acc, row) => Math.max(acc, row.purchases), 0);
+    this.maxSourceViews = this.sourceTotals.reduce((acc, row) => Math.max(acc, row.views), 0);
+    this.maxGa4Sessions = this.ga4Sources.reduce(
+      (acc, row) => Math.max(acc, Number(row.sessions) || 0),
+      0
+    );
+    this.maxGa4SocialSessions = this.ga4SocialTotals.reduce(
+      (acc, row) => Math.max(acc, Number(row.sessions) || 0),
+      0
+    );
+  }
+
+  percent(value: number, max: number): number {
+    if (!max || !Number.isFinite(value)) return 0;
+    return Math.max(0, Math.min(100, Math.round((value / max) * 100)));
+  }
+
+  private computeGa4SocialTotals(): void {
+    const socialMap = new Map<string, { source: string; sessions: number; users: number }>();
+    const socialKeys: Record<string, string> = {
+      instagram: 'Instagram',
+      'l.instagram': 'Instagram',
+      'm.instagram': 'Instagram',
+      facebook: 'Facebook',
+      'l.facebook': 'Facebook',
+      'm.facebook': 'Facebook',
+      'lm.facebook': 'Facebook',
+      't.co': 'X / Twitter',
+      twitter: 'X / Twitter',
+      x: 'X / Twitter',
+      tiktok: 'TikTok',
+      pinterest: 'Pinterest',
+      linkedin: 'LinkedIn',
+      youtube: 'YouTube',
+      whatsapp: 'WhatsApp'
+    };
+
+    for (const row of this.ga4Sources) {
+      const sourceMedium = (row.sourceMedium || '').toLowerCase();
+      const source = sourceMedium.split(' / ')[0] || sourceMedium;
+      const key = Object.keys(socialKeys).find((k) => source.includes(k));
+      if (!key) continue;
+      const label = socialKeys[key];
+      const existing = socialMap.get(label) || { source: label, sessions: 0, users: 0 };
+      existing.sessions += Number(row.sessions) || 0;
+      existing.users += Number(row.totalUsers) || 0;
+      socialMap.set(label, existing);
+    }
+
+    this.ga4SocialTotals = Array.from(socialMap.values()).sort(
+      (a, b) => b.sessions - a.sessions
+    );
+    this.maxGa4SocialSessions = this.ga4SocialTotals.reduce(
+      (acc, row) => Math.max(acc, Number(row.sessions) || 0),
+      0
+    );
   }
 
   private subtractDays(dateKey: string, days: number): string {

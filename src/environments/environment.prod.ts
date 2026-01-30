@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   useStorageUploadProxy: false,
+  ga4MeasurementId: 'G-34LYXS0EGQ',
 
   // Configuracion de Firebase para produccion
   firebase: {

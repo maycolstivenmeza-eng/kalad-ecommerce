@@ -1,7 +1,7 @@
-﻿export const environment = {
+export const environment = {
   production: false,
   useStorageUploadProxy: true,
-
+  ga4MeasurementId: '',
   // Configuracion de Firebase
   firebase: {
     apiKey: "AIzaSyDY4hRh6LriMeNn6QI3pdeHdZXPzGnU2ug",
@@ -47,3 +47,5 @@
     metroDepartments: ['atlantico']
   }
 };
+
+

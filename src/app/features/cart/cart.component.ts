@@ -1,4 +1,4 @@
-Ôªøimport { CommonModule } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -7,7 +7,7 @@ import { CartService, CartItem } from "../../shared/services/cart.service";
 import { Product } from "../../shared/models/product.model";
 import { ProductService } from "../../shared/services/product.service";
 import { CouponService } from "../../shared/services/coupon.service";
-import { AnalyticsService } from "../../shared/services/analytics.service";
+import { Ga4Service } from "../../shared/services/ga4.service";
 import { calculateShippingCost } from "../../shared/utils/shipping-utils";
 import { environment } from "../../../environments/environment";
 
@@ -30,8 +30,8 @@ export class CartComponent implements OnInit, OnDestroy {
   discount = 0;
   shipping = 0;
   couponMessage: string | null = null;
-  shippingBadgeText = "Env√≠o GRATIS en el √Årea Metropolitana de Barranquilla";
-  shippingNote = "El costo se actualizar√° autom√°ticamente al ingresar tu direcci√≥n.";
+  shippingBadgeText = "EnvÌo GRATIS en el ¡rea Metropolitana de Barranquilla";
+  shippingNote = "El costo se actualizar· autom·ticamente al ingresar tu direcciÛn.";
   recommendedProducts: Product[] = [];
   private sub?: Subscription;
   private cartViewed = false;
@@ -40,7 +40,7 @@ export class CartComponent implements OnInit, OnDestroy {
     private cartService: CartService,
     private productService: ProductService,
     private couponService: CouponService,
-    private analytics: AnalyticsService,
+    private analytics: Ga4Service,
     private router: Router
   ) {}
 
@@ -91,11 +91,11 @@ export class CartComponent implements OnInit, OnDestroy {
     try {
       this.discount = await this.couponService.validate(code, total);
       this.couponMessage = this.discount
-        ? `Cup√≥n aplicado: -${this.discount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-        : 'Este cup√≥n no genera descuento para el total actual.';
+        ? `CupÛn aplicado: -${this.discount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : 'Este cupÛn no genera descuento para el total actual.';
     } catch (e) {
       this.discount = 0;
-      const msg = (e as any)?.message || "Cup√≥n inv√°lido o no aplicable.";
+      const msg = (e as any)?.message || "CupÛn inv·lido o no aplicable.";
       this.couponMessage = msg;
     }
   }
@@ -148,3 +148,4 @@ export class CartComponent implements OnInit, OnDestroy {
     this.router.navigate(["/checkout"]);
   }
 }
+
