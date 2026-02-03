@@ -54,7 +54,7 @@ export class EdicionesComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Ediciones Especiales | Kalad');
+    this.title.setTitle('KALAD LUME | Kalad');
     this.meta.updateTag({
       name: 'description',
       content:
@@ -192,7 +192,7 @@ export class EdicionesComponent implements OnInit, OnDestroy {
   addToCart(producto: Product, event: Event) {
     event.stopPropagation();
     this.cartService.addProduct(producto, 1);
-    this.analytics.trackAddToCart(producto, 1, 'Ediciones especiales', 'collection');
+    this.analytics.trackAddToCart(producto, 1, 'KALAD LUME', 'collection');
   }
 
   setProductSource(): void {

@@ -5,7 +5,7 @@ type PartialProduct = Partial<Product> & { nombre?: string; coleccion?: string }
 const coleccionMap: Record<string, { label: string; prefix: string }> = {
   'kalad-origen': { label: 'Kalad Origen', prefix: 'OR' },
   'kalad-alba': { label: 'Colección Alba', prefix: 'AL' },
-  'kalad-essencia': { label: 'Kalad Essencia', prefix: 'ES' },
+  'kalad-essencia': { label: 'Kalad Rose', prefix: 'ES' },
 };
 
 const defaultColeccion = { label: 'Kalad', prefix: 'KA' };

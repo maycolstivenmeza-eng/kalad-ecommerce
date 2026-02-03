@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 
@@ -18,7 +18,7 @@ export class CollectionsComponent implements OnInit {
     this.title.setTitle('Colecciones | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Explora todas las colecciones de Kalad: Origen, Essencia y Ediciones especiales, mochilas artesanales tejidas a mano en Colombia.'
+      content: 'Explora todas las colecciones de Kalad: Origen, Essencia y KALAD LUME, mochilas artesanales tejidas a mano en Colombia.'
     });
   }
 }

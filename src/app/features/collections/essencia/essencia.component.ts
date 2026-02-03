@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+ï»¿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -53,10 +53,10 @@ export class EssenciaComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Kalad Essencia | Colección');
+    this.title.setTitle('Kalad Rose | Coleccion');
     this.meta.updateTag({
       name: 'description',
-      content: 'Colección Kalad Essencia: mochilas artesanales de líneas limpias y tonos neutros, perfectas para el día a día.'
+      content: 'Kalad Rose: mochilas artesanales con texturas calidas y acabados rosados, ideales para quienes buscan elegancia suave.'
     });
     this.sub = this.productService
       .getProductsByCollection('kalad-essencia')

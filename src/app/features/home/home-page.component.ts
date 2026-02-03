@@ -38,7 +38,7 @@ export class HomePageComponent implements OnInit {
     this.title.setTitle('Kalad | Mochilas artesanales');
     this.meta.updateTag({
       name: 'description',
-      content: 'Kalad: mochilas artesanales colombianas hechas a mano. Descubre nuestras colecciones Origen, Essencia y Ediciones especiales.'
+      content: 'Kalad: mochilas artesanales colombianas hechas a mano. Descubre nuestras colecciones Origen, Essencia y KALAD LUME.'
     });
     this.loadFeaturedProducts();
   }

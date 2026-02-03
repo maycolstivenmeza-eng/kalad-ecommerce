@@ -81,16 +81,9 @@
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-
   background-image:
-    linear-gradient(90deg,
-      rgba(255, 255, 255, 0.92) 0%,
-      rgba(255, 255, 255, 0.74) 40%,
-      rgba(255, 255, 255, 0.28) 70%,
-      rgba(255, 255, 255, 0) 100%
-    ),
-    url('/assets/images/KALAD-AIRE.jpeg');
-
+    linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.78) 45%, rgba(255, 255, 255, 0) 100%),
+    url('/assets/images/Banner_colecciones_rose.webp');
   background-size: cover;
   background-position: center right;
   margin-bottom: 30px;
@@ -101,21 +94,31 @@
 }
 
 .banner-title {
-  position: absolute;
+    position: absolute;
   top: 50%;
   left: 60px;
   transform: translateY(-50%);
-  color: #3B2C20;
-  font-size: clamp(2.4rem, 2.6vw + 1rem, 3.6rem);
+  
   font-family: "Playfair Display", serif;
-  text-transform: none;
+  font-size: clamp(2.4rem, 2.6vw + 1rem, 3.6rem);
+  line-height: 1.05;
+  font-weight: 400;
+  color: #3B2C20;
   letter-spacing: 2px;
   margin: 0;
   padding: 0;
+  background: rgba(255, 248, 240, 0.78);
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(59, 44, 32, 0.08);
+
+  /* mejora el antialiasing del texto */
   -webkit-font-smoothing: antialiased;
 }
 
-.banner-subtitle {
+
+
+.banner-rose .banner-subtitle {
   position: absolute;
   top: calc(50% + 40px);
   left: 60px;
@@ -124,6 +127,10 @@
   font-size: 15px;
   color: #5c4728;
   margin: 0;
+  background: rgba(255, 248, 240, 0.78);
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(59, 44, 32, 0.08);
 }
 
 /* ========= ORDENAR RIGHT ========== */
