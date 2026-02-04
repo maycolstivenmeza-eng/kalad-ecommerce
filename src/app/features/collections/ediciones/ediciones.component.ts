@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+Ôªøimport { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -31,7 +31,7 @@ export class EdicionesComponent implements OnInit, OnDestroy {
   maxPrice: number | null = null;
   open = [false, false, false];
 
-  // Mismos filtros de color y categorÌa que en Kalad Origen
+  // Mismos filtros de color y categor√≠a que en Kalad Origen
   colores = [
     { id: 'beige', label: 'Beige', hex: '#d8c8a8' },
     { id: 'cafe', label: 'Cafe', hex: '#6a4e3a' },
@@ -54,11 +54,11 @@ export class EdicionesComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('KALAD LUME | Kalad');
+    this.title.setTitle('Kalad Lume | Kalad');
     this.meta.updateTag({
       name: 'description',
       content:
-        'Mochilas de ediciÛn especial Kalad: piezas limitadas con diseÒos de autor y materiales m·s elegantes.'
+        'Mochilas de edici√≥n especial Kalad: piezas limitadas con dise√±os de autor y materiales m√°s elegantes.'
     });
     this.sub = this.productService
       .getProductsByCollection('ediciones-especiales')
@@ -218,4 +218,5 @@ export class EdicionesComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 

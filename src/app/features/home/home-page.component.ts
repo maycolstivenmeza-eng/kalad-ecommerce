@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../shared/services/product.service';
@@ -38,7 +38,7 @@ export class HomePageComponent implements OnInit {
     this.title.setTitle('Kalad | Mochilas artesanales');
     this.meta.updateTag({
       name: 'description',
-      content: 'Kalad: mochilas artesanales colombianas hechas a mano. Descubre nuestras colecciones Origen, Essencia y KALAD LUME.'
+      content: 'Kalad: mochilas artesanales colombianas hechas a mano. Descubre nuestras colecciones Origen, Kalad Essence y KALAD LUME.'
     });
     this.loadFeaturedProducts();
   }
@@ -153,8 +153,9 @@ export class HomePageComponent implements OnInit {
       const now = await firstValueFrom(this.authService.isLoggedIn$);
       if (now) this.favorites.toggle(product);
     } catch (e) {
-      console.warn('No se pudo iniciar sesi�n para favoritos', e);
+      console.warn('No se pudo iniciar sesión para favoritos', e);
     }
   }
 }
+
 

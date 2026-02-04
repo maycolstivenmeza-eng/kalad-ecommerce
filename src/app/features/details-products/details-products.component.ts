@@ -112,6 +112,8 @@ export class DetailsProductsComponent implements OnInit, OnDestroy {
     'coleccion-origen',
     'essencia',
     'esencia',
+    'essence',
+    'kalad-essence',
     'coleccionessencia',
     'linea',
     'edicion',

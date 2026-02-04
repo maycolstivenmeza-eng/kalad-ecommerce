@@ -84,21 +84,10 @@
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  
-  background-image:
-    linear-gradient(90deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(255, 255, 255, 0.74) 40%,
-    rgba(255, 255, 255, 0.28) 70%,
-    rgba(255, 255, 255, 0) 100%
-  ),
-  url('/assets/images/Banner_coleccion_alba.webp');
+
+  background-image: url('/assets/images/Banner_coleccion_alba.webp');
   background-size: cover;
   background-position: left top;
-  background-color: transparent;
-  background-blend-mode: normal;
-  filter: none;
-  opacity: 1;
   margin-bottom: 30px;
 }
 

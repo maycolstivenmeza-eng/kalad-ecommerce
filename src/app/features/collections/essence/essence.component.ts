@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom, combineLatest } from 'rxjs';
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../shared/services/product.service';
 import { CartService } from '../../../shared/services/cart.service';
@@ -14,13 +14,13 @@ import { Ga4Service } from '../../../shared/services/ga4.service';
 type OrderOption = 'az' | 'za' | 'priceAsc' | 'priceDesc' | 'new' | 'featured';
 
 @Component({
-  selector: 'app-essencia',
+  selector: 'app-essence',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './essencia.component.html',
-  styleUrl: './essencia.component.css'
+  templateUrl: './essence.component.html',
+  styleUrl: './essence.component.css'
 })
-export class EssenciaComponent implements OnInit, OnDestroy {
+export class EssenceComponent implements OnInit, OnDestroy {
   productos: Product[] = [];
   productosFiltrados: Product[] = [];
   orden: OrderOption = 'az';
@@ -53,17 +53,22 @@ export class EssenciaComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Kalad Rose | Coleccion');
+    this.title.setTitle('Kalad Essence | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Kalad Rose: mochilas artesanales con texturas calidas y acabados rosados, ideales para quienes buscan elegancia suave.'
+      content: 'Colección Kalad Essence: mochilas artesanales con texturas cálidas y acabados rosados, ideales para quienes buscan elegancia suave.'
     });
-    this.sub = this.productService
-      .getProductsByCollection('kalad-essencia')
-      .subscribe((items) => {
-        this.productos = [...items];
-        this.aplicarFiltros();
-      });
+    this.sub = combineLatest([
+      this.productService.getProductsByCollection('kalad-essence'),
+      this.productService.getProductsByCollection('kalad-essencia'),
+    ]).subscribe(([essenceItems, legacyItems]) => {
+      const combined = [...essenceItems, ...legacyItems];
+      const unique = Array.from(
+        new Map(combined.map((producto) => [producto.id, producto])).values()
+      );
+      this.productos = unique;
+      this.aplicarFiltros();
+    });
   }
 
   resolveImage(product: Product): string {
@@ -190,7 +195,7 @@ export class EssenciaComponent implements OnInit, OnDestroy {
   addToCart(producto: Product, event: Event) {
     event.stopPropagation();
     this.cartService.addProduct(producto, 1);
-    this.analytics.trackAddToCart(producto, 1, 'Coleccion Essencia', 'collection');
+    this.analytics.trackAddToCart(producto, 1, 'Coleccion Essence', 'collection');
   }
 
   setProductSource(): void {

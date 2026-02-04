@@ -71,9 +71,7 @@
 .banner-coleccion-ediciones {
   position: relative;
   height: 220px;
-  background-image:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 248, 240, 0.85) 55%, rgba(255, 248, 240, 0) 80%),
-    url('/assets/images/Banner_kalad_lume.webp');
+  background-image: url('/assets/images/Banner_kalad_lume.webp');
   background-size: cover;
   background-position: center right;
   border-radius: 10px;

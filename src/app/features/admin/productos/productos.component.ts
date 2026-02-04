@@ -74,7 +74,7 @@ export class ProductosComponent implements OnInit, OnDestroy {
   readonly colecciones = [
     { id: "kalad-origen", label: "Kalad Origen" },
     { id: "kalad-alba", label: "Colección Alba" },
-    { id: "kalad-essencia", label: "Kalad Rose" },
+    { id: "kalad-essence", label: "Kalad Essence" },
     { id: "ediciones-especiales", label: "KALAD LUME" }
   ];
   readonly badges: Product["badge"][] = ["Nuevo", "Oferta", "Limitada", null];

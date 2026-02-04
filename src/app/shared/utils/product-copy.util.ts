@@ -1,11 +1,13 @@
-import { Product } from '../models/product.model';
+﻿import { Product } from '../models/product.model';
 
 type PartialProduct = Partial<Product> & { nombre?: string; coleccion?: string };
 
 const coleccionMap: Record<string, { label: string; prefix: string }> = {
   'kalad-origen': { label: 'Kalad Origen', prefix: 'OR' },
   'kalad-alba': { label: 'Colección Alba', prefix: 'AL' },
-  'kalad-essencia': { label: 'Kalad Rose', prefix: 'ES' },
+  'kalad-essence': { label: 'Kalad Essence', prefix: 'ES' },
+  'kalad-essencia': { label: 'Kalad Essence', prefix: 'ES' },
+  'kalad-rose': { label: 'Kalad Essence', prefix: 'ES' },
 };
 
 const defaultColeccion = { label: 'Kalad', prefix: 'KA' };
@@ -29,7 +31,7 @@ export function buildProductCopy(product: PartialProduct): GeneratedProductCopy 
   const descripcionCorta = `Mochila ${coleccionInfo.label} en ${colorTexto}, tejida a mano con acabados premium.`;
   const copyPremium =
     `${nombre} es parte de ${coleccionInfo.label}. Cada pieza se teje artesanalmente, ` +
-    `mezclando ${colorTexto} para lograr un diseño exclusivo con interior resistente y detalles pensados para el uso diario.`;
+    `mezclando ${colorTexto} para lograr un diseÃ±o exclusivo con interior resistente y detalles pensados para el uso diario.`;
 
   const seoTitle = `${nombre} | ${coleccionInfo.label} Kalad`;
   const seoDescription =
@@ -86,3 +88,4 @@ function construirKeywords(nombre: string, coleccion: string, colores: string[])
 
   return Array.from(new Set([...base, ...colorKeywords]));
 }
+

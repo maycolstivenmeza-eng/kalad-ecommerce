@@ -32,8 +32,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/collections/alba/alba.component').then(m => m.AlbaComponent)
   },
   {
-    path: 'collections/essencia',
-    loadComponent: () => import('./features/collections/essencia/essencia.component').then(m => m.EssenciaComponent)
+    path: 'collections/essence',
+    loadComponent: () => import('./features/collections/essence/essence.component').then(m => m.EssenceComponent)
   },
   {
     path: 'collections/ediciones-especiales',
