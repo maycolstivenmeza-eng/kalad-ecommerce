@@ -53,10 +53,10 @@ export class OrigenComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Kalad Origen | Colección');
+    this.title.setTitle('Kalad Origen | ColecciÃ³n');
     this.meta.updateTag({
       name: 'description',
-      content: 'Colección Kalad Origen: mochilas artesanales inspiradas en las raíces caribeñas, con colores vivos y tejidos tradicionales.'
+      content: 'ColecciÃ³n Kalad Origen: mochilas artesanales inspiradas en las raÃ­ces caribeÃ±as, con colores vivos y tejidos tradicionales.'
     });
     this.sub = this.productService
       .getProductsByCollection('kalad-origen')
@@ -216,5 +216,6 @@ export class OrigenComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 
 

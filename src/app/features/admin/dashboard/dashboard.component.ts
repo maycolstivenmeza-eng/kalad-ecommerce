@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async cargarDatos(): Promise<void> {
     this.cargando = true;
 
-    // Index de productos para obtener nombre / colecci��n
+    // Index de productos para obtener nombre / colecciï¿½ï¿½n
     this.productService.getAllProducts().subscribe({
       next: (prods) => {
         (prods || []).forEach((p) => {
@@ -185,4 +185,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, 4000);
   }
 }
+
 

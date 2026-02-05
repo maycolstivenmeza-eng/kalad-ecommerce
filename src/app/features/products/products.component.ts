@@ -68,7 +68,7 @@ export class ProductsComponent implements OnInit {
     this.title.setTitle('Productos | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Catálogo de mochilas Kalad: filtra por colección, color y precio para encontrar tu pieza única.'
+      content: 'CatÃ¡logo de mochilas artesanales Kalad: filtra por colecciÃ³n, color y precio para encontrar tu pieza Ãºnica perfecta.'
     });
     this.loadProducts();
   }
@@ -283,5 +283,6 @@ export class ProductsComponent implements OnInit {
     }).format(price);
   }
 }
+
 
 

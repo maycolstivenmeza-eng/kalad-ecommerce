@@ -30,8 +30,8 @@ export class CartComponent implements OnInit, OnDestroy {
   discount = 0;
   shipping = 0;
   couponMessage: string | null = null;
-  shippingBadgeText = "EnvÌo GRATIS en el ¡rea Metropolitana de Barranquilla";
-  shippingNote = "El costo se actualizar· autom·ticamente al ingresar tu direcciÛn.";
+  shippingBadgeText = "Env√≠o GRATIS en el √Årea Metropolitana de Barranquilla";
+  shippingNote = "El costo se actualizar√° autom√°ticamente al ingresar tu direcci√≥n.";
   recommendedProducts: Product[] = [];
   private sub?: Subscription;
   private cartViewed = false;
@@ -91,11 +91,11 @@ export class CartComponent implements OnInit, OnDestroy {
     try {
       this.discount = await this.couponService.validate(code, total);
       this.couponMessage = this.discount
-        ? `CupÛn aplicado: -${this.discount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-        : 'Este cupÛn no genera descuento para el total actual.';
+        ? `Cup√≥n aplicado: -${this.discount.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : 'Este cup√≥n no genera descuento para el total actual.';
     } catch (e) {
       this.discount = 0;
-      const msg = (e as any)?.message || "CupÛn inv·lido o no aplicable.";
+      const msg = (e as any)?.message || "Cup√≥n inv√°lido o no aplicable.";
       this.couponMessage = msg;
     }
   }
@@ -148,4 +148,5 @@ export class CartComponent implements OnInit, OnDestroy {
     this.router.navigate(["/checkout"]);
   }
 }
+
 

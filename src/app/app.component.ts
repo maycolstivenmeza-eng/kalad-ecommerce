@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.meta.updateTag({
       name: "description",
       content:
-        "Kalad: mochilas artesanales colombianas, piezas únicas hechas a mano. Conoce nuestras colecciones.",
+        "Kalad: mochilas artesanales colombianas, piezas Ãºnicas hechas a mano. Conoce nuestras colecciones.",
     });
   }
 
@@ -54,4 +54,5 @@ export class AppComponent implements OnInit, OnDestroy {
     this.navSub?.unsubscribe();
   }
 }
+
 

@@ -31,7 +31,7 @@ export function buildProductCopy(product: PartialProduct): GeneratedProductCopy 
   const descripcionCorta = `Mochila ${coleccionInfo.label} en ${colorTexto}, tejida a mano con acabados premium.`;
   const copyPremium =
     `${nombre} es parte de ${coleccionInfo.label}. Cada pieza se teje artesanalmente, ` +
-    `mezclando ${colorTexto} para lograr un diseÃ±o exclusivo con interior resistente y detalles pensados para el uso diario.`;
+    `mezclando ${colorTexto} para lograr un diseño exclusivo con interior resistente y detalles pensados para el uso diario.`;
 
   const seoTitle = `${nombre} | ${coleccionInfo.label} Kalad`;
   const seoDescription =

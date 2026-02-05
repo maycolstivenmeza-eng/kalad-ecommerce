@@ -53,10 +53,10 @@ export class AlbaComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.title.setTitle('Colección Alba | Kalad');
+    this.title.setTitle('ColecciÃ³n Alba | Kalad');
     this.meta.updateTag({
       name: 'description',
-      content: 'Colección Alba: mochilas artesanales Kalad inspiradas en la claridad del amanecer, tonos suaves y tejidos delicados.'
+      content: 'ColecciÃ³n Alba: mochilas artesanales Kalad inspiradas en la claridad del amanecer, tonos suaves y tejidos delicados.'
     });
     this.sub = this.productService
       .getProductsByCollection('kalad-alba')
@@ -216,5 +216,6 @@ export class AlbaComponent implements OnInit, OnDestroy {
     }
   }
 }
+
 
 

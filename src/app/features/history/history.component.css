@@ -42,7 +42,7 @@
 .banner-content p {
   font-family: "Quicksand", sans-serif;
   font-size: 15px;
-  color: #3B2C20;    /* color marrón oficial, sÃ³lido */
+  color: #3B2C20;    /* color marrón oficial, sólido */
   margin-top: 12px;
   letter-spacing: 0.5px;
   text-shadow: 0 0 4px rgba(255,255,255,0.4); /* pequeño glow para sobresalir */
@@ -139,13 +139,13 @@
   padding-left: 0;
 }
 
-/* Ã¢Å“â€¦ ícono más pequeño y gris */
+/* · ícono más pequeño y gris */
 .metodologia i {
   color: #6f6f6f;
   font-size: 15px;
 }
 
-/* Ã¢Å“â€¦ línea vertical gris clara (como la maqueta original) */
+/* · línea vertical gris clara (como la maqueta original) */
 .metodologia li:not(:last-child)::after {
   content: "";
   position: absolute;
